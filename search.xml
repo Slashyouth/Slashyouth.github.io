@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>测试000</title>
-    <url>/2020/05/22/%E6%B5%8B%E8%AF%95%E6%A0%87%E7%AD%BE/</url>
-    <content><![CDATA[<a id="more"></a>
-<h1 id="1标题一"><a href="#1标题一" class="headerlink" title="1标题一"></a>1标题一</h1><p>222</p>
-<h2 id="1-1-标题二"><a href="#1-1-标题二" class="headerlink" title="1.1 标题二"></a>1.1 标题二</h2><h3 id="1-1-1-标题三"><a href="#1-1-1-标题三" class="headerlink" title="1.1.1 标题三"></a>1.1.1 标题三</h3><p>11111</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">测试000</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2020</span><span class="number">-05</span><span class="number">-22</span></span><br><span class="line"><span class="attr">categories:</span> </span><br><span class="line"><span class="bullet">-</span> <span class="string">测试分类标识</span></span><br><span class="line"><span class="attr">tags:</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">测试标签标识1</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">测试标签标识2</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
-
+    <title>Pandas学习笔记---001</title>
+    <url>/2020/05/28/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---001/</url>
+    <content><![CDATA[<h1 id="Pandas学习笔记-——001"><a href="#Pandas学习笔记-——001" class="headerlink" title="Pandas学习笔记 ——001"></a>Pandas学习笔记 ——001</h1><h2 id="1-数据机构"><a href="#1-数据机构" class="headerlink" title="1. 数据机构"></a>1. 数据机构</h2><blockquote>
+<p>Series：带标签的一维数组<br>DataFrame：带标签的，大小可变的，二维异构表格</p>
+</blockquote>
+<hr>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment"># 生成Series</span></span><br><span class="line">s = pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, np.nan, <span class="number">6</span>, <span class="number">8</span>])</span><br><span class="line">print(s)</span><br><span class="line"><span class="number">0</span>    <span class="number">1.0</span></span><br><span class="line"><span class="number">1</span>    <span class="number">3.0</span></span><br><span class="line"><span class="number">2</span>    <span class="number">5.0</span></span><br><span class="line"><span class="number">3</span>    NaN</span><br><span class="line"><span class="number">4</span>    <span class="number">6.0</span></span><br><span class="line"><span class="number">5</span>    <span class="number">8.0</span></span><br><span class="line">dtype: float64</span><br></pre></td></tr></table></figure>
+<h2 id="2-使用技巧"><a href="#2-使用技巧" class="headerlink" title="2. 使用技巧"></a>2. 使用技巧</h2><h3 id="1-sort-indedx和sort-value"><a href="#1-sort-indedx和sort-value" class="headerlink" title="1. sort_indedx和sort_value"></a>1. sort_indedx和sort_value</h3><blockquote>
+<p>sort_index(axis=0, level=None, ascending=True, inplace=False, kind=‘quicksort’, na_position=‘last’, sort_remaining=True, ignore_index: bool = False,)<br>axis:0按行名排序，1按列名排序<br>ascending：默认True升序排列；False降序排列<br>inplace：默认False，否则排序之后的数据直接替换原来的数据框<br>kind：排序方法，{‘quicksort’, ‘mergesort’, ‘heapsort’}, default ‘quicksort’。似乎不用太关心<br>na_position：缺失值默认排在最后{“first”,“last”}       </p>
+</blockquote>
+<hr>
+<blockquote>
+<p> sort_values(by, axis=0, ascending=True, inplace=False, kind=”quicksort”, na_position=”last”, ignore_index=False)<br>by: str or list of str；如果axis=0，那么by=”列名”；如果axis=1，那么by=”行名” # 必须给出参数</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">df = pd.DataFrame(&#123;<span class="string">'b'</span>:[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">2</span>],<span class="string">'a'</span>:[<span class="number">4</span>,<span class="number">3</span>,<span class="number">2</span>,<span class="number">1</span>],<span class="string">'c'</span>:[<span class="number">1</span>,<span class="number">3</span>,<span class="number">8</span>,<span class="number">2</span>]&#125;,index=[<span class="number">2</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">3</span>]) </span><br><span class="line">    b   a   c</span><br><span class="line"><span class="number">2</span>   <span class="number">1</span>   <span class="number">4</span>   <span class="number">1</span></span><br><span class="line"><span class="number">0</span>   <span class="number">2</span>   <span class="number">3</span>   <span class="number">3</span></span><br><span class="line"><span class="number">1</span>   <span class="number">3</span>   <span class="number">2</span>   <span class="number">8</span></span><br><span class="line"><span class="number">3</span>   <span class="number">2</span>   <span class="number">1</span>   <span class="number">2</span></span><br><span class="line">按b列升序排序: df.sort_values(by=<span class="string">'b'</span>) <span class="comment"># 等同于df.sort_values(by='b',axis=0)</span></span><br><span class="line">先按b列降序,再按a列升序排序: df.sort_values(by=[<span class="string">'b'</span>,<span class="string">'a'</span>],axis=<span class="number">0</span>,ascending=[<span class="literal">False</span>,<span class="literal">True</span>]) <span class="comment"># 等同于df.sort_values(by=['b','a'],axis=0,ascending=[False,True])      </span></span><br><span class="line">按行<span class="number">3</span>升序排列: df.sort_values(by=<span class="number">3</span>,axis=<span class="number">1</span>) <span class="comment"># 必须指定axis=1     </span></span><br><span class="line">按行<span class="number">3</span>升序,行<span class="number">0</span>降排列:  df.sort_values(by=[<span class="number">3</span>,<span class="number">0</span>],axis=<span class="number">1</span>,ascending=[<span class="literal">True</span>,<span class="literal">False</span>])</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="2-对于无效数据的处理"><a href="#2-对于无效数据的处理" class="headerlink" title="2. 对于无效数据的处理"></a>2. 对于无效数据的处理</h3><blockquote>
+<p>空值：在pandas中的空值是””<br>缺失值：在dataframe中为nan或者naT（缺失时间），在series中为none或者nan即可<br>相关函数： df.dropna()、df.fillna()、df.isnull()、df.isna()</p>
+<blockquote>
+<p>函数： df.dropna(axis=0, how=’any’, thresh=None, subset=None, inplace=False)<br>删除表中<strong>全部</strong>为NaN的<strong>行</strong>: df.dropna(axis=0,how=’all’)<br>删除表中<strong>含有任何</strong>NaN的<strong>行</strong>： df.dropna(axis=0,how=’any’)<br>删除表中<strong>全部</strong>为NaN的<strong>列</strong>： df.dropna(axis=1,how=’all’)<br>删除表中<strong>含有任何</strong>NaN的<strong>列</strong>:  df.dropna(axis=1,how=’any’)<br>thresh(int): axis中至少有int个非缺失值，否则删除<br>subset: array-like, optional,Labels along other axis to consider, e.g. if you are dropping rows these would be a list of columns to include.  </p>
+<hr>
+<p>函数： df.fillna(self, value=None, method=None, axis=None, inplace=False, limit=None, downcast=None)<br>method{‘backfill’, ‘bfill’, ‘pad’, ‘ffill’, None}, default None 说明用前面数据‘ffill’/‘pad’替换后面NaN数据 ‘backfill’/‘bfill’则相反          </p>
+</blockquote>
+</blockquote>
 ]]></content>
       <categories>
-        <category>测试分类标识</category>
+        <category>机器学习</category>
       </categories>
       <tags>
-        <tag>测试标签标识1</tag>
-        <tag>测试标签标识2</tag>
+        <tag>Pandas</tag>
+        <tag>Python</tag>
       </tags>
   </entry>
   <entry>
@@ -37,10 +51,5 @@
 
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>测试文章</title>
-    <url>/2020/05/19/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/</url>
-    <content><![CDATA[]]></content>
   </entry>
 </search>
