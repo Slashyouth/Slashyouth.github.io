@@ -3,10 +3,12 @@
   <entry>
     <title>Pandas学习笔记---001</title>
     <url>/2020/05/28/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---001/</url>
-    <content><![CDATA[<h1 id="Pandas学习笔记-——001"><a href="#Pandas学习笔记-——001" class="headerlink" title="Pandas学习笔记 ——001"></a>Pandas学习笔记 ——001</h1><h2 id="1-数据机构"><a href="#1-数据机构" class="headerlink" title="1. 数据机构"></a>1. 数据机构</h2><blockquote>
+    <content><![CDATA[<h1 id="Pandas学习笔记-——001"><a href="#Pandas学习笔记-——001" class="headerlink" title="Pandas学习笔记 ——001"></a>Pandas学习笔记 ——001</h1><h2 id="1-数据类型"><a href="#1-数据类型" class="headerlink" title="1. 数据类型"></a>1. 数据类型</h2><blockquote>
 <p>Series：带标签的一维数组<br>DataFrame：带标签的，大小可变的，二维异构表格</p>
 </blockquote>
 <hr>
+<a id="more"></a>
+
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="comment"># 生成Series</span></span><br><span class="line">s = pd.Series([<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, np.nan, <span class="number">6</span>, <span class="number">8</span>])</span><br><span class="line">print(s)</span><br><span class="line"><span class="number">0</span>    <span class="number">1.0</span></span><br><span class="line"><span class="number">1</span>    <span class="number">3.0</span></span><br><span class="line"><span class="number">2</span>    <span class="number">5.0</span></span><br><span class="line"><span class="number">3</span>    NaN</span><br><span class="line"><span class="number">4</span>    <span class="number">6.0</span></span><br><span class="line"><span class="number">5</span>    <span class="number">8.0</span></span><br><span class="line">dtype: float64</span><br></pre></td></tr></table></figure>
 <h2 id="2-使用技巧"><a href="#2-使用技巧" class="headerlink" title="2. 使用技巧"></a>2. 使用技巧</h2><h3 id="1-sort-indedx和sort-value"><a href="#1-sort-indedx和sort-value" class="headerlink" title="1. sort_indedx和sort_value"></a>1. sort_indedx和sort_value</h3><blockquote>
 <p>sort_index(axis=0, level=None, ascending=True, inplace=False, kind=‘quicksort’, na_position=‘last’, sort_remaining=True, ignore_index: bool = False,)<br>axis:0按行名排序，1按列名排序<br>ascending：默认True升序排列；False降序排列<br>inplace：默认False，否则排序之后的数据直接替换原来的数据框<br>kind：排序方法，{‘quicksort’, ‘mergesort’, ‘heapsort’}, default ‘quicksort’。似乎不用太关心<br>na_position：缺失值默认排在最后{“first”,“last”}       </p>
