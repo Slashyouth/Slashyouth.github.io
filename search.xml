@@ -167,4 +167,855 @@
         <tag>Python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>第1章 机器学习基础</title>
+    <url>/2020/05/31/1.%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h2 id="机器学习-概述"><a href="#机器学习-概述" class="headerlink" title="机器学习 概述"></a>机器学习 概述</h2><p><code>机器学习(Machine Learning,ML)</code> 是使用计算机来彰显数据背后的真实含义，它为了把无序的数据转换成有用的信息。是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。专门研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身的性能。<br>它是人工智能的核心，是使计算机具有智能的根本途径，其应用遍及人工智能的各个领域，它主要使用归纳、综合而不是演绎。</p>
+<a id="more"></a>
+
+<ol>
+<li>海量的数据</li>
+<li>获取有用的信息</li>
+</ol>
+<h2 id="机器学习-研究意义"><a href="#机器学习-研究意义" class="headerlink" title="机器学习 研究意义"></a>机器学习 研究意义</h2><p>机器学习是一门人工智能的科学，该领域的主要研究对象是人工智能，特别是如何在经验学习中改善具体算法的性能”。 “机器学习是对能通过经验自动改进的计算机算法的研究”。 “机器学习是用数据或以往的经验，以此优化计算机程序的性能标准。” 一种经常引用的英文定义是：A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T, as measured by P, improves with experience E.</p>
+<p>机器学习已经有了十分广泛的应用，例如：数据挖掘、计算机视觉、自然语言处理、生物特征识别、搜索引擎、医学诊断、检测信用卡欺诈、证券市场分析、DNA序列测序、语音和手写识别、战略游戏和机器人运用。</p>
+<h2 id="机器学习-场景"><a href="#机器学习-场景" class="headerlink" title="机器学习 场景"></a>机器学习 场景</h2><ul>
+<li><p>例如：识别动物猫</p>
+<ul>
+<li>模式识别（官方标准）：人们通过大量的经验，得到结论，从而判断它就是猫。</li>
+<li>机器学习（数据学习）：人们通过阅读进行学习，观察它会叫、小眼睛、两只耳朵、四条腿、一条尾巴，得到结论，从而判断它就是猫。</li>
+<li>深度学习（深入数据）：人们通过深入了解它，发现它会’喵喵’的叫、与同类的猫科动物很类似，得到结论，从而判断它就是猫。（深度学习常用领域：语音识别、图像识别）</li>
+</ul>
+</li>
+<li><p>模式识别（pattern recognition）: 模式识别是最古老的（作为一个术语而言，可以说是很过时的）。</p>
+<ul>
+<li>我们把环境与客体统称为“模式”，识别是对模式的一种认知，是如何让一个计算机程序去做一些看起来很“智能”的事情。</li>
+<li>通过融于智慧和直觉后，通过构建程序，识别一些事物，而不是人，例如: 识别数字。</li>
+</ul>
+</li>
+<li><p>机器学习（machine learning）: 机器学习是最基础的（当下初创公司和研究实验室的热点领域之一）。</p>
+<ul>
+<li>在90年代初，人们开始意识到一种可以更有效地构建模式识别算法的方法，那就是用数据（可以通过廉价劳动力采集获得）去替换专家（具有很多图像方面知识的人）。</li>
+<li>“机器学习”强调的是，在给计算机程序（或者机器）输入一些数据后，它必须做一些事情，那就是学习这些数据，而这个学习的步骤是明确的。</li>
+<li>机器学习（Machine Learning）是一门专门研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身性能的学科。</li>
+</ul>
+</li>
+<li><p>深度学习（deep learning）: 深度学习是非常崭新和有影响力的前沿领域，我们甚至不会去思考-后深度学习时代。</p>
+<ul>
+<li>深度学习是机器学习研究中的一个新的领域，其动机在于建立、模拟人脑进行分析学习的神经网络，它模仿人脑的机制来解释数据，例如图像，声音和文本。</li>
+</ul>
+</li>
+<li><p>参考地址： </p>
+<ul>
+<li><a href="http://www.csdn.net/article/2015-03-24/2824301" target="_blank" rel="noopener">深度学习 vs 机器学习 vs 模式识别</a></li>
+<li><a href="http://baike.baidu.com/link?url=76P-uA4EBrC3G-I__P1tqeO7eoDS709Kp4wYuHxc7GNkz_xn0NxuAtEohbpey7LUa2zUQLJxvIKUx4bnrEfOmsWLKbDmvG1PCoRkJisMTQka6-QReTrIxdYY3v93f55q" target="_blank" rel="noopener">深度学习 百科资料</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>机器学习已应用于多个领域，远远超出大多数人的想象，横跨：计算机科学、工程技术和统计学等多个学科。</p>
+</blockquote>
+<ul>
+<li>搜索引擎: 根据你的搜索点击，优化你下次的搜索结果,是机器学习来帮助搜索引擎判断哪个结果更适合你（也判断哪个广告更适合你）。</li>
+<li>垃圾邮件: 会自动的过滤垃圾广告邮件到垃圾箱内。</li>
+<li>超市优惠券: 你会发现，你在购买小孩子尿布的时候，售货员会赠送你一张优惠券可以兑换6罐啤酒。</li>
+<li>邮局邮寄: 手写软件自动识别寄送贺卡的地址。</li>
+<li>申请贷款: 通过你最近的金融活动信息进行综合评定，决定你是否合格。</li>
+</ul>
+<h2 id="机器学习-组成"><a href="#机器学习-组成" class="headerlink" title="机器学习 组成"></a>机器学习 组成</h2><h3 id="主要任务"><a href="#主要任务" class="headerlink" title="主要任务"></a>主要任务</h3><ul>
+<li>分类（classification）：将实例数据划分到合适的类别中。<ul>
+<li>应用实例：判断网站是否被黑客入侵（二分类 ），手写数字的自动识别（多分类）</li>
+</ul>
+</li>
+<li>回归（regression）：主要用于预测数值型数据。<ul>
+<li>应用实例：股票价格波动的预测，房屋价格的预测等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="监督学习（supervised-learning）"><a href="#监督学习（supervised-learning）" class="headerlink" title="监督学习（supervised learning）"></a>监督学习（supervised learning）</h3><ul>
+<li>必须确定目标变量的值，以便机器学习算法可以发现特征和目标变量之间的关系。在监督学习中，给定一组数据，我们知道正确的输出结果应该是什么样子，并且知道在输入和输出之间有着一个特定的关系。 (包括：分类和回归)</li>
+<li>样本集：训练数据 + 测试数据<ul>
+<li>训练样本 = 特征(feature) + 目标变量(label: 分类-离散值/回归-连续值)</li>
+<li>特征通常是训练样本集的列，它们是独立测量得到的。</li>
+<li>目标变量: 目标变量是机器学习预测算法的测试结果。<ul>
+<li>在分类算法中目标变量的类型通常是标称型(如：真与假)，而在回归算法中通常是连续型(如：1~100)。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>监督学习需要注意的问题：<ul>
+<li>偏置方差权衡</li>
+<li>功能的复杂性和数量的训练数据</li>
+<li>输入空间的维数</li>
+<li>噪声中的输出值</li>
+</ul>
+</li>
+<li><code>知识表示</code>：<ul>
+<li>可以采用规则集的形式【例如：数学成绩大于90分为优秀】</li>
+<li>可以采用概率分布的形式【例如：通过统计分布发现，90%的同学数学成绩，在70分以下，那么大于70分定为优秀】</li>
+<li>可以使用训练样本集中的一个实例【例如：通过样本集合，我们训练出一个模型实例，得出 年轻，数学成绩中高等，谈吐优雅，我们认为是优秀】</li>
+</ul>
+</li>
+</ul>
+<h3 id="非监督学习（unsupervised-learing）"><a href="#非监督学习（unsupervised-learing）" class="headerlink" title="非监督学习（unsupervised learing）"></a>非监督学习（unsupervised learing）</h3><ul>
+<li>在机器学习，无监督学习的问题是，在未加标签的数据中，试图找到隐藏的结构。因为提供给学习者的实例是未标记的，因此没有错误或报酬信号来评估潜在的解决方案。</li>
+<li>无监督学习是密切相关的统计数据密度估计的问题。然而无监督学习还包括寻求，总结和解释数据的主要特点等诸多技术。在无监督学习使用的许多方法是基于用于处理数据的数据挖掘方法。</li>
+<li>数据没有类别信息，也不会给定目标值。</li>
+<li>非监督学习包括的类型：<ul>
+<li>聚类：在无监督学习中，将数据集分成由类似的对象组成多个类的过程称为聚类。</li>
+<li>密度估计：通过样本分布的紧密程度，来估计与分组的相似性。</li>
+<li>此外，无监督学习还可以减少数据特征的维度，以便我们可以使用二维或三维图形更加直观地展示数据信息。<h3 id="强化学习"><a href="#强化学习" class="headerlink" title="强化学习"></a>强化学习</h3>这个算法可以训练程序做出某一决定。程序在某一情况下尝试所有的可能行动，记录不同行动的结果并试着找出最好的一次尝试来做决定。 属于这一类算法的有马尔可夫决策过程。<h3 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h3></li>
+</ul>
+</li>
+</ul>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/1.MLFoundation/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B.jpg" alt="机器学习训练过程图"></p>
+<h3 id="算法汇总"><a href="#算法汇总" class="headerlink" title="算法汇总"></a>算法汇总</h3><p><img src="http://data.apachecn.org/img/AiLearning/ml/1.MLFoundation/ml_algorithm.jpg" alt="算法汇总"></p>
+<h2 id="机器学习-使用"><a href="#机器学习-使用" class="headerlink" title="机器学习 使用"></a>机器学习 使用</h2><blockquote>
+<p>选择算法需要考虑的两个问题</p>
+</blockquote>
+<ol>
+<li>算法场景<ul>
+<li>预测明天是否下雨，因为可以用历史的天气情况做预测，所以选择监督学习算法</li>
+<li>给一群陌生的人进行分组，但是我们并没有这些人的类别信息，所以选择无监督学习算法、通过他们身高、体重等特征进行处理。</li>
+</ul>
+</li>
+<li>需要收集或分析的数据是什么</li>
+</ol>
+<blockquote>
+<p>举例</p>
+</blockquote>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/1.MLFoundation/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80-%E9%80%89%E6%8B%A9%E7%AE%97%E6%B3%95.jpg" alt="选择算法图"></p>
+<blockquote>
+<p>机器学习 开发流程</p>
+</blockquote>
+<ol>
+<li>收集数据: 收集样本数据</li>
+<li>准备数据: 注意数据的格式</li>
+<li>分析数据: 为了确保数据集中没有垃圾数据；<ul>
+<li>如果是算法可以处理的数据格式或可信任的数据源，则可以跳过该步骤；</li>
+<li>另外该步骤需要人工干预，会降低自动化系统的价值。</li>
+</ul>
+</li>
+<li>训练算法: [机器学习算法核心]如果使用无监督学习算法，由于不存在目标变量值，则可以跳过该步骤</li>
+<li>测试算法: [机器学习算法核心]评估算法效果</li>
+<li>使用算法: 将机器学习算法转为应用程序</li>
+</ol>
+<h2 id="机器学习-数学基础"><a href="#机器学习-数学基础" class="headerlink" title="机器学习 数学基础"></a>机器学习 数学基础</h2><ul>
+<li>微积分</li>
+<li>统计学/概率论</li>
+<li>线性代数<h2 id="机器学习-工具"><a href="#机器学习-工具" class="headerlink" title="机器学习 工具"></a>机器学习 工具</h2></li>
+</ul>
+<h3 id="Python语言"><a href="#Python语言" class="headerlink" title="Python语言"></a>Python语言</h3><ol>
+<li>可执行伪代码</li>
+<li>Python比较流行：使用广泛、代码范例多、丰富模块库，开发周期短</li>
+<li>Python语言的特色：清晰简练、易于理解</li>
+<li>Python语言的缺点：唯一不足的是性能问题</li>
+<li>Python相关的库<ul>
+<li>科学函数库：<code>SciPy</code>、<code>NumPy</code>(底层语言：C和Fortran)</li>
+<li>绘图工具库：<code>Matplotlib</code></li>
+<li>数据分析库 <code>Pandas</code><h3 id="数学工具"><a href="#数学工具" class="headerlink" title="数学工具"></a>数学工具</h3></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li>Matlab<h2 id="附：机器学习专业术语"><a href="#附：机器学习专业术语" class="headerlink" title="附：机器学习专业术语"></a>附：机器学习专业术语</h2></li>
+<li>模型（model）：计算机层面的认知</li>
+<li>学习算法（learning algorithm），从数据中产生模型的方法</li>
+<li>数据集（data set）：一组记录的合集</li>
+<li>示例（instance）：对于某个对象的描述</li>
+<li>样本（sample）：也叫示例</li>
+<li>属性（attribute）：对象的某方面表现或特征</li>
+<li>特征（feature）：同属性</li>
+<li>属性值（attribute value）：属性上的取值</li>
+<li>属性空间（attribute space）：属性张成的空间</li>
+<li>样本空间/输入空间（samplespace）：同属性空间</li>
+<li>特征向量（feature vector）：在属性空间里每个点对应一个坐标向量，把一个示例称作特征向量</li>
+<li>维数（dimensionality）：描述样本参数的个数（也就是空间是几维的）</li>
+<li>学习（learning）/训练（training）：从数据中学得模型</li>
+<li>训练数据（training data）：训练过程中用到的数据</li>
+<li>训练样本（training sample）:训练用到的每个样本</li>
+<li>训练集（training set）：训练样本组成的集合</li>
+<li>假设（hypothesis）：学习模型对应了关于数据的某种潜在规则</li>
+<li>真相（ground-truth）:真正存在的潜在规律</li>
+<li>学习器（learner）：模型的另一种叫法，把学习算法在给定数据和参数空间的实例化</li>
+<li>预测（prediction）：判断一个东西的属性</li>
+<li>标记（label）：关于示例的结果信息，比如我是一个“好人”。</li>
+<li>样例（example）：拥有标记的示例</li>
+<li>标记空间/输出空间（label space）：所有标记的集合</li>
+<li>分类（classification）：预测是离散值，比如把人分为好人和坏人之类的学习任务</li>
+<li>回归（regression）：预测值是连续值，比如你的好人程度达到了0.9，0.6之类的</li>
+<li>二分类（binary classification）：只涉及两个类别的分类任务</li>
+<li>正类（positive class）：二分类里的一个</li>
+<li>反类（negative class）：二分类里的另外一个</li>
+<li>多分类（multi-class classification）：涉及多个类别的分类</li>
+<li>测试（testing）：学习到模型之后对样本进行预测的过程</li>
+<li>测试样本（testing sample）：被预测的样本</li>
+<li>聚类（clustering）：把训练集中的对象分为若干组</li>
+<li>簇（cluster）：每一个组叫簇</li>
+<li>监督学习（supervised learning）：典范–分类和回归</li>
+<li>无监督学习（unsupervised learning）：典范–聚类</li>
+<li>未见示例（unseen instance）：“新样本“，没训练过的样本</li>
+<li>泛化（generalization）能力：学得的模型适用于新样本的能力</li>
+<li>分布（distribution）：样本空间的全体样本服从的一种规律</li>
+<li>独立同分布（independent and identically distributed，简称i,i,d.）:获得的每个样本都是独立地从这个分布上采样获得的。</li>
+</ul>
+<h2 id="机器学习基础补充"><a href="#机器学习基础补充" class="headerlink" title="机器学习基础补充"></a>机器学习基础补充</h2><h3 id="数据集的划分"><a href="#数据集的划分" class="headerlink" title="数据集的划分"></a>数据集的划分</h3><ul>
+<li>训练集（Training set） —— 学习样本数据集，通过匹配一些参数来建立一个模型，主要用来训练模型。类比考研前做的解题大全。</li>
+<li>验证集（validation set） —— 对学习出来的模型，调整模型的参数，如在神经网络中选择隐藏单元数。验证集还用来确定网络结构或者控制模型复杂程度的参数。类比 考研之前做的模拟考试。</li>
+<li>测试集（Test set） —— 测试训练好的模型的分辨能力。类比 考研。这次真的是一考定终身。</li>
+</ul>
+<h3 id="模型拟合程度"><a href="#模型拟合程度" class="headerlink" title="模型拟合程度"></a>模型拟合程度</h3><ul>
+<li>欠拟合（Underfitting）：模型没有很好地捕捉到数据特征，不能够很好地拟合数据，对训练样本的一般性质尚未学好。类比，光看书不做题觉得自己什么都会了，上了考场才知道自己啥都不会。</li>
+<li>过拟合（Overfitting）：模型把训练样本学习“太好了”，可能把一些训练样本自身的特性当做了所有潜在样本都有的一般性质，导致泛化能力下降。类比，做课后题全都做对了，超纲题也都认为是考试必考题目，上了考场还是啥都不会。 </li>
+</ul>
+<p>通俗来说，欠拟合和过拟合都可以用一句话来说，欠拟合就是：“你太天真了！”，过拟合就是：“你想太多了！”。</p>
+<h3 id="常见的模型指标"><a href="#常见的模型指标" class="headerlink" title="常见的模型指标"></a>常见的模型指标</h3><ul>
+<li>正确率 —— 提取出的正确信息条数 / 提取出的信息条数</li>
+<li>召回率 —— 提取出的正确信息条数 / 样本中的信息条数</li>
+<li>F 值 —— 正确率 * 召回率 * 2 / （正确率 + 召回率）（F值即为正确率和召回率的调和平均值）</li>
+</ul>
+<p>举个例子如下：</p>
+<p>举个例子如下：<br>某池塘有 1400 条鲤鱼，300 只虾，300 只乌龟。现在以捕鲤鱼为目的。撒了一张网，逮住了 700 条鲤鱼，200 只<br>虾， 100 只乌龟。那么这些指标分别如下：<br>正确率 = 700 / (700 + 200 + 100) = 70%<br>召回率 = 700 / 1400 = 50%<br>F 值 = 70% * 50% * 2 / (70% + 50%) = 58.3%</p>
+<h3 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h3><ul>
+<li>分类问题 —— 说白了就是将一些未知类别的数据分到现在已知的类别中去。比如，根据你的一些信息，判断你是高富帅，还是穷屌丝。评判分类效果好坏的三个指标就是上面介绍的三个指标：正确率，召回率，F值。</li>
+<li>回归问题 —— 对数值型连续随机变量进行预测和建模的监督学习算法。回归往往会通过计算 误差（Error）来确定模型的精确性。</li>
+<li>聚类问题 —— 聚类是一种无监督学习任务，该算法基于数据的内部结构寻找观察样本的自然族群（即集群）。聚类问题的标准一般基于距离：簇内距离（Intra-cluster Distance） 和 簇间距离（Inter-cluster Distance） 。簇内距离是越小越好，也就是簇内的元素越相似越好；而簇间距离越大越好，也就是说簇间（不同簇）元素越不相同越好。一般的，衡量聚类问题会给出一个结合簇内距离和簇间距离的公式。</li>
+</ul>
+<p>下面这个图可以比较直观地展示出来：</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/1.MLFoundation/ml_add_1.jpg" alt=""></p>
+<h3 id="特征工程的一些小东西"><a href="#特征工程的一些小东西" class="headerlink" title="特征工程的一些小东西"></a>特征工程的一些小东西</h3><ul>
+<li><p>特征选择 —— 也叫特征子集选择（FSS，Feature Subset Selection）。是指从已有的 M 个特征（Feature）中选择 N 个特征使得系统的特定指标最优化，是从原始特征中选择出一些最有效特征以降低数据集维度的过程，是提高算法性能的一个重要手段，也是模式识别中关键的数据预处理步骤。</p>
+</li>
+<li><p>特征提取 —— 特征提取是计算机视觉和图像处理中的一个概念。它指的是使用计算机提取图像信息，决定每个图像的点是否属于一个图像特征。特征提取的结果是把图像上的点分为不同的子集，这些子集往往属于孤立的点，连续的曲线或者连续的区域。</p>
+</li>
+</ul>
+<p>下面给出一个特征工程的图：</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/1.MLFoundation/ml_add_2.jpg" alt=""></p>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>Learning rate —— 学习率，通俗地理解，可以理解为步长，步子大了，很容易错过最佳结果。就是本来目标尽在咫尺，可是因为我迈的步子很大，却一下子走过了。步子小了呢，就是同样的距离，我却要走很多很多步，这样导致训练的耗时费力还不讨好。</li>
+<li>一个总结的知识点很棒的链接 ：<a href="https://zhuanlan.zhihu.com/p/25197792" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25197792</a></li>
+</ul>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>第2章 k-近邻算法</title>
+    <url>/2020/05/31/2.k-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<h2 id="KNN-概述"><a href="#KNN-概述" class="headerlink" title="KNN 概述"></a>KNN 概述</h2><p><code>k-近邻（kNN, k-NearestNeighbor）算法是一种基本分类与回归方法，我们这里只讨论分类问题中的 k-近邻算法。</code></p>
+<p><strong>一句话总结：近朱者赤近墨者黑！</strong> </p>
+<p><code>k 近邻算法的输入为实例的特征向量，对应于特征空间的点；输出为实例的类别，可以取多类。k 近邻算法假设给定一个训练数据集，其中的实例类别已定。分类时，对新的实例，根据其 k 个最近邻的训练实例的类别，通过多数表决等方式进行预测。因此，k近邻算法不具有显式的学习过程。</code></p>
+<a id="more"></a>
+
+<p><code>k 近邻算法实际上利用训练数据集对特征向量空间进行划分，并作为其分类的“模型”。 k值的选择、距离度量以及分类决策规则是k近邻算法的三个基本要素。</code></p>
+<h2 id="KNN-场景"><a href="#KNN-场景" class="headerlink" title="KNN 场景"></a>KNN 场景</h2><p>电影可以按照题材分类，那么如何区分 <code>动作片</code> 和 <code>爱情片</code> 呢？<br/></p>
+<ol>
+<li>动作片：打斗次数更多</li>
+<li>爱情片：亲吻次数更多</li>
+</ol>
+<p>基于电影中的亲吻、打斗出现的次数，使用 k-近邻算法构造程序，就可以自动划分电影的题材类型。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn-1-movie.png" alt="电影视频案例" title="电影视频案例"></p>
+<figure class="highlight inform7"><table><tr><td class="code"><pre><span class="line">现在根据上面我们得到的样本集中所有电影与未知电影的距离，按照距离递增排序，可以找到 k 个距离最近的电影。</span><br><span class="line">假定 k=3，则三个最靠近的电影依次是， He's Not Really into Dudes 、 Beautiful <span class="keyword">Woman</span> 和 California <span class="keyword">Man</span>。</span><br><span class="line">knn 算法按照距离最近的三部电影的类型，决定未知电影的类型，而这三部电影全是爱情片，因此我们判定未知电影是爱情片。</span><br></pre></td></tr></table></figure>
+
+<h2 id="KNN-原理"><a href="#KNN-原理" class="headerlink" title="KNN 原理"></a>KNN 原理</h2><blockquote>
+<p>KNN 工作原理</p>
+</blockquote>
+<ol>
+<li>假设有一个带有标签的样本数据集（训练样本集），其中包含每条数据与所属分类的对应关系。</li>
+<li>输入没有标签的新数据后，将新数据的每个特征与样本集中数据对应的特征进行比较。<ol>
+<li>计算新数据与样本数据集中每条数据的距离。</li>
+<li>对求得的所有距离进行排序（从小到大，越小表示越相似）。</li>
+<li>取前 k （k 一般小于等于 20 ）个样本数据对应的分类标签。</li>
+</ol>
+</li>
+<li>求 k 个数据中出现次数最多的分类标签作为新数据的分类。</li>
+</ol>
+<blockquote>
+<p>KNN 通俗理解</p>
+</blockquote>
+<p>给定一个训练数据集，对新的输入实例，在训练数据集中找到与该实例最邻近的 k 个实例，这 k 个实例的多数属于某个类，就把该输入实例分为这个类。</p>
+<blockquote>
+<p>KNN 开发流程</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">收集数据：任何方法</span><br><span class="line">准备数据：距离计算所需要的数值，最好是结构化的数据格式</span><br><span class="line">分析数据：任何方法</span><br><span class="line">训练算法：此步骤不适用于 k-近邻算法</span><br><span class="line">测试算法：计算错误率</span><br><span class="line">使用算法：输入样本数据和结构化的输出结果，然后运行 k-近邻算法判断输入数据分类属于哪个分类，最后对计算出的分类执行后续处理</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>KNN 算法特点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">优点：精度高、对异常值不敏感、无数据输入假定</span><br><span class="line">缺点：计算复杂度高、空间复杂度高</span><br><span class="line">适用数据范围：数值型和标称型</span><br></pre></td></tr></table></figure>
+
+<h2 id="KNN-项目案例"><a href="#KNN-项目案例" class="headerlink" title="KNN 项目案例"></a>KNN 项目案例</h2><h3 id="项目案例1-优化约会网站的配对效果"><a href="#项目案例1-优化约会网站的配对效果" class="headerlink" title="项目案例1: 优化约会网站的配对效果"></a>项目案例1: 优化约会网站的配对效果</h3><p><a href="/src/py2.x/ml/2.KNN/kNN.py">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py</a></p>
+<h4 id="项目概述"><a href="#项目概述" class="headerlink" title="项目概述"></a>项目概述</h4><p>海伦使用约会网站寻找约会对象。经过一段时间之后，她发现曾交往过三种类型的人:</p>
+<ul>
+<li>不喜欢的人</li>
+<li>魅力一般的人</li>
+<li>极具魅力的人</li>
+</ul>
+<p>她希望：</p>
+<ol>
+<li>工作日与魅力一般的人约会</li>
+<li>周末与极具魅力的人约会</li>
+<li>不喜欢的人则直接排除掉</li>
+</ol>
+<p>现在她收集到了一些约会网站未曾记录的数据信息，这更有助于匹配对象的归类。</p>
+<h4 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">收集数据：提供文本文件</span><br><span class="line">准备数据：使用 Python 解析文本文件</span><br><span class="line">分析数据：使用 Matplotlib 画二维散点图</span><br><span class="line">训练算法：此步骤不适用于 k-近邻算法</span><br><span class="line">测试算法：使用海伦提供的部分数据作为测试样本。</span><br><span class="line">        测试样本和非测试样本的区别在于：</span><br><span class="line">            测试样本是已经完成分类的数据，如果预测分类与实际类别不同，则标记为一个错误。</span><br><span class="line">使用算法：产生简单的命令行程序，然后海伦可以输入一些特征数据以判断对方是否为自己喜欢的类型。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据：提供文本文件</p>
+</blockquote>
+<p>海伦把这些约会对象的数据存放在文本文件 <a href="/data/2.KNN/datingTestSet2.txt">datingTestSet2.txt</a> 中，总共有 1000 行。海伦约会的对象主要包含以下 3 种特征：</p>
+<ul>
+<li>每年获得的飞行常客里程数</li>
+<li>玩视频游戏所耗时间百分比</li>
+<li>每周消费的冰淇淋公升数</li>
+</ul>
+<p>文本文件数据格式如下：</p>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="number">40920</span>	<span class="number">8.326976</span>	<span class="number">0.953952</span>	<span class="number">3</span></span><br><span class="line"><span class="number">14488</span>	<span class="number">7.153469</span>	<span class="number">1.673904</span>	<span class="number">2</span></span><br><span class="line"><span class="number">26052</span>	<span class="number">1.441871</span>	<span class="number">0.805124</span>	<span class="number">1</span></span><br><span class="line"><span class="number">75136</span>	<span class="number">13.147394</span>	<span class="number">0.428964</span>	<span class="number">1</span></span><br><span class="line"><span class="number">38344</span>	<span class="number">1.669788</span>	<span class="number">0.134296</span>	<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>准备数据：使用 Python 解析文本文件</p>
+</blockquote>
+<p>将文本记录转换为 NumPy 的解析程序</p>
+ <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">file2matrix</span><span class="params">(filename)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        导入训练数据</span></span><br><span class="line"><span class="string">    parameters:</span></span><br><span class="line"><span class="string">        filename: 数据文件路径</span></span><br><span class="line"><span class="string">    return: </span></span><br><span class="line"><span class="string">        数据矩阵 returnMat 和对应的类别 classLabelVector</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    fr = open(filename)</span><br><span class="line">    <span class="comment"># 获得文件中的数据行的行数</span></span><br><span class="line">    numberOfLines = len(fr.readlines())</span><br><span class="line">    <span class="comment"># 生成对应的空矩阵</span></span><br><span class="line">    <span class="comment"># 例如：zeros(2，3)就是生成一个 2*3的矩阵，各个位置上全是 0 </span></span><br><span class="line">    returnMat = zeros((numberOfLines, <span class="number">3</span>))  <span class="comment"># prepare matrix to return</span></span><br><span class="line">    classLabelVector = []  <span class="comment"># prepare labels return</span></span><br><span class="line">    fr = open(filename)</span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> fr.readlines():</span><br><span class="line">        <span class="comment"># str.strip([chars]) --返回已移除字符串头尾指定字符所生成的新字符串</span></span><br><span class="line">        line = line.strip()</span><br><span class="line">        <span class="comment"># 以 '\t' 切割字符串</span></span><br><span class="line">        listFromLine = line.split(<span class="string">'\t'</span>)</span><br><span class="line">        <span class="comment"># 每列的属性数据</span></span><br><span class="line">        returnMat[index, :] = listFromLine[<span class="number">0</span>:<span class="number">3</span>]</span><br><span class="line">        <span class="comment"># 每列的类别数据，就是 label 标签数据</span></span><br><span class="line">        classLabelVector.append(int(listFromLine[<span class="number">-1</span>]))</span><br><span class="line">        index += <span class="number">1</span></span><br><span class="line">    <span class="comment"># 返回数据矩阵returnMat和对应的类别classLabelVector</span></span><br><span class="line">    <span class="keyword">return</span> returnMat, classLabelVector</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据：使用 Matplotlib 画二维散点图</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.add_subplot(<span class="number">111</span>)</span><br><span class="line">ax.scatter(datingDataMat[:, <span class="number">0</span>], datingDataMat[:, <span class="number">1</span>], <span class="number">15.0</span>*array(datingLabels), <span class="number">15.0</span>*array(datingLabels))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>下图中采用矩阵的第一和第二列属性得到很好的展示效果，清晰地标识了三个不同的样本分类区域，具有不同爱好的人其类别区域也不同。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_matplotlib_2.png" alt="Matplotlib 散点图"></p>
+<ul>
+<li>归一化数据 （归一化是一个让权重变为统一的过程，更多细节请参考： <a href="https://www.zhihu.com/question/19951858" target="_blank" rel="noopener">https://www.zhihu.com/question/19951858</a> ）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th align="center">玩视频游戏所耗时间百分比</th>
+<th align="right">每年获得的飞行常客里程数</th>
+<th align="right">每周消费的冰淇淋公升数</th>
+<th align="right">样本分类</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="center">0.8</td>
+<td align="right">400</td>
+<td align="right">0.5</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="center">12</td>
+<td align="right">134 000</td>
+<td align="right">0.9</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="center">0</td>
+<td align="right">20 000</td>
+<td align="right">1.1</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="center">67</td>
+<td align="right">32 000</td>
+<td align="right">0.1</td>
+<td align="right">2</td>
+</tr>
+</tbody></table>
+<p>样本3和样本4的距离：<br>$$\sqrt{(0-67)^2 + (20000-32000)^2 + (1.1-0.1)^2 }$$</p>
+<p>归一化特征值，消除特征之间量级不同导致的影响</p>
+<p><strong>归一化定义：</strong> 我是这样认为的，归一化就是要把你需要处理的数据经过处理后（通过某种算法）限制在你需要的一定范围内。首先归一化是为了后面数据处理的方便，其次是保正程序运行时收敛加快。 方法有如下：</p>
+<p>1) 线性函数转换，表达式如下：　　</p>
+<pre><code>y=(x-MinValue)/(MaxValue-MinValue)　　
+
+说明：x、y分别为转换前、后的值，MaxValue、MinValue分别为样本的最大值和最小值。　　</code></pre><p>2) 对数函数转换，表达式如下：　　</p>
+<pre><code>y=log10(x)　　
+
+说明：以10为底的对数函数转换。
+
+如图：
+
+![对数函数图像](http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_1.png)</code></pre><p>3) 反余切函数转换，表达式如下：</p>
+<pre><code>y=arctan(x)*2/PI　
+
+如图：
+
+![反余切函数图像](http://data.apachecn.org/img/AiLearning/ml/2.KNN/arctan_arccot.gif)</code></pre><p>4) 式(1)将输入值换算为[-1,1]区间的值，在输出层用式(2)换算回初始值，其中和分别表示训练样本集中负荷的最大值和最小值。　</p>
+<p>在统计学中，归一化的具体作用是归纳统一样本的统计分布性。归一化在0-1之间是统计的概率分布，归一化在-1–+1之间是统计的坐标分布。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">autoNorm</span><span class="params">(dataSet)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        归一化特征值，消除特征之间量级不同导致的影响</span></span><br><span class="line"><span class="string">    parameter:</span></span><br><span class="line"><span class="string">        dataSet: 数据集</span></span><br><span class="line"><span class="string">    return:</span></span><br><span class="line"><span class="string">        归一化后的数据集 normDataSet. ranges和minVals即最小值与范围，并没有用到</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    归一化公式：</span></span><br><span class="line"><span class="string">        Y = (X-Xmin)/(Xmax-Xmin)</span></span><br><span class="line"><span class="string">        其中的 min 和 max 分别是数据集中的最小特征值和最大特征值。该函数可以自动将数字特征值转化为0到1的区间。</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 计算每种属性的最大值、最小值、范围</span></span><br><span class="line">    minVals = dataSet.min(<span class="number">0</span>)</span><br><span class="line">    maxVals = dataSet.max(<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 极差</span></span><br><span class="line">    ranges = maxVals - minVals</span><br><span class="line">    normDataSet = zeros(shape(dataSet))</span><br><span class="line">    m = dataSet.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 生成与最小值之差组成的矩阵</span></span><br><span class="line">    normDataSet = dataSet - tile(minVals, (m, <span class="number">1</span>))</span><br><span class="line">    <span class="comment"># 将最小值之差除以范围组成矩阵</span></span><br><span class="line">    normDataSet = normDataSet / tile(ranges, (m, <span class="number">1</span>))  <span class="comment"># element wise divide</span></span><br><span class="line">    <span class="keyword">return</span> normDataSet, ranges, minVals</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>训练算法：此步骤不适用于 k-近邻算法</p>
+</blockquote>
+<p>因为测试数据每一次都要与全量的训练数据进行比较，所以这个过程是没有必要的。</p>
+<p>kNN 算法伪代码：</p>
+<pre><code>对于每一个在数据集中的数据点：
+    计算目标的数据点（需要分类的数据点）与该数据点的距离
+    将距离排序：从小到大
+    选取前K个最短距离
+    选取这K个中最多的分类类别
+    返回该类别来作为目标数据点的预测值</code></pre><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classify0</span><span class="params">(inX, dataSet, labels, k)</span>:</span></span><br><span class="line">    dataSetSize = dataSet.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">#距离度量 度量公式为欧氏距离</span></span><br><span class="line">    diffMat = tile(inX, (dataSetSize,<span class="number">1</span>)) – dataSet</span><br><span class="line">    sqDiffMat = diffMat**<span class="number">2</span></span><br><span class="line">    sqDistances = sqDiffMat.sum(axis=<span class="number">1</span>)</span><br><span class="line">    distances = sqDistances**<span class="number">0.5</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#将距离排序：从小到大</span></span><br><span class="line">    sortedDistIndicies = distances.argsort()</span><br><span class="line">    <span class="comment">#选取前K个最短距离， 选取这K个中最多的分类类别</span></span><br><span class="line">    classCount=&#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k)：</span><br><span class="line">        voteIlabel = labels[sortedDistIndicies[i]]</span><br><span class="line">        classCount[voteIlabel] = classCount.get(voteIlabel,<span class="number">0</span>) + <span class="number">1</span> </span><br><span class="line">    sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(<span class="number">1</span>), reverse=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> sortedClassCount[<span class="number">0</span>][<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>测试算法：使用海伦提供的部分数据作为测试样本。如果预测分类与实际类别不同，则标记为一个错误。</p>
+</blockquote>
+<p>kNN 分类器针对约会网站的测试代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">datingClassTest</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        对约会网站的测试方法</span></span><br><span class="line"><span class="string">    parameters:</span></span><br><span class="line"><span class="string">        none</span></span><br><span class="line"><span class="string">    return:</span></span><br><span class="line"><span class="string">        错误数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 设置测试数据的的一个比例（训练数据集比例=1-hoRatio）</span></span><br><span class="line">    hoRatio = <span class="number">0.1</span>  <span class="comment"># 测试范围,一部分测试一部分作为样本</span></span><br><span class="line">    <span class="comment"># 从文件中加载数据</span></span><br><span class="line">    datingDataMat, datingLabels = file2matrix(<span class="string">'data/2.KNN/datingTestSet2.txt'</span>)  <span class="comment"># load data setfrom file</span></span><br><span class="line">    <span class="comment"># 归一化数据</span></span><br><span class="line">    normMat, ranges, minVals = autoNorm(datingDataMat)</span><br><span class="line">    <span class="comment"># m 表示数据的行数，即矩阵的第一维</span></span><br><span class="line">    m = normMat.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 设置测试的样本数量， numTestVecs:m表示训练样本的数量</span></span><br><span class="line">    numTestVecs = int(m * hoRatio)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'numTestVecs='</span>, numTestVecs</span><br><span class="line">    errorCount = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(numTestVecs):</span><br><span class="line">        <span class="comment"># 对数据测试</span></span><br><span class="line">        classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], <span class="number">3</span>)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"the classifier came back with: %d, the real answer is: %d"</span> % (classifierResult, datingLabels[i])</span><br><span class="line">        <span class="keyword">if</span> (classifierResult != datingLabels[i]): errorCount += <span class="number">1.0</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"the total error rate is: %f"</span> % (errorCount / float(numTestVecs))</span><br><span class="line">    <span class="keyword">print</span> errorCount</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用算法：产生简单的命令行程序，然后海伦可以输入一些特征数据以判断对方是否为自己喜欢的类型。</p>
+</blockquote>
+<p>约会网站预测函数</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classifyPerson</span><span class="params">()</span>:</span></span><br><span class="line">    resultList = [<span class="string">'not at all'</span>, <span class="string">'in small doses'</span>, <span class="string">'in large doses'</span>]</span><br><span class="line">    percentTats = float(raw_input(<span class="string">"percentage of time spent playing video games ?"</span>))</span><br><span class="line">    ffMiles = float(raw_input(<span class="string">"frequent filer miles earned per year?"</span>))</span><br><span class="line">    iceCream = float(raw_input(<span class="string">"liters of ice cream consumed per year?"</span>))</span><br><span class="line">    datingDataMat, datingLabels = file2matrix(<span class="string">'datingTestSet2.txt'</span>)</span><br><span class="line">    normMat, ranges, minVals = autoNorm(datingDataMat)</span><br><span class="line">    inArr = array([ffMiles, percentTats, iceCream])</span><br><span class="line">    classifierResult = classify0((inArr-minVals)/ranges,normMat,datingLabels, <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"You will probably like this person: "</span>, resultList[classifierResult - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<p>实际运行效果如下: </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>classifyPerson()</span><br><span class="line">percentage of time spent playing video games?10</span><br><span class="line">frequent flier miles earned per year?10000</span><br><span class="line">liters of ice cream consumed per year?0.5</span><br><span class="line">You will probably like this person: <span class="keyword">in</span> small doses</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="项目案例2-手写数字识别系统"><a href="#项目案例2-手写数字识别系统" class="headerlink" title="项目案例2: 手写数字识别系统"></a>项目案例2: 手写数字识别系统</h3><p><a href="/src/py2.x/ml/2.KNN/kNN.py">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py</a></p>
+<h4 id="项目概述-1"><a href="#项目概述-1" class="headerlink" title="项目概述"></a>项目概述</h4><p>构造一个能识别数字 0 到 9 的基于 KNN 分类器的手写数字识别系统。</p>
+<p>需要识别的数字是存储在文本文件中的具有相同的色彩和大小：宽高是 32 像素 * 32 像素的黑白图像。</p>
+<h4 id="开发流程-1"><a href="#开发流程-1" class="headerlink" title="开发流程"></a>开发流程</h4><figure class="highlight less"><table><tr><td class="code"><pre><span class="line">收集数据：提供文本文件。</span><br><span class="line">准备数据：编写函数 <span class="selector-tag">img2vector</span>(), 将图像格式转换为分类器使用的向量格式</span><br><span class="line">分析数据：在 <span class="selector-tag">Python</span> 命令提示符中检查数据，确保它符合要求</span><br><span class="line">训练算法：此步骤不适用于 <span class="selector-tag">KNN</span></span><br><span class="line">测试算法：编写函数使用提供的部分数据集作为测试样本，测试样本与非测试样本的</span><br><span class="line">         区别在于测试样本是已经完成分类的数据，如果预测分类与实际类别不同，</span><br><span class="line">         则标记为一个错误</span><br><span class="line">使用算法：本例没有完成此步骤，若你感兴趣可以构建完整的应用程序，从图像中提取</span><br><span class="line">         数字，并完成数字识别，美国的邮件分拣系统就是一个实际运行的类似系统</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据: 提供文本文件</p>
+</blockquote>
+<p>目录 <a href="/data/2.KNN/trainingDigits">trainingDigits</a> 中包含了大约 2000 个例子，每个例子内容如下图所示，每个数字大约有 200 个样本；目录 <a href="/data/2.KNN/testDigits">testDigits</a> 中包含了大约 900 个测试数据。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_2_handWriting.png" alt="手写数字数据集的例子"></p>
+<blockquote>
+<p>准备数据: 编写函数 img2vector(), 将图像文本数据转换为分类器使用的向量</p>
+</blockquote>
+<p>将图像文本数据转换为向量</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img2vector</span><span class="params">(filename)</span>:</span></span><br><span class="line">    returnVect = zeros((<span class="number">1</span>,<span class="number">1024</span>))</span><br><span class="line">    fr = open(filename)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">32</span>):</span><br><span class="line">        lineStr = fr.readline()</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">32</span>):</span><br><span class="line">            returnVect[<span class="number">0</span>,<span class="number">32</span>*i+j] = int(lineStr[j])</span><br><span class="line">    <span class="keyword">return</span> returnVect</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据：在 Python 命令提示符中检查数据，确保它符合要求</p>
+</blockquote>
+<p>在 Python 命令行中输入下列命令测试 img2vector 函数，然后与文本编辑器打开的文件进行比较: </p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector = kNN.img2vector(<span class="string">'testDigits/0_13.txt'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector[<span class="number">0</span>,<span class="number">0</span>:<span class="number">32</span>]</span><br><span class="line">array([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector[<span class="number">0</span>,<span class="number">32</span>:<span class="number">64</span>]</span><br><span class="line">array([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>训练算法：此步骤不适用于 KNN</p>
+</blockquote>
+<p>因为测试数据每一次都要与全量的训练数据进行比较，所以这个过程是没有必要的。</p>
+<blockquote>
+<p>测试算法：编写函数使用提供的部分数据集作为测试样本，如果预测分类与实际类别不同，则标记为一个错误</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handwritingClassTest</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 1. 导入训练数据</span></span><br><span class="line">    hwLabels = []</span><br><span class="line">    trainingFileList = listdir(<span class="string">'data/2.KNN/trainingDigits'</span>)  <span class="comment"># load the training set</span></span><br><span class="line">    m = len(trainingFileList)</span><br><span class="line">    trainingMat = zeros((m, <span class="number">1024</span>))</span><br><span class="line">    <span class="comment"># hwLabels存储0～9对应的index位置， trainingMat存放的每个位置对应的图片向量</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        fileNameStr = trainingFileList[i]</span><br><span class="line">        fileStr = fileNameStr.split(<span class="string">'.'</span>)[<span class="number">0</span>]  <span class="comment"># take off .txt</span></span><br><span class="line">        classNumStr = int(fileStr.split(<span class="string">'_'</span>)[<span class="number">0</span>])</span><br><span class="line">        hwLabels.append(classNumStr)</span><br><span class="line">        <span class="comment"># 将 32*32的矩阵-&gt;1*1024的矩阵</span></span><br><span class="line">        trainingMat[i, :] = img2vector(<span class="string">'data/2.KNN/trainingDigits/%s'</span> % fileNameStr)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 导入测试数据</span></span><br><span class="line">    testFileList = listdir(<span class="string">'data/2.KNN/testDigits'</span>)  <span class="comment"># iterate through the test set</span></span><br><span class="line">    errorCount = <span class="number">0.0</span></span><br><span class="line">    mTest = len(testFileList)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(mTest):</span><br><span class="line">        fileNameStr = testFileList[i]</span><br><span class="line">        fileStr = fileNameStr.split(<span class="string">'.'</span>)[<span class="number">0</span>]  <span class="comment"># take off .txt</span></span><br><span class="line">        classNumStr = int(fileStr.split(<span class="string">'_'</span>)[<span class="number">0</span>])</span><br><span class="line">        vectorUnderTest = img2vector(<span class="string">'data/2.KNN/testDigits/%s'</span> % fileNameStr)</span><br><span class="line">        classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, <span class="number">3</span>)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"the classifier came back with: %d, the real answer is: %d"</span> % (classifierResult, classNumStr)</span><br><span class="line">        <span class="keyword">if</span> (classifierResult != classNumStr): errorCount += <span class="number">1.0</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"\nthe total number of errors is: %d"</span> % errorCount</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"\nthe total error rate is: %f"</span> % (errorCount / float(mTest))</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用算法：本例没有完成此步骤，若你感兴趣可以构建完整的应用程序，从图像中提取数字，并完成数字识别，美国的邮件分拣系统就是一个实际运行的类似系统。</p>
+</blockquote>
+<h2 id="KNN-小结"><a href="#KNN-小结" class="headerlink" title="KNN 小结"></a>KNN 小结</h2><p>KNN 是什么？定义： 监督学习？ 非监督学习？</p>
+<p>KNN 是一个简单的无显示学习过程，非泛化学习的监督学习模型。在分类和回归中均有应用。</p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>简单来说： 通过距离度量来计算查询点（query point）与每个训练数据点的距离，然后选出与查询点（query point）相近的K个最邻点（K nearest neighbors），使用分类决策来选出对应的标签来作为该查询点的标签。</p>
+<h3 id="KNN-三要素"><a href="#KNN-三要素" class="headerlink" title="KNN 三要素"></a>KNN 三要素</h3><blockquote>
+<p>K, K的取值</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>对查询点标签影响显著（效果拔群）。k值小的时候 近似误差小，估计误差大。 k值大 近似误差大，估计误差小。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果选择较小的 k 值，就相当于用较小的邻域中的训练实例进行预测，“学习”的近似误差（approximation error）会减小，只有与输入实例较近的（相似的）训练实例才会对预测结果起作用。但缺点是“学习”的估计误差（estimation error）会增大，预测结果会对近邻的实例点非常敏感。如果邻近的实例点恰巧是噪声，预测就会出错。换句话说，k 值的减小就意味着整体模型变得复杂，容易发生过拟合。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果选择较大的 k 值，就相当于用较大的邻域中的训练实例进行预测。其优点是可以减少学习的估计误差。但缺点是学习的近似误差会增大。这时与输入实例较远的（不相似的）训练实例也会对预测起作用，使预测发生错误。 k 值的增大就意味着整体的模型变得简单。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>太大太小都不太好，可以用交叉验证（cross validation）来选取适合的k值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>近似误差和估计误差，请看这里：<a href="https://www.zhihu.com/question/60793482" target="_blank" rel="noopener">https://www.zhihu.com/question/60793482</a></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>距离度量 Metric/Distance Measure </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>距离度量 通常为 欧式距离（Euclidean distance），还可以是 Minkowski 距离 或者 曼哈顿距离。也可以是 地理空间中的一些距离公式。（更多细节可以参看 sklearn 中 valid_metric 部分）</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>分类决策 （decision rule）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>分类决策 在 分类问题中 通常为通过少数服从多数 来选取票数最多的标签，在回归问题中通常为 K个最邻点的标签的平均值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="算法：（sklearn-上有三种）"><a href="#算法：（sklearn-上有三种）" class="headerlink" title="算法：（sklearn 上有三种）"></a>算法：（sklearn 上有三种）</h3><blockquote>
+<p>Brute Force 暴力计算/线性扫描 </p>
+</blockquote>
+<blockquote>
+<p>KD Tree 使用二叉树根据数据维度来平分参数空间。</p>
+</blockquote>
+<blockquote>
+<p>Ball Tree 使用一系列的超球体来平分训练数据集。</p>
+</blockquote>
+<blockquote>
+<p>树结构的算法都有建树和查询两个过程。Brute Force 没有建树的过程。</p>
+</blockquote>
+<blockquote>
+<p>算法特点：   </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>优点： High Accuracy， No Assumption on data， not sensitive to outliers</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>缺点：时间和空间复杂度 高</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>适用范围： continuous values and nominal values</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>相似同源产物： </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>radius neighbors 根据制定的半径来找寻邻点</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>影响算法因素：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>N 数据集样本数量(number of samples)， D 数据维度 (number of features)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>总消耗：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force:  O[DN^2] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>此处考虑的是最蠢的方法：把所有训练的点之间的距离都算一遍。当然有更快的实现方式, 比如 O(ND + kN)  和  O(NDK) , 最快的是 O[DN] 。感兴趣的可以阅读这个链接： <a href="https://stats.stackexchange.com/questions/219655/k-nn-computational-complexity" target="_blank" rel="noopener">k-NN computational complexity</a></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>KD Tree: O[DN log(N)] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Ball Tree: O[DN log(N)] 跟 KD Tree 处于相同的数量级，虽然建树时间会比 KD Tree 久一点，但是在高结构的数据，甚至是高纬度的数据中，查询速度有很大的提升。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>查询所需消耗:</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force:  O[DN] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>KD Tree: 当维度比较小的时候， 比如 D&lt;20,  O[Dlog(N)] 。相反，将会趋向于 O[DN] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Ball Tree: O[Dlog(N)] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>当数据集比较小的时候，比如 N&lt;30的时候，Brute Force 更有优势。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Intrinsic Dimensionality(本征维数) 和 Sparsity（稀疏度）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>数据的 intrinsic dimensionality 是指数据所在的流形的维数 d &lt; D , 在参数空间可以是线性或非线性的。稀疏度指的是数据填充参数空间的程度(这与“稀疏”矩阵中使用的概念不同, 数据矩阵可能没有零项, 但是从这个意义上来讲,它的结构 仍然是 “稀疏” 的)。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force 的查询时间不受影响。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>对于 KD Tree 和 Ball Tree的查询时间, 较小本征维数且更稀疏的数据集的查询时间更快。KD Tree 的改善由于通过坐标轴来平分参数空间的自身特性 没有Ball Tree 显著。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>k的取值 (k 个邻点)</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force 的查询时间基本不受影响。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>但是对于 KD Tree 和 Ball Tree , k越大，查询时间越慢。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>k 在N的占比较大的时候，使用 Brute Force 比较好。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Number of Query Points （查询点数量， 即测试数据的数量）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>查询点较少的时候用Brute Force。查询点较多的时候可以使用树结构算法。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>关于 sklearn 中模型的一些额外干货：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果KD Tree，Ball Tree 和Brute Force 应用场景傻傻分不清楚，可以直接使用 含有algorithm=’auto’的模组。 algorithm=’auto’ 自动为您选择最优算法。<br>有 regressor 和 classifier 可以来选择。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>metric/distance measure 可以选择。 另外距离 可以通过weight 来加权。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>leaf size 对KD Tree 和 Ball Tree 的影响</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>建树时间：leaf size 比较大的时候，建树时间也就快点。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>查询时间： leaf size 太大太小都不太好。如果leaf size 趋向于 N（训练数据的样本数量），算法其实就是 brute force了。如果leaf size 太小了，趋向于1，那查询的时候 遍历树的时间就会大大增加。leaf size 建议的数值是 30，也就是默认值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>内存： leaf size 变大，存树结构的内存变小。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Nearest Centroid Classifier</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>分类决策是哪个标签的质心与测试点最近，就选哪个标签。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>该模型假设在所有维度中方差相同。 是一个很好的base line。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>进阶版： Nearest Shrunken Centroid </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>可以通过shrink_threshold来设置。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>作用： 可以移除某些影响分类的特征，例如移除噪音特征的影响</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
 </search>

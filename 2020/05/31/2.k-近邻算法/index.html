@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="KNN 概述k-近邻（kNN, k-NearestNeighbor）算法是一种基本分类与回归方法，我们这里只讨论分类问题中的 k-近邻算法。 一句话总结：近朱者赤近墨者黑！  k 近邻算法的输入为实例的特征向量，对应于特征空间的点；输出为实例的类别，可以取多类。k 近邻算法假设给定一个训练数据集，其中的实例类别已定。分类时，对新的实例，根据其 k 个最近邻的训练实例的类别，通过多数表决等方式进行预">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第2章 k-近邻算法">
+<meta property="og:url" content="https://slashyouth.github.io/2020/05/31/2.k-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="KNN 概述k-近邻（kNN, k-NearestNeighbor）算法是一种基本分类与回归方法，我们这里只讨论分类问题中的 k-近邻算法。 一句话总结：近朱者赤近墨者黑！  k 近邻算法的输入为实例的特征向量，对应于特征空间的点；输出为实例的类别，可以取多类。k 近邻算法假设给定一个训练数据集，其中的实例类别已定。分类时，对新的实例，根据其 k 个最近邻的训练实例的类别，通过多数表决等方式进行预">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn-1-movie.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_matplotlib_2.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_2_handWriting.png">
+<meta property="article:published_time" content="2020-05-31T11:02:32.429Z">
+<meta property="article:modified_time" content="2020-05-31T11:02:07.009Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn-1-movie.png">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/05/31/2.k-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第2章 k-近邻算法 | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">5</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/05/31/2.k-%E8%BF%91%E9%82%BB%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第2章 k-近邻算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-05-31 19:02:32 / 修改时间：19:02:07" itemprop="dateCreated datePublished" datetime="2020-05-31T19:02:32+08:00">2020-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>10 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="KNN-概述"><a href="#KNN-概述" class="headerlink" title="KNN 概述"></a>KNN 概述</h2><p><code>k-近邻（kNN, k-NearestNeighbor）算法是一种基本分类与回归方法，我们这里只讨论分类问题中的 k-近邻算法。</code></p>
+<p><strong>一句话总结：近朱者赤近墨者黑！</strong> </p>
+<p><code>k 近邻算法的输入为实例的特征向量，对应于特征空间的点；输出为实例的类别，可以取多类。k 近邻算法假设给定一个训练数据集，其中的实例类别已定。分类时，对新的实例，根据其 k 个最近邻的训练实例的类别，通过多数表决等方式进行预测。因此，k近邻算法不具有显式的学习过程。</code></p>
+<a id="more"></a>
+
+<p><code>k 近邻算法实际上利用训练数据集对特征向量空间进行划分，并作为其分类的“模型”。 k值的选择、距离度量以及分类决策规则是k近邻算法的三个基本要素。</code></p>
+<h2 id="KNN-场景"><a href="#KNN-场景" class="headerlink" title="KNN 场景"></a>KNN 场景</h2><p>电影可以按照题材分类，那么如何区分 <code>动作片</code> 和 <code>爱情片</code> 呢？<br/></p>
+<ol>
+<li>动作片：打斗次数更多</li>
+<li>爱情片：亲吻次数更多</li>
+</ol>
+<p>基于电影中的亲吻、打斗出现的次数，使用 k-近邻算法构造程序，就可以自动划分电影的题材类型。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn-1-movie.png" alt="电影视频案例" title="电影视频案例"></p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">现在根据上面我们得到的样本集中所有电影与未知电影的距离，按照距离递增排序，可以找到 k 个距离最近的电影。</span><br><span class="line">假定 k=3，则三个最靠近的电影依次是， He's Not Really into Dudes 、 Beautiful <span class="keyword">Woman</span> 和 California <span class="keyword">Man</span>。</span><br><span class="line">knn 算法按照距离最近的三部电影的类型，决定未知电影的类型，而这三部电影全是爱情片，因此我们判定未知电影是爱情片。</span><br></pre></td></tr></table></figure>
+
+<h2 id="KNN-原理"><a href="#KNN-原理" class="headerlink" title="KNN 原理"></a>KNN 原理</h2><blockquote>
+<p>KNN 工作原理</p>
+</blockquote>
+<ol>
+<li>假设有一个带有标签的样本数据集（训练样本集），其中包含每条数据与所属分类的对应关系。</li>
+<li>输入没有标签的新数据后，将新数据的每个特征与样本集中数据对应的特征进行比较。<ol>
+<li>计算新数据与样本数据集中每条数据的距离。</li>
+<li>对求得的所有距离进行排序（从小到大，越小表示越相似）。</li>
+<li>取前 k （k 一般小于等于 20 ）个样本数据对应的分类标签。</li>
+</ol>
+</li>
+<li>求 k 个数据中出现次数最多的分类标签作为新数据的分类。</li>
+</ol>
+<blockquote>
+<p>KNN 通俗理解</p>
+</blockquote>
+<p>给定一个训练数据集，对新的输入实例，在训练数据集中找到与该实例最邻近的 k 个实例，这 k 个实例的多数属于某个类，就把该输入实例分为这个类。</p>
+<blockquote>
+<p>KNN 开发流程</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">收集数据：任何方法</span><br><span class="line">准备数据：距离计算所需要的数值，最好是结构化的数据格式</span><br><span class="line">分析数据：任何方法</span><br><span class="line">训练算法：此步骤不适用于 k-近邻算法</span><br><span class="line">测试算法：计算错误率</span><br><span class="line">使用算法：输入样本数据和结构化的输出结果，然后运行 k-近邻算法判断输入数据分类属于哪个分类，最后对计算出的分类执行后续处理</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>KNN 算法特点</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">优点：精度高、对异常值不敏感、无数据输入假定</span><br><span class="line">缺点：计算复杂度高、空间复杂度高</span><br><span class="line">适用数据范围：数值型和标称型</span><br></pre></td></tr></table></figure>
+
+<h2 id="KNN-项目案例"><a href="#KNN-项目案例" class="headerlink" title="KNN 项目案例"></a>KNN 项目案例</h2><h3 id="项目案例1-优化约会网站的配对效果"><a href="#项目案例1-优化约会网站的配对效果" class="headerlink" title="项目案例1: 优化约会网站的配对效果"></a>项目案例1: 优化约会网站的配对效果</h3><p><a href="/src/py2.x/ml/2.KNN/kNN.py">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py</a></p>
+<h4 id="项目概述"><a href="#项目概述" class="headerlink" title="项目概述"></a>项目概述</h4><p>海伦使用约会网站寻找约会对象。经过一段时间之后，她发现曾交往过三种类型的人:</p>
+<ul>
+<li>不喜欢的人</li>
+<li>魅力一般的人</li>
+<li>极具魅力的人</li>
+</ul>
+<p>她希望：</p>
+<ol>
+<li>工作日与魅力一般的人约会</li>
+<li>周末与极具魅力的人约会</li>
+<li>不喜欢的人则直接排除掉</li>
+</ol>
+<p>现在她收集到了一些约会网站未曾记录的数据信息，这更有助于匹配对象的归类。</p>
+<h4 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">收集数据：提供文本文件</span><br><span class="line">准备数据：使用 Python 解析文本文件</span><br><span class="line">分析数据：使用 Matplotlib 画二维散点图</span><br><span class="line">训练算法：此步骤不适用于 k-近邻算法</span><br><span class="line">测试算法：使用海伦提供的部分数据作为测试样本。</span><br><span class="line">        测试样本和非测试样本的区别在于：</span><br><span class="line">            测试样本是已经完成分类的数据，如果预测分类与实际类别不同，则标记为一个错误。</span><br><span class="line">使用算法：产生简单的命令行程序，然后海伦可以输入一些特征数据以判断对方是否为自己喜欢的类型。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据：提供文本文件</p>
+</blockquote>
+<p>海伦把这些约会对象的数据存放在文本文件 <a href="/data/2.KNN/datingTestSet2.txt">datingTestSet2.txt</a> 中，总共有 1000 行。海伦约会的对象主要包含以下 3 种特征：</p>
+<ul>
+<li>每年获得的飞行常客里程数</li>
+<li>玩视频游戏所耗时间百分比</li>
+<li>每周消费的冰淇淋公升数</li>
+</ul>
+<p>文本文件数据格式如下：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">40920</span>	<span class="number">8.326976</span>	<span class="number">0.953952</span>	<span class="number">3</span></span><br><span class="line"><span class="number">14488</span>	<span class="number">7.153469</span>	<span class="number">1.673904</span>	<span class="number">2</span></span><br><span class="line"><span class="number">26052</span>	<span class="number">1.441871</span>	<span class="number">0.805124</span>	<span class="number">1</span></span><br><span class="line"><span class="number">75136</span>	<span class="number">13.147394</span>	<span class="number">0.428964</span>	<span class="number">1</span></span><br><span class="line"><span class="number">38344</span>	<span class="number">1.669788</span>	<span class="number">0.134296</span>	<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>准备数据：使用 Python 解析文本文件</p>
+</blockquote>
+<p>将文本记录转换为 NumPy 的解析程序</p>
+ <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">file2matrix</span><span class="params">(filename)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        导入训练数据</span></span><br><span class="line"><span class="string">    parameters:</span></span><br><span class="line"><span class="string">        filename: 数据文件路径</span></span><br><span class="line"><span class="string">    return: </span></span><br><span class="line"><span class="string">        数据矩阵 returnMat 和对应的类别 classLabelVector</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    fr = open(filename)</span><br><span class="line">    <span class="comment"># 获得文件中的数据行的行数</span></span><br><span class="line">    numberOfLines = len(fr.readlines())</span><br><span class="line">    <span class="comment"># 生成对应的空矩阵</span></span><br><span class="line">    <span class="comment"># 例如：zeros(2，3)就是生成一个 2*3的矩阵，各个位置上全是 0 </span></span><br><span class="line">    returnMat = zeros((numberOfLines, <span class="number">3</span>))  <span class="comment"># prepare matrix to return</span></span><br><span class="line">    classLabelVector = []  <span class="comment"># prepare labels return</span></span><br><span class="line">    fr = open(filename)</span><br><span class="line">    index = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> fr.readlines():</span><br><span class="line">        <span class="comment"># str.strip([chars]) --返回已移除字符串头尾指定字符所生成的新字符串</span></span><br><span class="line">        line = line.strip()</span><br><span class="line">        <span class="comment"># 以 '\t' 切割字符串</span></span><br><span class="line">        listFromLine = line.split(<span class="string">'\t'</span>)</span><br><span class="line">        <span class="comment"># 每列的属性数据</span></span><br><span class="line">        returnMat[index, :] = listFromLine[<span class="number">0</span>:<span class="number">3</span>]</span><br><span class="line">        <span class="comment"># 每列的类别数据，就是 label 标签数据</span></span><br><span class="line">        classLabelVector.append(int(listFromLine[<span class="number">-1</span>]))</span><br><span class="line">        index += <span class="number">1</span></span><br><span class="line">    <span class="comment"># 返回数据矩阵returnMat和对应的类别classLabelVector</span></span><br><span class="line">    <span class="keyword">return</span> returnMat, classLabelVector</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据：使用 Matplotlib 画二维散点图</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">fig = plt.figure()</span><br><span class="line">ax = fig.add_subplot(<span class="number">111</span>)</span><br><span class="line">ax.scatter(datingDataMat[:, <span class="number">0</span>], datingDataMat[:, <span class="number">1</span>], <span class="number">15.0</span>*array(datingLabels), <span class="number">15.0</span>*array(datingLabels))</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p>下图中采用矩阵的第一和第二列属性得到很好的展示效果，清晰地标识了三个不同的样本分类区域，具有不同爱好的人其类别区域也不同。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_matplotlib_2.png" alt="Matplotlib 散点图"></p>
+<ul>
+<li>归一化数据 （归一化是一个让权重变为统一的过程，更多细节请参考： <a href="https://www.zhihu.com/question/19951858" target="_blank" rel="noopener">https://www.zhihu.com/question/19951858</a> ）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th align="center">玩视频游戏所耗时间百分比</th>
+<th align="right">每年获得的飞行常客里程数</th>
+<th align="right">每周消费的冰淇淋公升数</th>
+<th align="right">样本分类</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="center">0.8</td>
+<td align="right">400</td>
+<td align="right">0.5</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="center">12</td>
+<td align="right">134 000</td>
+<td align="right">0.9</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="center">0</td>
+<td align="right">20 000</td>
+<td align="right">1.1</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="center">67</td>
+<td align="right">32 000</td>
+<td align="right">0.1</td>
+<td align="right">2</td>
+</tr>
+</tbody></table>
+<p>样本3和样本4的距离：<br>$$\sqrt{(0-67)^2 + (20000-32000)^2 + (1.1-0.1)^2 }$$</p>
+<p>归一化特征值，消除特征之间量级不同导致的影响</p>
+<p><strong>归一化定义：</strong> 我是这样认为的，归一化就是要把你需要处理的数据经过处理后（通过某种算法）限制在你需要的一定范围内。首先归一化是为了后面数据处理的方便，其次是保正程序运行时收敛加快。 方法有如下：</p>
+<p>1) 线性函数转换，表达式如下：　　</p>
+<pre><code>y=(x-MinValue)/(MaxValue-MinValue)　　
+
+说明：x、y分别为转换前、后的值，MaxValue、MinValue分别为样本的最大值和最小值。　　</code></pre><p>2) 对数函数转换，表达式如下：　　</p>
+<pre><code>y=log10(x)　　
+
+说明：以10为底的对数函数转换。
+
+如图：
+
+![对数函数图像](http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_1.png)</code></pre><p>3) 反余切函数转换，表达式如下：</p>
+<pre><code>y=arctan(x)*2/PI　
+
+如图：
+
+![反余切函数图像](http://data.apachecn.org/img/AiLearning/ml/2.KNN/arctan_arccot.gif)</code></pre><p>4) 式(1)将输入值换算为[-1,1]区间的值，在输出层用式(2)换算回初始值，其中和分别表示训练样本集中负荷的最大值和最小值。　</p>
+<p>在统计学中，归一化的具体作用是归纳统一样本的统计分布性。归一化在0-1之间是统计的概率分布，归一化在-1–+1之间是统计的坐标分布。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">autoNorm</span><span class="params">(dataSet)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        归一化特征值，消除特征之间量级不同导致的影响</span></span><br><span class="line"><span class="string">    parameter:</span></span><br><span class="line"><span class="string">        dataSet: 数据集</span></span><br><span class="line"><span class="string">    return:</span></span><br><span class="line"><span class="string">        归一化后的数据集 normDataSet. ranges和minVals即最小值与范围，并没有用到</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    归一化公式：</span></span><br><span class="line"><span class="string">        Y = (X-Xmin)/(Xmax-Xmin)</span></span><br><span class="line"><span class="string">        其中的 min 和 max 分别是数据集中的最小特征值和最大特征值。该函数可以自动将数字特征值转化为0到1的区间。</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 计算每种属性的最大值、最小值、范围</span></span><br><span class="line">    minVals = dataSet.min(<span class="number">0</span>)</span><br><span class="line">    maxVals = dataSet.max(<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 极差</span></span><br><span class="line">    ranges = maxVals - minVals</span><br><span class="line">    normDataSet = zeros(shape(dataSet))</span><br><span class="line">    m = dataSet.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 生成与最小值之差组成的矩阵</span></span><br><span class="line">    normDataSet = dataSet - tile(minVals, (m, <span class="number">1</span>))</span><br><span class="line">    <span class="comment"># 将最小值之差除以范围组成矩阵</span></span><br><span class="line">    normDataSet = normDataSet / tile(ranges, (m, <span class="number">1</span>))  <span class="comment"># element wise divide</span></span><br><span class="line">    <span class="keyword">return</span> normDataSet, ranges, minVals</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>训练算法：此步骤不适用于 k-近邻算法</p>
+</blockquote>
+<p>因为测试数据每一次都要与全量的训练数据进行比较，所以这个过程是没有必要的。</p>
+<p>kNN 算法伪代码：</p>
+<pre><code>对于每一个在数据集中的数据点：
+    计算目标的数据点（需要分类的数据点）与该数据点的距离
+    将距离排序：从小到大
+    选取前K个最短距离
+    选取这K个中最多的分类类别
+    返回该类别来作为目标数据点的预测值</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classify0</span><span class="params">(inX, dataSet, labels, k)</span>:</span></span><br><span class="line">    dataSetSize = dataSet.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment">#距离度量 度量公式为欧氏距离</span></span><br><span class="line">    diffMat = tile(inX, (dataSetSize,<span class="number">1</span>)) – dataSet</span><br><span class="line">    sqDiffMat = diffMat**<span class="number">2</span></span><br><span class="line">    sqDistances = sqDiffMat.sum(axis=<span class="number">1</span>)</span><br><span class="line">    distances = sqDistances**<span class="number">0.5</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">#将距离排序：从小到大</span></span><br><span class="line">    sortedDistIndicies = distances.argsort()</span><br><span class="line">    <span class="comment">#选取前K个最短距离， 选取这K个中最多的分类类别</span></span><br><span class="line">    classCount=&#123;&#125;</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(k)：</span><br><span class="line">        voteIlabel = labels[sortedDistIndicies[i]]</span><br><span class="line">        classCount[voteIlabel] = classCount.get(voteIlabel,<span class="number">0</span>) + <span class="number">1</span> </span><br><span class="line">    sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(<span class="number">1</span>), reverse=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> sortedClassCount[<span class="number">0</span>][<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+
+<blockquote>
+<p>测试算法：使用海伦提供的部分数据作为测试样本。如果预测分类与实际类别不同，则标记为一个错误。</p>
+</blockquote>
+<p>kNN 分类器针对约会网站的测试代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">datingClassTest</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        对约会网站的测试方法</span></span><br><span class="line"><span class="string">    parameters:</span></span><br><span class="line"><span class="string">        none</span></span><br><span class="line"><span class="string">    return:</span></span><br><span class="line"><span class="string">        错误数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 设置测试数据的的一个比例（训练数据集比例=1-hoRatio）</span></span><br><span class="line">    hoRatio = <span class="number">0.1</span>  <span class="comment"># 测试范围,一部分测试一部分作为样本</span></span><br><span class="line">    <span class="comment"># 从文件中加载数据</span></span><br><span class="line">    datingDataMat, datingLabels = file2matrix(<span class="string">'data/2.KNN/datingTestSet2.txt'</span>)  <span class="comment"># load data setfrom file</span></span><br><span class="line">    <span class="comment"># 归一化数据</span></span><br><span class="line">    normMat, ranges, minVals = autoNorm(datingDataMat)</span><br><span class="line">    <span class="comment"># m 表示数据的行数，即矩阵的第一维</span></span><br><span class="line">    m = normMat.shape[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 设置测试的样本数量， numTestVecs:m表示训练样本的数量</span></span><br><span class="line">    numTestVecs = int(m * hoRatio)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'numTestVecs='</span>, numTestVecs</span><br><span class="line">    errorCount = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(numTestVecs):</span><br><span class="line">        <span class="comment"># 对数据测试</span></span><br><span class="line">        classifierResult = classify0(normMat[i, :], normMat[numTestVecs:m, :], datingLabels[numTestVecs:m], <span class="number">3</span>)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"the classifier came back with: %d, the real answer is: %d"</span> % (classifierResult, datingLabels[i])</span><br><span class="line">        <span class="keyword">if</span> (classifierResult != datingLabels[i]): errorCount += <span class="number">1.0</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"the total error rate is: %f"</span> % (errorCount / float(numTestVecs))</span><br><span class="line">    <span class="keyword">print</span> errorCount</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用算法：产生简单的命令行程序，然后海伦可以输入一些特征数据以判断对方是否为自己喜欢的类型。</p>
+</blockquote>
+<p>约会网站预测函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">classifyPerson</span><span class="params">()</span>:</span></span><br><span class="line">    resultList = [<span class="string">'not at all'</span>, <span class="string">'in small doses'</span>, <span class="string">'in large doses'</span>]</span><br><span class="line">    percentTats = float(raw_input(<span class="string">"percentage of time spent playing video games ?"</span>))</span><br><span class="line">    ffMiles = float(raw_input(<span class="string">"frequent filer miles earned per year?"</span>))</span><br><span class="line">    iceCream = float(raw_input(<span class="string">"liters of ice cream consumed per year?"</span>))</span><br><span class="line">    datingDataMat, datingLabels = file2matrix(<span class="string">'datingTestSet2.txt'</span>)</span><br><span class="line">    normMat, ranges, minVals = autoNorm(datingDataMat)</span><br><span class="line">    inArr = array([ffMiles, percentTats, iceCream])</span><br><span class="line">    classifierResult = classify0((inArr-minVals)/ranges,normMat,datingLabels, <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"You will probably like this person: "</span>, resultList[classifierResult - <span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+
+<p>实际运行效果如下: </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>classifyPerson()</span><br><span class="line">percentage of time spent playing video games?10</span><br><span class="line">frequent flier miles earned per year?10000</span><br><span class="line">liters of ice cream consumed per year?0.5</span><br><span class="line">You will probably like this person: <span class="keyword">in</span> small doses</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="项目案例2-手写数字识别系统"><a href="#项目案例2-手写数字识别系统" class="headerlink" title="项目案例2: 手写数字识别系统"></a>项目案例2: 手写数字识别系统</h3><p><a href="/src/py2.x/ml/2.KNN/kNN.py">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/2.KNN/kNN.py</a></p>
+<h4 id="项目概述-1"><a href="#项目概述-1" class="headerlink" title="项目概述"></a>项目概述</h4><p>构造一个能识别数字 0 到 9 的基于 KNN 分类器的手写数字识别系统。</p>
+<p>需要识别的数字是存储在文本文件中的具有相同的色彩和大小：宽高是 32 像素 * 32 像素的黑白图像。</p>
+<h4 id="开发流程-1"><a href="#开发流程-1" class="headerlink" title="开发流程"></a>开发流程</h4><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">收集数据：提供文本文件。</span><br><span class="line">准备数据：编写函数 <span class="selector-tag">img2vector</span>(), 将图像格式转换为分类器使用的向量格式</span><br><span class="line">分析数据：在 <span class="selector-tag">Python</span> 命令提示符中检查数据，确保它符合要求</span><br><span class="line">训练算法：此步骤不适用于 <span class="selector-tag">KNN</span></span><br><span class="line">测试算法：编写函数使用提供的部分数据集作为测试样本，测试样本与非测试样本的</span><br><span class="line">         区别在于测试样本是已经完成分类的数据，如果预测分类与实际类别不同，</span><br><span class="line">         则标记为一个错误</span><br><span class="line">使用算法：本例没有完成此步骤，若你感兴趣可以构建完整的应用程序，从图像中提取</span><br><span class="line">         数字，并完成数字识别，美国的邮件分拣系统就是一个实际运行的类似系统</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据: 提供文本文件</p>
+</blockquote>
+<p>目录 <a href="/data/2.KNN/trainingDigits">trainingDigits</a> 中包含了大约 2000 个例子，每个例子内容如下图所示，每个数字大约有 200 个样本；目录 <a href="/data/2.KNN/testDigits">testDigits</a> 中包含了大约 900 个测试数据。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/2.KNN/knn_2_handWriting.png" alt="手写数字数据集的例子"></p>
+<blockquote>
+<p>准备数据: 编写函数 img2vector(), 将图像文本数据转换为分类器使用的向量</p>
+</blockquote>
+<p>将图像文本数据转换为向量</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img2vector</span><span class="params">(filename)</span>:</span></span><br><span class="line">    returnVect = zeros((<span class="number">1</span>,<span class="number">1024</span>))</span><br><span class="line">    fr = open(filename)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">32</span>):</span><br><span class="line">        lineStr = fr.readline()</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">32</span>):</span><br><span class="line">            returnVect[<span class="number">0</span>,<span class="number">32</span>*i+j] = int(lineStr[j])</span><br><span class="line">    <span class="keyword">return</span> returnVect</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据：在 Python 命令提示符中检查数据，确保它符合要求</p>
+</blockquote>
+<p>在 Python 命令行中输入下列命令测试 img2vector 函数，然后与文本编辑器打开的文件进行比较: </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector = kNN.img2vector(<span class="string">'testDigits/0_13.txt'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector[<span class="number">0</span>,<span class="number">0</span>:<span class="number">32</span>]</span><br><span class="line">array([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>testVector[<span class="number">0</span>,<span class="number">32</span>:<span class="number">64</span>]</span><br><span class="line">array([<span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">1.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>, <span class="number">0.</span>])</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>训练算法：此步骤不适用于 KNN</p>
+</blockquote>
+<p>因为测试数据每一次都要与全量的训练数据进行比较，所以这个过程是没有必要的。</p>
+<blockquote>
+<p>测试算法：编写函数使用提供的部分数据集作为测试样本，如果预测分类与实际类别不同，则标记为一个错误</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handwritingClassTest</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 1. 导入训练数据</span></span><br><span class="line">    hwLabels = []</span><br><span class="line">    trainingFileList = listdir(<span class="string">'data/2.KNN/trainingDigits'</span>)  <span class="comment"># load the training set</span></span><br><span class="line">    m = len(trainingFileList)</span><br><span class="line">    trainingMat = zeros((m, <span class="number">1024</span>))</span><br><span class="line">    <span class="comment"># hwLabels存储0～9对应的index位置， trainingMat存放的每个位置对应的图片向量</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        fileNameStr = trainingFileList[i]</span><br><span class="line">        fileStr = fileNameStr.split(<span class="string">'.'</span>)[<span class="number">0</span>]  <span class="comment"># take off .txt</span></span><br><span class="line">        classNumStr = int(fileStr.split(<span class="string">'_'</span>)[<span class="number">0</span>])</span><br><span class="line">        hwLabels.append(classNumStr)</span><br><span class="line">        <span class="comment"># 将 32*32的矩阵-&gt;1*1024的矩阵</span></span><br><span class="line">        trainingMat[i, :] = img2vector(<span class="string">'data/2.KNN/trainingDigits/%s'</span> % fileNameStr)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 2. 导入测试数据</span></span><br><span class="line">    testFileList = listdir(<span class="string">'data/2.KNN/testDigits'</span>)  <span class="comment"># iterate through the test set</span></span><br><span class="line">    errorCount = <span class="number">0.0</span></span><br><span class="line">    mTest = len(testFileList)</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(mTest):</span><br><span class="line">        fileNameStr = testFileList[i]</span><br><span class="line">        fileStr = fileNameStr.split(<span class="string">'.'</span>)[<span class="number">0</span>]  <span class="comment"># take off .txt</span></span><br><span class="line">        classNumStr = int(fileStr.split(<span class="string">'_'</span>)[<span class="number">0</span>])</span><br><span class="line">        vectorUnderTest = img2vector(<span class="string">'data/2.KNN/testDigits/%s'</span> % fileNameStr)</span><br><span class="line">        classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, <span class="number">3</span>)</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"the classifier came back with: %d, the real answer is: %d"</span> % (classifierResult, classNumStr)</span><br><span class="line">        <span class="keyword">if</span> (classifierResult != classNumStr): errorCount += <span class="number">1.0</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"\nthe total number of errors is: %d"</span> % errorCount</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"\nthe total error rate is: %f"</span> % (errorCount / float(mTest))</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用算法：本例没有完成此步骤，若你感兴趣可以构建完整的应用程序，从图像中提取数字，并完成数字识别，美国的邮件分拣系统就是一个实际运行的类似系统。</p>
+</blockquote>
+<h2 id="KNN-小结"><a href="#KNN-小结" class="headerlink" title="KNN 小结"></a>KNN 小结</h2><p>KNN 是什么？定义： 监督学习？ 非监督学习？</p>
+<p>KNN 是一个简单的无显示学习过程，非泛化学习的监督学习模型。在分类和回归中均有应用。</p>
+<h3 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h3><p>简单来说： 通过距离度量来计算查询点（query point）与每个训练数据点的距离，然后选出与查询点（query point）相近的K个最邻点（K nearest neighbors），使用分类决策来选出对应的标签来作为该查询点的标签。</p>
+<h3 id="KNN-三要素"><a href="#KNN-三要素" class="headerlink" title="KNN 三要素"></a>KNN 三要素</h3><blockquote>
+<p>K, K的取值</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>对查询点标签影响显著（效果拔群）。k值小的时候 近似误差小，估计误差大。 k值大 近似误差大，估计误差小。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果选择较小的 k 值，就相当于用较小的邻域中的训练实例进行预测，“学习”的近似误差（approximation error）会减小，只有与输入实例较近的（相似的）训练实例才会对预测结果起作用。但缺点是“学习”的估计误差（estimation error）会增大，预测结果会对近邻的实例点非常敏感。如果邻近的实例点恰巧是噪声，预测就会出错。换句话说，k 值的减小就意味着整体模型变得复杂，容易发生过拟合。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果选择较大的 k 值，就相当于用较大的邻域中的训练实例进行预测。其优点是可以减少学习的估计误差。但缺点是学习的近似误差会增大。这时与输入实例较远的（不相似的）训练实例也会对预测起作用，使预测发生错误。 k 值的增大就意味着整体的模型变得简单。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>太大太小都不太好，可以用交叉验证（cross validation）来选取适合的k值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>近似误差和估计误差，请看这里：<a href="https://www.zhihu.com/question/60793482" target="_blank" rel="noopener">https://www.zhihu.com/question/60793482</a></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>距离度量 Metric/Distance Measure </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>距离度量 通常为 欧式距离（Euclidean distance），还可以是 Minkowski 距离 或者 曼哈顿距离。也可以是 地理空间中的一些距离公式。（更多细节可以参看 sklearn 中 valid_metric 部分）</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>分类决策 （decision rule）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>分类决策 在 分类问题中 通常为通过少数服从多数 来选取票数最多的标签，在回归问题中通常为 K个最邻点的标签的平均值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="算法：（sklearn-上有三种）"><a href="#算法：（sklearn-上有三种）" class="headerlink" title="算法：（sklearn 上有三种）"></a>算法：（sklearn 上有三种）</h3><blockquote>
+<p>Brute Force 暴力计算/线性扫描 </p>
+</blockquote>
+<blockquote>
+<p>KD Tree 使用二叉树根据数据维度来平分参数空间。</p>
+</blockquote>
+<blockquote>
+<p>Ball Tree 使用一系列的超球体来平分训练数据集。</p>
+</blockquote>
+<blockquote>
+<p>树结构的算法都有建树和查询两个过程。Brute Force 没有建树的过程。</p>
+</blockquote>
+<blockquote>
+<p>算法特点：   </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>优点： High Accuracy， No Assumption on data， not sensitive to outliers</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>缺点：时间和空间复杂度 高</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>适用范围： continuous values and nominal values</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>相似同源产物： </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>radius neighbors 根据制定的半径来找寻邻点</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>影响算法因素：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>N 数据集样本数量(number of samples)， D 数据维度 (number of features)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>总消耗：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force:  O[DN^2] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>此处考虑的是最蠢的方法：把所有训练的点之间的距离都算一遍。当然有更快的实现方式, 比如 O(ND + kN)  和  O(NDK) , 最快的是 O[DN] 。感兴趣的可以阅读这个链接： <a href="https://stats.stackexchange.com/questions/219655/k-nn-computational-complexity" target="_blank" rel="noopener">k-NN computational complexity</a></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>KD Tree: O[DN log(N)] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Ball Tree: O[DN log(N)] 跟 KD Tree 处于相同的数量级，虽然建树时间会比 KD Tree 久一点，但是在高结构的数据，甚至是高纬度的数据中，查询速度有很大的提升。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>查询所需消耗:</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force:  O[DN] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>KD Tree: 当维度比较小的时候， 比如 D&lt;20,  O[Dlog(N)] 。相反，将会趋向于 O[DN] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Ball Tree: O[Dlog(N)] </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>当数据集比较小的时候，比如 N&lt;30的时候，Brute Force 更有优势。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Intrinsic Dimensionality(本征维数) 和 Sparsity（稀疏度）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>数据的 intrinsic dimensionality 是指数据所在的流形的维数 d &lt; D , 在参数空间可以是线性或非线性的。稀疏度指的是数据填充参数空间的程度(这与“稀疏”矩阵中使用的概念不同, 数据矩阵可能没有零项, 但是从这个意义上来讲,它的结构 仍然是 “稀疏” 的)。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force 的查询时间不受影响。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>对于 KD Tree 和 Ball Tree的查询时间, 较小本征维数且更稀疏的数据集的查询时间更快。KD Tree 的改善由于通过坐标轴来平分参数空间的自身特性 没有Ball Tree 显著。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>k的取值 (k 个邻点)</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Brute Force 的查询时间基本不受影响。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>但是对于 KD Tree 和 Ball Tree , k越大，查询时间越慢。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>k 在N的占比较大的时候，使用 Brute Force 比较好。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Number of Query Points （查询点数量， 即测试数据的数量）</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>查询点较少的时候用Brute Force。查询点较多的时候可以使用树结构算法。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>关于 sklearn 中模型的一些额外干货：</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>如果KD Tree，Ball Tree 和Brute Force 应用场景傻傻分不清楚，可以直接使用 含有algorithm=’auto’的模组。 algorithm=’auto’ 自动为您选择最优算法。<br>有 regressor 和 classifier 可以来选择。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>metric/distance measure 可以选择。 另外距离 可以通过weight 来加权。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>leaf size 对KD Tree 和 Ball Tree 的影响</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>建树时间：leaf size 比较大的时候，建树时间也就快点。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>查询时间： leaf size 太大太小都不太好。如果leaf size 趋向于 N（训练数据的样本数量），算法其实就是 brute force了。如果leaf size 太小了，趋向于1，那查询的时候 遍历树的时间就会大大增加。leaf size 建议的数值是 30，也就是默认值。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>内存： leaf size 变大，存树结构的内存变小。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Nearest Centroid Classifier</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>分类决策是哪个标签的质心与测试点最近，就选哪个标签。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>该模型假设在所有维度中方差相同。 是一个很好的base line。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>进阶版： Nearest Shrunken Centroid </p>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>可以通过shrink_threshold来设置。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>作用： 可以移除某些影响分类的特征，例如移除噪音特征的影响</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/31/1.%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" rel="prev" title="第1章 机器学习基础">
+      <i class="fa fa-chevron-left"></i> 第1章 机器学习基础
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-概述"><span class="nav-number">1.</span> <span class="nav-text">KNN 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-场景"><span class="nav-number">2.</span> <span class="nav-text">KNN 场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-原理"><span class="nav-number">3.</span> <span class="nav-text">KNN 原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-项目案例"><span class="nav-number">4.</span> <span class="nav-text">KNN 项目案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目案例1-优化约会网站的配对效果"><span class="nav-number">4.1.</span> <span class="nav-text">项目案例1: 优化约会网站的配对效果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#项目概述"><span class="nav-number">4.1.1.</span> <span class="nav-text">项目概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发流程"><span class="nav-number">4.1.2.</span> <span class="nav-text">开发流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目案例2-手写数字识别系统"><span class="nav-number">4.2.</span> <span class="nav-text">项目案例2: 手写数字识别系统</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#项目概述-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">项目概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发流程-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">开发流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#KNN-小结"><span class="nav-number">5.</span> <span class="nav-text">KNN 小结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本原理"><span class="nav-number">5.1.</span> <span class="nav-text">基本原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KNN-三要素"><span class="nav-number">5.2.</span> <span class="nav-text">KNN 三要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法：（sklearn-上有三种）"><span class="nav-number">5.3.</span> <span class="nav-text">算法：（sklearn 上有三种）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">20k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">18 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : '56bed06de911648643050a89751875a4',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
