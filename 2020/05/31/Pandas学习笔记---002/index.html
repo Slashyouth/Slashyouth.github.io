@@ -20,17 +20,21 @@
     var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="文章分类">
-<meta property="og:url" content="https://slashyouth.github.io/categories/index.html">
+  <meta name="description" content="Pandas学习笔记—002基础用法1. df.head(n) 和 df.tail() 默认n&#x3D;5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]     2. 合并重叠数据集 有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pandas学习笔记---002">
+<meta property="og:url" content="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/index.html">
 <meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="Pandas学习笔记—002基础用法1. df.head(n) 和 df.tail() 默认n&#x3D;5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]     2. 合并重叠数据集 有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2050-05-28T12:55:00.000Z">
-<meta property="article:modified_time" content="2020-05-28T13:11:05.662Z">
+<meta property="article:published_time" content="2020-05-31T07:12:39.769Z">
+<meta property="article:modified_time" content="2020-05-31T07:15:40.024Z">
 <meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="Pandas">
+<meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://slashyouth.github.io/categories/">
+<link rel="canonical" href="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/">
 
 
 <script id="page-configurations">
@@ -38,13 +42,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>文章分类 | Slash Youth
-</title>
+  <title>Pandas学习笔记---002 | Slash Youth</title>
   
 
 
@@ -186,51 +189,212 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pandas学习笔记---002
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">文章分类
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
 
-<div class="post-meta">
+              <time title="创建时间：2020-05-31 15:12:39 / 修改时间：15:15:40" itemprop="dateCreated datePublished" datetime="2020-05-31T15:12:39+08:00">2020-05-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>542</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Pandas学习笔记—002"><a href="#Pandas学习笔记—002" class="headerlink" title="Pandas学习笔记—002"></a>Pandas学习笔记—002</h1><h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h2><h3 id="1-df-head-n-和-df-tail"><a href="#1-df-head-n-和-df-tail" class="headerlink" title="1. df.head(n) 和 df.tail()"></a>1. df.head(n) 和 df.tail()</h3><blockquote>
+<p>默认n=5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]   </p>
+</blockquote>
+<h3 id="2-合并重叠数据集"><a href="#2-合并重叠数据集" class="headerlink" title="2. 合并重叠数据集"></a>2. 合并重叠数据集</h3><blockquote>
+<p>有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。<br>比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，<a id="more"></a><br>另一个是“低质量”指标。一般来说，低质量序列可能包含更多的历史数据，或覆盖更广的数据。<br>因此，要合并这两个 DataFrame 对象，其中一个 DataFrame 中的缺失值将按指定条件用另一个<br>DataFrame 里类似标签中的数据进行填充。                    </p>
+<blockquote>
+<p>函数df1.combine_first(df2): 由df2只填df1的NaN值    </p>
+</blockquote>
+</blockquote>
+<h3 id="3-描述性统计"><a href="#3-描述性统计" class="headerlink" title="3. 描述性统计"></a>3. 描述性统计</h3><table>
+<thead>
+<tr>
+<th align="center">函数</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">count</td>
+<td align="center">统计非空值数量</td>
+</tr>
+<tr>
+<td align="center">sum</td>
+<td align="center">汇总值</td>
+</tr>
+<tr>
+<td align="center">mean</td>
+<td align="center">平均值</td>
+</tr>
+<tr>
+<td align="center">mad</td>
+<td align="center">平均绝对偏差</td>
+</tr>
+<tr>
+<td align="center">median</td>
+<td align="center">算数中位数</td>
+</tr>
+<tr>
+<td align="center">min</td>
+<td align="center">最小值</td>
+</tr>
+<tr>
+<td align="center">max</td>
+<td align="center">最大值</td>
+</tr>
+<tr>
+<td align="center">mode</td>
+<td align="center">众数</td>
+</tr>
+<tr>
+<td align="center">abs</td>
+<td align="center">绝对值</td>
+</tr>
+<tr>
+<td align="center">prod</td>
+<td align="center">乘积</td>
+</tr>
+<tr>
+<td align="center">std</td>
+<td align="center">贝塞尔校正的样本标准偏差</td>
+</tr>
+<tr>
+<td align="center">var</td>
+<td align="center">无偏方差</td>
+</tr>
+<tr>
+<td align="center">sem</td>
+<td align="center">平均值的标准误差</td>
+</tr>
+<tr>
+<td align="center">skew</td>
+<td align="center">样本偏度 (第三阶)</td>
+</tr>
+<tr>
+<td align="center">kurt</td>
+<td align="center">样本峰度 (第四阶)</td>
+</tr>
+<tr>
+<td align="center">quantile</td>
+<td align="center">样本分位数 (不同 % 的值)</td>
+</tr>
+<tr>
+<td align="center">cumsum</td>
+<td align="center">累加</td>
+</tr>
+<tr>
+<td align="center">cumprod</td>
+<td align="center">累乘</td>
+</tr>
+<tr>
+<td align="center">cummax</td>
+<td align="center">累积最大值</td>
+</tr>
+<tr>
+<td align="center">cummin</td>
+<td align="center">累积最小值</td>
+</tr>
+<tr>
+<td align="center">describe</td>
+<td align="center">数据总描述</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Pandas/" rel="tag"><i class="fa fa-tag"></i> Pandas</a>
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/28/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---001/" rel="prev" title="Pandas学习笔记---001">
+      <i class="fa fa-chevron-left"></i> Pandas学习笔记---001
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
   
 
-</div>
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
-          <div class="category-all-page">
-            <div class="category-all-title">
-              目前共计 1 个分类
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><span class="category-list-count">2</span></li></ul>
-            </div>
-          </div>
-        
-      </div>
-      
-      
-      
-    </div>
-    
-
-    
-    
-    
 
 
           </div>
@@ -282,6 +446,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas学习笔记—002"><span class="nav-number">1.</span> <span class="nav-text">Pandas学习笔记—002</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础用法"><span class="nav-number">1.1.</span> <span class="nav-text">基础用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-df-head-n-和-df-tail"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. df.head(n) 和 df.tail()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-合并重叠数据集"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 合并重叠数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-描述性统计"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 描述性统计</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -450,7 +615,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'gitalk-commnet',
       owner       : 'Slashyouth',
       admin       : ['Slashyouth'],
-      id          : 'a676607444a8bc8b150c9a3aff884e61',
+      id          : 'd16fe54b35a8b8e11b4f9094966119b9',
         language: 'zh-CN',
       distractionFreeMode: true
     });

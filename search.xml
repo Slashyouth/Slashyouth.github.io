@@ -54,4 +54,117 @@
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>Pandas学习笔记---002</title>
+    <url>/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/</url>
+    <content><![CDATA[<h1 id="Pandas学习笔记—002"><a href="#Pandas学习笔记—002" class="headerlink" title="Pandas学习笔记—002"></a>Pandas学习笔记—002</h1><h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h2><h3 id="1-df-head-n-和-df-tail"><a href="#1-df-head-n-和-df-tail" class="headerlink" title="1. df.head(n) 和 df.tail()"></a>1. df.head(n) 和 df.tail()</h3><blockquote>
+<p>默认n=5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]   </p>
+</blockquote>
+<h3 id="2-合并重叠数据集"><a href="#2-合并重叠数据集" class="headerlink" title="2. 合并重叠数据集"></a>2. 合并重叠数据集</h3><blockquote>
+<p>有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。<br>比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，<a id="more"></a><br>另一个是“低质量”指标。一般来说，低质量序列可能包含更多的历史数据，或覆盖更广的数据。<br>因此，要合并这两个 DataFrame 对象，其中一个 DataFrame 中的缺失值将按指定条件用另一个<br>DataFrame 里类似标签中的数据进行填充。                    </p>
+<blockquote>
+<p>函数df1.combine_first(df2): 由df2只填df1的NaN值    </p>
+</blockquote>
+</blockquote>
+<h3 id="3-描述性统计"><a href="#3-描述性统计" class="headerlink" title="3. 描述性统计"></a>3. 描述性统计</h3><table>
+<thead>
+<tr>
+<th align="center">函数</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">count</td>
+<td align="center">统计非空值数量</td>
+</tr>
+<tr>
+<td align="center">sum</td>
+<td align="center">汇总值</td>
+</tr>
+<tr>
+<td align="center">mean</td>
+<td align="center">平均值</td>
+</tr>
+<tr>
+<td align="center">mad</td>
+<td align="center">平均绝对偏差</td>
+</tr>
+<tr>
+<td align="center">median</td>
+<td align="center">算数中位数</td>
+</tr>
+<tr>
+<td align="center">min</td>
+<td align="center">最小值</td>
+</tr>
+<tr>
+<td align="center">max</td>
+<td align="center">最大值</td>
+</tr>
+<tr>
+<td align="center">mode</td>
+<td align="center">众数</td>
+</tr>
+<tr>
+<td align="center">abs</td>
+<td align="center">绝对值</td>
+</tr>
+<tr>
+<td align="center">prod</td>
+<td align="center">乘积</td>
+</tr>
+<tr>
+<td align="center">std</td>
+<td align="center">贝塞尔校正的样本标准偏差</td>
+</tr>
+<tr>
+<td align="center">var</td>
+<td align="center">无偏方差</td>
+</tr>
+<tr>
+<td align="center">sem</td>
+<td align="center">平均值的标准误差</td>
+</tr>
+<tr>
+<td align="center">skew</td>
+<td align="center">样本偏度 (第三阶)</td>
+</tr>
+<tr>
+<td align="center">kurt</td>
+<td align="center">样本峰度 (第四阶)</td>
+</tr>
+<tr>
+<td align="center">quantile</td>
+<td align="center">样本分位数 (不同 % 的值)</td>
+</tr>
+<tr>
+<td align="center">cumsum</td>
+<td align="center">累加</td>
+</tr>
+<tr>
+<td align="center">cumprod</td>
+<td align="center">累乘</td>
+</tr>
+<tr>
+<td align="center">cummax</td>
+<td align="center">累积最大值</td>
+</tr>
+<tr>
+<td align="center">cummin</td>
+<td align="center">累积最小值</td>
+</tr>
+<tr>
+<td align="center">describe</td>
+<td align="center">数据总描述</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>Pandas</tag>
+        <tag>Python</tag>
+      </tags>
+  </entry>
 </search>
