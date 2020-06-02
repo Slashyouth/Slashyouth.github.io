@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="聚类聚类，简单来说，就是将一个庞杂数据集中具有相似特征的数据自动归类到一起，称为一个簇，簇内的对象越相似，聚类的效果越好。它是一种无监督的学习(Unsupervised Learning)方法,不需要预先标注好的训练集。聚类与分类最大的区别就是分类的目标事先已知，例如猫狗识别，你在分类之前已经预先知道要将它分为猫、狗两个种类；而在你聚类之前，你对你的目标是未知的，同样以动物为例，对于一个动物集来说">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第10章 K-Means（K-均值）聚类算法">
+<meta property="og:url" content="https://slashyouth.github.io/2020/06/02/10.k-means%E8%81%9A%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="聚类聚类，简单来说，就是将一个庞杂数据集中具有相似特征的数据自动归类到一起，称为一个簇，簇内的对象越相似，聚类的效果越好。它是一种无监督的学习(Unsupervised Learning)方法,不需要预先标注好的训练集。聚类与分类最大的区别就是分类的目标事先已知，例如猫狗识别，你在分类之前已经预先知道要将它分为猫、狗两个种类；而在你聚类之前，你对你的目标是未知的，同样以动物为例，对于一个动物集来说">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-k-means-term-1.jpg">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-k-means-run-result-1.jpg">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-kmeans-partial-best-result-1.jpg">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-bikmeans-run-result-1.jpg">
+<meta property="article:published_time" content="2020-06-02T13:01:14.731Z">
+<meta property="article:modified_time" content="2020-06-02T13:18:03.204Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-k-means-term-1.jpg">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/06/02/10.k-means%E8%81%9A%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第10章 K-Means（K-均值）聚类算法 | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/02/10.k-means%E8%81%9A%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第10章 K-Means（K-均值）聚类算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-02 21:01:14 / 修改时间：21:18:03" itemprop="dateCreated datePublished" datetime="2020-06-02T21:01:14+08:00">2020-06-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>7.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="聚类"><a href="#聚类" class="headerlink" title="聚类"></a>聚类</h2><p>聚类，简单来说，就是将一个庞杂数据集中具有相似特征的数据自动归类到一起，称为一个簇，簇内的对象越相似，聚类的效果越好。它是一种无监督的学习(Unsupervised Learning)方法,不需要预先标注好的训练集。聚类与分类最大的区别就是分类的目标事先已知，例如猫狗识别，你在分类之前已经预先知道要将它分为猫、狗两个种类；而在你聚类之前，你对你的目标是未知的，同样以动物为例，对于一个动物集来说，你并不清楚这个数据集内部有多少种类的动物，你能做的只是利用聚类方法将它自动按照特征分为多类，然后人为给出这个聚类结果的定义（即簇识别）。例如，你将一个动物集分为了三簇（类），然后通过观察这三类动物的特征，你为每一个簇起一个名字，如大象、狗、猫等，这就是聚类的基本思想。     </p>
+<a id="more"></a>
+
+<p>至于“相似”这一概念，是利用距离这个评价标准来衡量的，我们通过计算对象与对象之间的距离远近来判断它们是否属于同一类别，即是否是同一个簇。至于距离如何计算，科学家们提出了许多种距离的计算方法，其中欧式距离是最为简单和常用的，除此之外还有曼哈顿距离和余弦相似性距离等。</p>
+<p>欧式距离，我想大家再熟悉不过了，但为免有一些基础薄弱的同学，在此再说明一下，它的定义为:对于x点(坐标为(x1,x2,x3,…,xn))和 y点（坐标为(y1,y2,y3,…,yn)），两者的欧式距离为</p>
+![d(x,y)={\sqrt  {(x_{1}-y_{1})^{2}+(x_{2}-y_{2})^{2}+\cdots +(x_{n}-y_{n})^{2}}}={\sqrt  {\sum _{{i=1}}^{n}(x_{i}-y_{i})^{2}}}](https://wikimedia.org/api/rest_v1/media/math/render/svg/bfa1815838113388d78c9402bba7308d734a4af2)  
+
+<p>在二维平面，它就是我们初中时就学过的两点距离公式</p>
+<h2 id="K-Means-算法"><a href="#K-Means-算法" class="headerlink" title="K-Means 算法"></a>K-Means 算法</h2><p>K-Means 是发现给定数据集的 K 个簇的聚类算法, 之所以称之为 <code>K-均值</code> 是因为它可以发现 K 个不同的簇, 且每个簇的中心采用簇中所含值的均值计算而成.<br>簇个数 K 是用户指定的, 每一个簇通过其质心（centroid）, 即簇中所有点的中心来描述.<br>聚类与分类算法的最大区别在于, 分类的目标类别已知, 而聚类的目标类别是未知的.  </p>
+<p><strong>优点</strong>:</p>
+<ul>
+<li>属于无监督学习，无须准备训练集</li>
+<li>原理简单，实现起来较为容易</li>
+<li>结果可解释性较好</li>
+</ul>
+<p><strong>缺点</strong>:</p>
+<ul>
+<li><strong>需手动设置k值</strong>。 在算法开始预测之前，我们需要手动设置k值，即估计数据大概的类别个数，不合理的k值会使结果缺乏解释性</li>
+<li>可能收敛到局部最小值, 在大规模数据集上收敛较慢</li>
+<li>对于异常点、离群点敏感</li>
+</ul>
+<p>使用数据类型 : 数值型数据</p>
+<h3 id="K-Means-场景"><a href="#K-Means-场景" class="headerlink" title="K-Means 场景"></a>K-Means 场景</h3><p>kmeans，如前所述，用于数据集内种类属性不明晰，希望能够通过数据挖掘出或自动归类出有相似特点的对象的场景。其商业界的应用场景一般为挖掘出具有相似特点的潜在客户群体以便公司能够重点研究、对症下药。  </p>
+<p>例如，在2000年和2004年的美国总统大选中，候选人的得票数比较接近或者说非常接近。任一候选人得到的普选票数的最大百分比为50.7%而最小百分比为47.9% 如果1%的选民将手中的选票投向另外的候选人，那么选举结果就会截然不同。 实际上，如果妥善加以引导与吸引，少部分选民就会转换立场。尽管这类选举者占的比例较低，但当候选人的选票接近时，这些人的立场无疑会对选举结果产生非常大的影响。如何找出这类选民，以及如何在有限的预算下采取措施来吸引他们？ 答案就是聚类（Clustering)。</p>
+<p>那么，具体如何实施呢？首先，收集用户的信息，可以同时收集用户满意或不满意的信息，这是因为任何对用户重要的内容都可能影响用户的投票结果。然后，将这些信息输入到某个聚类算法中。接着，对聚类结果中的每一个簇（最好选择最大簇 ）， 精心构造能够吸引该簇选民的消息。最后， 开展竞选活动并观察上述做法是否有效。</p>
+<p>另一个例子就是产品部门的市场调研了。为了更好的了解自己的用户，产品部门可以采用聚类的方法得到不同特征的用户群体，然后针对不同的用户群体可以对症下药，为他们提供更加精准有效的服务。</p>
+<h3 id="K-Means-术语"><a href="#K-Means-术语" class="headerlink" title="K-Means 术语"></a>K-Means 术语</h3><ul>
+<li>簇: 所有数据的点集合，簇中的对象是相似的。</li>
+<li>质心: 簇中所有点的中心（计算所有点的均值而来）.</li>
+<li>SSE: Sum of Sqared Error（误差平方和）, 它被用来评估模型的好坏，SSE 值越小，表示越接近它们的质心. 聚类效果越好。由于对误差取了平方，因此更加注重那些远离中心的点（一般为边界点或离群点）。详情见kmeans的评价标准。</li>
+</ul>
+<p>有关 <code>簇</code> 和 <code>质心</code> 术语更形象的介绍, 请参考下图:</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-k-means-term-1.jpg" alt="K-Means 术语图"></p>
+<h3 id="K-Means-工作流程"><a href="#K-Means-工作流程" class="headerlink" title="K-Means 工作流程"></a>K-Means 工作流程</h3><ol>
+<li>首先, 随机确定 K 个初始点作为质心（<strong>不必是数据中的点</strong>）。</li>
+<li>然后将数据集中的每个点分配到一个簇中, 具体来讲, 就是为每个点找到距其最近的质心, 并将其分配该质心所对应的簇. 这一步完成之后, 每个簇的质心更新为该簇所有点的平均值.</li>
+<li>重复上述过程直到数据集中的所有点都距离它所对应的质心最近时结束。</li>
+</ol>
+<p>上述过程的 <code>伪代码</code> 如下:</p>
+<ul>
+<li>创建 k 个点作为起始质心（通常是随机选择）</li>
+<li>当任意一个点的簇分配结果发生改变时（不改变时算法结束）<ul>
+<li>对数据集中的每个数据点<ul>
+<li>对每个质心<ul>
+<li>计算质心与数据点之间的距离</li>
+</ul>
+</li>
+<li>将数据点分配到距其最近的簇</li>
+</ul>
+</li>
+<li>对每一个簇, 计算簇中所有点的均值并将均值作为质心</li>
+</ul>
+</li>
+</ul>
+<h3 id="K-Means-开发流程"><a href="#K-Means-开发流程" class="headerlink" title="K-Means 开发流程"></a>K-Means 开发流程</h3><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">收集数据：使用任意方法</span><br><span class="line">准备数据：需要数值型数据类计算距离, 也可以将标称型数据映射为二值型数据再用于距离计算</span><br><span class="line">分析数据：使用任意方法</span><br><span class="line">训练算法：不适用于无监督学习，即无监督学习不需要训练步骤</span><br><span class="line">测试算法：应用聚类算法、观察结果.可以使用量化的误差指标如误差平方和（后面会介绍）来评价算法的结果.</span><br><span class="line">使用算法：可以用于所希望的任何应用.通常情况下, 簇质心可以代表整个簇的数据来做出决策.</span><br></pre></td></tr></table></figure>
+<h3 id="K-Means-的评价标准"><a href="#K-Means-的评价标准" class="headerlink" title="K-Means 的评价标准"></a>K-Means 的评价标准</h3><p>k-means算法因为手动选取k值和初始化随机质心的缘故，每一次的结果不会完全一样，而且由于手动选取k值，我们需要知道我们选取的k值是否合理，聚类效果好不好，那么如何来评价某一次的聚类效果呢？也许将它们画在图上直接观察是最好的办法，但现实是，我们的数据不会仅仅只有两个特征，一般来说都有十几个特征，而观察十几维的空间对我们来说是一个无法完成的任务。因此，我们需要一个公式来帮助我们判断聚类的性能，这个公式就是<strong>SSE</strong> (Sum of Squared Error, 误差平方和 ），它其实就是每一个点到其簇内质心的距离的平方值的总和，这个数值对应kmeans函数中<strong>clusterAssment</strong>矩阵的第一列之和。 <strong>SSE</strong>值越小表示数据点越接近于它们的质心，聚类效果也越好。 因为对误差取了平方，因此更加重视那些远离中心的点。一种肯定可以降低<strong>SSE</strong>值的方法是增加簇的个数，但这违背了聚类的目标。聚类的目标是在保持簇数目不变的情况下提高簇的质量。</p>
+<h3 id="K-Means-聚类算法函数"><a href="#K-Means-聚类算法函数" class="headerlink" title="K-Means 聚类算法函数"></a>K-Means 聚类算法函数</h3><h4 id="从文件加载数据集"><a href="#从文件加载数据集" class="headerlink" title="从文件加载数据集"></a>从文件加载数据集</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 从文本中构建矩阵，加载文本文件，然后处理</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadDataSet</span><span class="params">(fileName)</span>:</span>    <span class="comment"># 通用函数，用来解析以 tab 键分隔的 floats（浮点数），例如: 1.658985	4.285136</span></span><br><span class="line">    dataMat = []</span><br><span class="line">    fr = open(fileName)</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> fr.readlines():</span><br><span class="line">        curLine = line.strip().split(<span class="string">'\t'</span>)</span><br><span class="line">        fltLine = map(float,curLine)    <span class="comment"># 映射所有的元素为 float（浮点数）类型</span></span><br><span class="line">        dataMat.append(fltLine)</span><br><span class="line">    <span class="keyword">return</span> dataMat</span><br></pre></td></tr></table></figure>
+
+<h4 id="计算两个向量的欧氏距离"><a href="#计算两个向量的欧氏距离" class="headerlink" title="计算两个向量的欧氏距离"></a>计算两个向量的欧氏距离</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 计算两个向量的欧式距离（可根据场景选择其他距离公式）</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">distEclud</span><span class="params">(vecA, vecB)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> sqrt(sum(power(vecA - vecB, <span class="number">2</span>))) <span class="comment"># la.norm(vecA-vecB)</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="构建一个包含-K-个随机质心的集合"><a href="#构建一个包含-K-个随机质心的集合" class="headerlink" title="构建一个包含 K 个随机质心的集合"></a>构建一个包含 K 个随机质心的集合</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 为给定数据集构建一个包含 k 个随机质心的集合。随机质心必须要在整个数据集的边界之内，这可以通过找到数据集每一维的最小和最大值来完成。然后生成 0~1.0 之间的随机数并通过取值范围和最小值，以便确保随机点在数据的边界之内。</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">randCent</span><span class="params">(dataSet, k)</span>:</span></span><br><span class="line">    n = shape(dataSet)[<span class="number">1</span>] <span class="comment"># 列的数量，即数据的特征个数</span></span><br><span class="line">    centroids = mat(zeros((k,n))) <span class="comment"># 创建k个质心矩阵</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(n): <span class="comment"># 创建随机簇质心，并且在每一维的边界内</span></span><br><span class="line">        minJ = min(dataSet[:,j])    <span class="comment"># 最小值</span></span><br><span class="line">        rangeJ = float(max(dataSet[:,j]) - minJ)    <span class="comment"># 范围 = 最大值 - 最小值</span></span><br><span class="line">        centroids[:,j] = mat(minJ + rangeJ * random.rand(k,<span class="number">1</span>))    <span class="comment"># 随机生成，mat为numpy函数，需要在最开始写上 from numpy import *</span></span><br><span class="line">    <span class="keyword">return</span> centroids</span><br></pre></td></tr></table></figure>
+
+<h4 id="K-Means-聚类算法"><a href="#K-Means-聚类算法" class="headerlink" title="K-Means 聚类算法"></a>K-Means 聚类算法</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># k-means 聚类算法</span></span><br><span class="line"><span class="comment"># 该算法会创建k个质心，然后将每个点分配到最近的质心，再重新计算质心。</span></span><br><span class="line"><span class="comment"># 这个过程重复数次，直到数据点的簇分配结果不再改变位置。</span></span><br><span class="line"><span class="comment"># 运行结果（多次运行结果可能会不一样，可以试试，原因为随机质心的影响，但总的结果是对的， 因为数据足够相似，也可能会陷入局部最小值）</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">kMeans</span><span class="params">(dataSet, k, distMeas=distEclud, createCent=randCent)</span>:</span></span><br><span class="line">    m = shape(dataSet)[<span class="number">0</span>]    <span class="comment"># 行数，即数据个数</span></span><br><span class="line">    clusterAssment = mat(zeros((m, <span class="number">2</span>)))    <span class="comment"># 创建一个与 dataSet 行数一样，但是有两列的矩阵，用来保存簇分配结果</span></span><br><span class="line">    centroids = createCent(dataSet, k)    <span class="comment"># 创建质心，随机k个质心</span></span><br><span class="line">    clusterChanged = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">while</span> clusterChanged:</span><br><span class="line">        clusterChanged = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(m):    <span class="comment"># 循环每一个数据点并分配到最近的质心中去</span></span><br><span class="line">            minDist = inf; minIndex = <span class="number">-1</span></span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(k):</span><br><span class="line">                distJI = distMeas(centroids[j,:],dataSet[i,:])    <span class="comment"># 计算数据点到质心的距离</span></span><br><span class="line">                <span class="keyword">if</span> distJI &lt; minDist:    <span class="comment"># 如果距离比 minDist（最小距离）还小，更新 minDist（最小距离）和最小质心的 index（索引）</span></span><br><span class="line">                    minDist = distJI; minIndex = j</span><br><span class="line">            <span class="keyword">if</span> clusterAssment[i, <span class="number">0</span>] != minIndex:    <span class="comment"># 簇分配结果改变</span></span><br><span class="line">                clusterChanged = <span class="literal">True</span>    <span class="comment"># 簇改变</span></span><br><span class="line">                clusterAssment[i, :] = minIndex,minDist**<span class="number">2</span>    <span class="comment"># 更新簇分配结果为最小质心的 index（索引），minDist（最小距离）的平方</span></span><br><span class="line">        <span class="keyword">print</span> centroids</span><br><span class="line">        <span class="keyword">for</span> cent <span class="keyword">in</span> range(k): <span class="comment"># 更新质心</span></span><br><span class="line">            ptsInClust = dataSet[nonzero(clusterAssment[:, <span class="number">0</span>].A==cent)[<span class="number">0</span>]] <span class="comment"># 获取该簇中的所有点</span></span><br><span class="line">            centroids[cent,:] = mean(ptsInClust, axis=<span class="number">0</span>) <span class="comment"># 将质心修改为簇中所有点的平均值，mean 就是求平均值的</span></span><br><span class="line">    <span class="keyword">return</span> centroids, clusterAssment</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试函数"><a href="#测试函数" class="headerlink" title="测试函数"></a>测试函数</h4><ol>
+<li>测试一下以上的基础函数是否可以如预期运行, 请看: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py</a></li>
+<li>测试一下 kMeans 函数是否可以如预期运行, 请看: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py</a> </li>
+</ol>
+<p>参考运行结果如下:<br><img src="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-k-means-run-result-1.jpg" alt="K-Means 运行结果1"></p>
+<h3 id="K-Means-聚类算法的缺陷"><a href="#K-Means-聚类算法的缺陷" class="headerlink" title="K-Means 聚类算法的缺陷"></a>K-Means 聚类算法的缺陷</h3><blockquote>
+<p>在 kMeans 的函数测试中，可能偶尔会陷入局部最小值（局部最优的结果，但不是全局最优的结果）.</p>
+</blockquote>
+<p>局部最小值的的情况如下:<br><img src="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-kmeans-partial-best-result-1.jpg" alt="K-Means 局部最小值1"><br>出现这个问题有很多原因，可能是k值取的不合适，可能是距离函数不合适，可能是最初随机选取的质心靠的太近，也可能是数据本身分布的问题。</p>
+<p>为了解决这个问题，我们可以对生成的簇进行后处理，一种方法是将具有最大<strong>SSE</strong>值的簇划分成两个簇。具体实现时可以将最大簇包含的点过滤出来并在这些点上运行K-均值算法，令k设为2。</p>
+<p>为了保持簇总数不变，可以将某两个簇进行合并。从上图中很明显就可以看出，应该将上图下部两个出错的簇质心进行合并。那么问题来了，我们可以很容易对二维数据上的聚类进行可视化， 但是如果遇到40维的数据应该如何去做？</p>
+<p>有两种可以量化的办法：合并最近的质心，或者合并两个使得<strong>SSE</strong>增幅最小的质心。 第一种思路通过计算所有质心之间的距离， 然后合并距离最近的两个点来实现。第二种方法需要合并两个簇然后计算总<strong>SSE</strong>值。必须在所有可能的两个簇上重复上述处理过程，直到找到合并最佳的两个簇为止。</p>
+<p>因为上述后处理过程实在是有些繁琐，所以有更厉害的大佬提出了另一个称之为二分K-均值（bisecting K-Means）的算法.   </p>
+<h3 id="二分-K-Means-聚类算法"><a href="#二分-K-Means-聚类算法" class="headerlink" title="二分 K-Means 聚类算法"></a>二分 K-Means 聚类算法</h3><p>该算法首先将所有点作为一个簇，然后将该簇一分为二。<br>之后选择其中一个簇继续进行划分，选择哪一个簇进行划分取决于对其划分时候可以最大程度降低 SSE（平方和误差）的值。<br>上述基于 SSE 的划分过程不断重复，直到得到用户指定的簇数目为止。  </p>
+<h4 id="二分-K-Means-聚类算法伪代码"><a href="#二分-K-Means-聚类算法伪代码" class="headerlink" title="二分 K-Means 聚类算法伪代码"></a>二分 K-Means 聚类算法伪代码</h4><ul>
+<li>将所有点看成一个簇</li>
+<li>当簇数目小于 k 时</li>
+<li>对于每一个簇<ul>
+<li>计算总误差</li>
+<li>在给定的簇上面进行 KMeans 聚类（k=2）</li>
+<li>计算将该簇一分为二之后的总误差</li>
+</ul>
+</li>
+<li>选择使得误差最小的那个簇进行划分操作</li>
+</ul>
+<p>另一种做法是选择 SSE 最大的簇进行划分，直到簇数目达到用户指定的数目位置。<br>接下来主要介绍该做法的python2代码实现</p>
+<h4 id="二分-K-Means-聚类算法代码"><a href="#二分-K-Means-聚类算法代码" class="headerlink" title="二分 K-Means 聚类算法代码"></a>二分 K-Means 聚类算法代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 二分 KMeans 聚类算法, 基于 kMeans 基础之上的优化，以避免陷入局部最小值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">biKMeans</span><span class="params">(dataSet, k, distMeas=distEclud)</span>:</span></span><br><span class="line">    m = shape(dataSet)[<span class="number">0</span>]</span><br><span class="line">    clusterAssment = mat(zeros((m,<span class="number">2</span>))) <span class="comment"># 保存每个数据点的簇分配结果和平方误差</span></span><br><span class="line">    centroid0 = mean(dataSet, axis=<span class="number">0</span>).tolist()[<span class="number">0</span>] <span class="comment"># 质心初始化为所有数据点的均值</span></span><br><span class="line">    centList =[centroid0] <span class="comment"># 初始化只有 1 个质心的 list</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(m): <span class="comment"># 计算所有数据点到初始质心的距离平方误差</span></span><br><span class="line">        clusterAssment[j,<span class="number">1</span>] = distMeas(mat(centroid0), dataSet[j,:])**<span class="number">2</span></span><br><span class="line">    <span class="keyword">while</span> (len(centList) &lt; k): <span class="comment"># 当质心数量小于 k 时</span></span><br><span class="line">        lowestSSE = inf</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(centList)): <span class="comment"># 对每一个质心</span></span><br><span class="line">            ptsInCurrCluster = dataSet[nonzero(clusterAssment[:,<span class="number">0</span>].A==i)[<span class="number">0</span>],:] <span class="comment"># 获取当前簇 i 下的所有数据点</span></span><br><span class="line">            centroidMat, splitClustAss = kMeans(ptsInCurrCluster, <span class="number">2</span>, distMeas) <span class="comment"># 将当前簇 i 进行二分 kMeans 处理</span></span><br><span class="line">            sseSplit = sum(splitClustAss[:,<span class="number">1</span>]) <span class="comment"># 将二分 kMeans 结果中的平方和的距离进行求和</span></span><br><span class="line">            sseNotSplit = sum(clusterAssment[nonzero(clusterAssment[:,<span class="number">0</span>].A!=i)[<span class="number">0</span>],<span class="number">1</span>]) <span class="comment"># 将未参与二分 kMeans 分配结果中的平方和的距离进行求和</span></span><br><span class="line">            <span class="keyword">print</span> <span class="string">"sseSplit, and notSplit: "</span>,sseSplit,sseNotSplit</span><br><span class="line">            <span class="keyword">if</span> (sseSplit + sseNotSplit) &lt; lowestSSE: <span class="comment"># 总的（未拆分和已拆分）误差和越小，越相似，效果越优化，划分的结果更好（注意：这里的理解很重要，不明白的地方可以和我们一起讨论）</span></span><br><span class="line">                bestCentToSplit = i</span><br><span class="line">                bestNewCents = centroidMat</span><br><span class="line">                bestClustAss = splitClustAss.copy()</span><br><span class="line">                lowestSSE = sseSplit + sseNotSplit</span><br><span class="line">        <span class="comment"># 找出最好的簇分配结果    </span></span><br><span class="line">        bestClustAss[nonzero(bestClustAss[:,<span class="number">0</span>].A == <span class="number">1</span>)[<span class="number">0</span>],<span class="number">0</span>] = len(centList) <span class="comment"># 调用二分 kMeans 的结果，默认簇是 0,1. 当然也可以改成其它的数字</span></span><br><span class="line">        bestClustAss[nonzero(bestClustAss[:,<span class="number">0</span>].A == <span class="number">0</span>)[<span class="number">0</span>],<span class="number">0</span>] = bestCentToSplit <span class="comment"># 更新为最佳质心</span></span><br><span class="line">        <span class="keyword">print</span> <span class="string">'the bestCentToSplit is: '</span>,bestCentToSplit</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'the len of bestClustAss is: '</span>, len(bestClustAss)</span><br><span class="line">        <span class="comment"># 更新质心列表</span></span><br><span class="line">        centList[bestCentToSplit] = bestNewCents[<span class="number">0</span>,:].tolist()[<span class="number">0</span>] <span class="comment"># 更新原质心 list 中的第 i 个质心为使用二分 kMeans 后 bestNewCents 的第一个质心</span></span><br><span class="line">        centList.append(bestNewCents[<span class="number">1</span>,:].tolist()[<span class="number">0</span>]) <span class="comment"># 添加 bestNewCents 的第二个质心</span></span><br><span class="line">        clusterAssment[nonzero(clusterAssment[:,<span class="number">0</span>].A == bestCentToSplit)[<span class="number">0</span>],:]= bestClustAss <span class="comment"># 重新分配最好簇下的数据（质心）以及SSE</span></span><br><span class="line">    <span class="keyword">return</span> mat(centList), clusterAssment</span><br></pre></td></tr></table></figure>
+
+<h4 id="测试二分-KMeans-聚类算法"><a href="#测试二分-KMeans-聚类算法" class="headerlink" title="测试二分 KMeans 聚类算法"></a>测试二分 KMeans 聚类算法</h4><ul>
+<li>测试一下二分 KMeans 聚类算法，请看: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/10.kmeans/kMeans.py</a></li>
+</ul>
+<p>上述函数可以运行多次，聚类会收敛到全局最小值，而原始的 kMeans() 函数偶尔会陷入局部最小值。<br>运行参考结果如下:<br><img src="http://data.apachecn.org/img/AiLearning/ml/10.KMeans/apachecn-bikmeans-run-result-1.jpg" alt="二分 K-Means 运行结果1"></p>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a>      </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/02/9.%E6%A0%91%E5%9B%9E%E5%BD%92/" rel="prev" title="第9章 树回归">
+      <i class="fa fa-chevron-left"></i> 第9章 树回归
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#聚类"><span class="nav-number">1.</span> <span class="nav-text">聚类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K-Means-算法"><span class="nav-number">2.</span> <span class="nav-text">K-Means 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-场景"><span class="nav-number">2.1.</span> <span class="nav-text">K-Means 场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-术语"><span class="nav-number">2.2.</span> <span class="nav-text">K-Means 术语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-工作流程"><span class="nav-number">2.3.</span> <span class="nav-text">K-Means 工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-开发流程"><span class="nav-number">2.4.</span> <span class="nav-text">K-Means 开发流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-的评价标准"><span class="nav-number">2.5.</span> <span class="nav-text">K-Means 的评价标准</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-聚类算法函数"><span class="nav-number">2.6.</span> <span class="nav-text">K-Means 聚类算法函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#从文件加载数据集"><span class="nav-number">2.6.1.</span> <span class="nav-text">从文件加载数据集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#计算两个向量的欧氏距离"><span class="nav-number">2.6.2.</span> <span class="nav-text">计算两个向量的欧氏距离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建一个包含-K-个随机质心的集合"><span class="nav-number">2.6.3.</span> <span class="nav-text">构建一个包含 K 个随机质心的集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#K-Means-聚类算法"><span class="nav-number">2.6.4.</span> <span class="nav-text">K-Means 聚类算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试函数"><span class="nav-number">2.6.5.</span> <span class="nav-text">测试函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#K-Means-聚类算法的缺陷"><span class="nav-number">2.7.</span> <span class="nav-text">K-Means 聚类算法的缺陷</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二分-K-Means-聚类算法"><span class="nav-number">2.8.</span> <span class="nav-text">二分 K-Means 聚类算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#二分-K-Means-聚类算法伪代码"><span class="nav-number">2.8.1.</span> <span class="nav-text">二分 K-Means 聚类算法伪代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二分-K-Means-聚类算法代码"><span class="nav-number">2.8.2.</span> <span class="nav-text">二分 K-Means 聚类算法代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试二分-KMeans-聚类算法"><span class="nav-number">2.8.3.</span> <span class="nav-text">测试二分 KMeans 聚类算法</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">118k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:48</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : 'cc65124ca539a20dfa87ea3c70d9b185',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="树回归 概述我们本章介绍 CART(Classification And Regression Trees， 分类回归树) 的树构建算法。该算法既可以用于分类还可以用于回归。 树回归 场景我们在第 8 章中介绍了线性回归的一些强大的方法，但这些方法创建的模型需要拟合所有的样本点（局部加权线性回归除外）。当数据拥有众多特征并且特征之间关系十分复杂时，构建全局模型的想法就显得太难了，也略显笨拙。而且，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第9章 树回归">
+<meta property="og:url" content="https://slashyouth.github.io/2020/06/02/9.%E6%A0%91%E5%9B%9E%E5%BD%92/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="树回归 概述我们本章介绍 CART(Classification And Regression Trees， 分类回归树) 的树构建算法。该算法既可以用于分类还可以用于回归。 树回归 场景我们在第 8 章中介绍了线性回归的一些强大的方法，但这些方法创建的模型需要拟合所有的样本点（局部加权线性回归除外）。当数据拥有众多特征并且特征之间关系十分复杂时，构建全局模型的想法就显得太难了，也略显笨拙。而且，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_1.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_2.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_3.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_4.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_5.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/GUI%E7%A4%BA%E4%BE%8B%E5%9B%BE.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/GUI%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%A4%BA%E4%BE%8B%E5%9B%BE.png">
+<meta property="article:published_time" content="2020-06-02T12:51:13.646Z">
+<meta property="article:modified_time" content="2020-06-02T12:47:25.794Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_1.png">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/06/02/9.%E6%A0%91%E5%9B%9E%E5%BD%92/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第9章 树回归 | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/02/9.%E6%A0%91%E5%9B%9E%E5%BD%92/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第9章 树回归
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-02 20:51:13 / 修改时间：20:47:25" itemprop="dateCreated datePublished" datetime="2020-06-02T20:51:13+08:00">2020-06-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="树回归-概述"><a href="#树回归-概述" class="headerlink" title="树回归 概述"></a>树回归 概述</h2><p><code>我们本章介绍 CART(Classification And Regression Trees， 分类回归树) 的树构建算法。该算法既可以用于分类还可以用于回归。</code></p>
+<h2 id="树回归-场景"><a href="#树回归-场景" class="headerlink" title="树回归 场景"></a>树回归 场景</h2><p>我们在第 8 章中介绍了线性回归的一些强大的方法，但这些方法创建的模型需要拟合所有的样本点（局部加权线性回归除外）。当数据拥有众多特征并且特征之间关系十分复杂时，构建全局模型的想法就显得太难了，也略显笨拙。而且，实际生活中很多问题都是非线性的，不可能使用全局线性模型来拟合任何数据。</p>
+<a id="more"></a>
+<p>一种可行的方法是将数据集切分成很多份易建模的数据，然后利用我们的线性回归技术来建模。如果首次切分后仍然难以拟合线性模型就继续切分。在这种切分方式下，树回归和回归法就相当有用。</p>
+<p>除了我们在 第3章 中介绍的 决策树算法，我们介绍一个新的叫做 CART(Classification And Regression Trees, 分类回归树) 的树构建算法。该算法既可以用于分类还可以用于回归。</p>
+<h2 id="1、树回归-原理"><a href="#1、树回归-原理" class="headerlink" title="1、树回归 原理"></a>1、树回归 原理</h2><h3 id="1-1、树回归-原理概述"><a href="#1-1、树回归-原理概述" class="headerlink" title="1.1、树回归 原理概述"></a>1.1、树回归 原理概述</h3><p>为成功构建以分段常数为叶节点的树，需要度量出数据的一致性。第3章使用树进行分类，会在给定节点时计算数据的混乱度。那么如何计算连续型数值的混乱度呢？</p>
+<p>在这里，计算连续型数值的混乱度是非常简单的。首先计算所有数据的均值，然后计算每条数据的值到均值的差值。为了对正负差值同等看待，一般使用绝对值或平方值来代替上述差值。</p>
+<p>上述做法有点类似于前面介绍过的统计学中常用的方差计算。唯一不同就是，方差是平方误差的均值(均方差)，而这里需要的是平方误差的总值(总方差)。总方差可以通过均方差乘以数据集中样本点的个数来得到。</p>
+<h3 id="1-2、树构建算法-比较"><a href="#1-2、树构建算法-比较" class="headerlink" title="1.2、树构建算法 比较"></a>1.2、树构建算法 比较</h3><p>我们在 第3章 中使用的树构建算法是 ID3 。ID3 的做法是每次选取当前最佳的特征来分割数据，并按照该特征的所有可能取值来切分。也就是说，如果一个特征有 4 种取值，那么数据将被切分成 4 份。一旦按照某特征切分后，该特征在之后的算法执行过程中将不会再起作用，所以有观点认为这种切分方式过于迅速。另外一种方法是二元切分法，即每次把数据集切分成两份。如果数据的某特征值等于切分所要求的值，那么这些数据就进入树的左子树，反之则进入树的右子树。</p>
+<p>除了切分过于迅速外， ID3 算法还存在另一个问题，它不能直接处理连续型特征。只有事先将连续型特征转换成离散型，才能在 ID3 算法中使用。但这种转换过程会破坏连续型变量的内在性质。而使用二元切分法则易于对树构造过程进行调整以处理连续型特征。具体的处理方法是: 如果特征值大于给定值就走左子树，否则就走右子树。另外，二元切分法也节省了树的构建时间，但这点意义也不是特别大，因为这些树构建一般是离线完成，时间并非需要重点关注的因素。</p>
+<p>CART 是十分著名且广泛记载的树构建算法，它使用二元切分来处理连续型变量。对 CART 稍作修改就可以处理回归问题。第 3 章中使用香农熵来度量集合的无组织程度。如果选用其他方法来代替香农熵，就可以使用树构建算法来完成回归。</p>
+<p>回归树与分类树的思路类似，但是叶节点的数据类型不是离散型，而是连续型。</p>
+<h4 id="1-2-1、附加-各常见树构造算法的划分分支方式"><a href="#1-2-1、附加-各常见树构造算法的划分分支方式" class="headerlink" title="1.2.1、附加 各常见树构造算法的划分分支方式"></a>1.2.1、附加 各常见树构造算法的划分分支方式</h4><p>还有一点要说明，构建决策树算法，常用到的是三个方法: ID3, C4.5, CART.<br>三种方法区别是划分树的分支的方式:</p>
+<ol>
+<li>ID3 是信息增益分支</li>
+<li>C4.5 是信息增益率分支</li>
+<li>CART 做分类工作时，采用 GINI 值作为节点分裂的依据；回归时，采用样本的最小方差作为节点的分裂依据。</li>
+</ol>
+<p>工程上总的来说: </p>
+<p>CART 和 C4.5 之间主要差异在于分类结果上，CART 可以回归分析也可以分类，C4.5 只能做分类；C4.5 子节点是可以多分的，而 CART 是无数个二叉子节点；</p>
+<p>以此拓展出以 CART 为基础的 “树群” Random forest ， 以 回归树 为基础的 “树群” GBDT 。</p>
+<h3 id="1-3、树回归-工作原理"><a href="#1-3、树回归-工作原理" class="headerlink" title="1.3、树回归 工作原理"></a>1.3、树回归 工作原理</h3><p>1、找到数据集切分的最佳位置，函数 chooseBestSplit() 伪代码大致如下:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">对每个特征:</span></span><br><span class="line">    对每个特征值: </span><br><span class="line">        将数据集切分成两份（小于该特征值的数据样本放在左子树，否则放在右子树）</span><br><span class="line">        计算切分的误差</span><br><span class="line">        如果当前误差小于当前最小误差，那么将当前切分设定为最佳切分并更新最小误差</span><br><span class="line">返回最佳切分的特征和阈值</span><br></pre></td></tr></table></figure>
+<p>2、树构建算法，函数 createTree() 伪代码大致如下:   </p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">找到最佳的待切分特征:</span><br><span class="line">    如果该节点不能再分，将该节点存为叶节点</span><br><span class="line">    执行二元切分</span><br><span class="line">    在右子树调用 createTree<span class="comment">()</span> 方法</span><br><span class="line">    在左子树调用 createTree<span class="comment">()</span> 方法</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4、树回归-开发流程"><a href="#1-4、树回归-开发流程" class="headerlink" title="1.4、树回归 开发流程"></a>1.4、树回归 开发流程</h3><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1</span>) 收集数据：采用任意方法收集数据。</span><br><span class="line">(<span class="number">2</span>) 准备数据：需要数值型数据，标称型数据应该映射成二值型数据。</span><br><span class="line">(<span class="number">3</span>) 分析数据：绘出数据的二维可视化显示结果，以字典方式生成树。</span><br><span class="line">(<span class="number">4</span>) 训练算法：大部分时间都花费在叶节点树模型的构建上。</span><br><span class="line">(<span class="number">5</span>) 测试算法：使用测试数据上的R^<span class="number">2</span>值来分析模型的效果。</span><br><span class="line">(<span class="number">6</span>) 使用算法：使用训练处的树做预测，预测结果还可以用来做很多事情。</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5、树回归-算法特点"><a href="#1-5、树回归-算法特点" class="headerlink" title="1.5、树回归 算法特点"></a>1.5、树回归 算法特点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">优点：可以对复杂和非线性的数据建模。</span><br><span class="line">缺点：结果不易理解。</span><br><span class="line">适用数据类型：数值型和标称型数据。</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-6、回归树-项目案例"><a href="#1-6、回归树-项目案例" class="headerlink" title="1.6、回归树 项目案例"></a>1.6、回归树 项目案例</h3><h4 id="1-6-1、项目概述"><a href="#1-6-1、项目概述" class="headerlink" title="1.6.1、项目概述"></a>1.6.1、项目概述</h4><p>在简单数据集上生成一棵回归树。</p>
+<h4 id="1-6-2、开发流程"><a href="#1-6-2、开发流程" class="headerlink" title="1.6.2、开发流程"></a>1.6.2、开发流程</h4><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">收集数据：采用任意方法收集数据</span><br><span class="line">准备数据：需要数值型数据，标称型数据应该映射成二值型数据</span><br><span class="line">分析数据：绘出数据的二维可视化显示结果，以字典方式生成树</span><br><span class="line">训练算法：大部分时间都花费在叶节点树模型的构建上</span><br><span class="line">测试算法：使用测试数据上的R^<span class="number">2</span>值来分析模型的效果</span><br><span class="line">使用算法：使用训练出的树做预测，预测结果还可以用来做很多事情</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据：采用任意方法收集数据</p>
+</blockquote>
+<p>data1.txt 文件中存储的数据格式如下:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.036098</span>	<span class="number">0.155096</span></span><br><span class="line"><span class="number">0.993349</span>	<span class="number">1.077553</span></span><br><span class="line"><span class="number">0.530897</span>	<span class="number">0.893462</span></span><br><span class="line"><span class="number">0.712386</span>	<span class="number">0.564858</span></span><br><span class="line"><span class="number">0.343554</span>	<span class="number">-0.371700</span></span><br><span class="line"><span class="number">0.098016</span>	<span class="number">-0.332760</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>准备数据：需要数值型数据，标称型数据应该映射成二值型数据</p>
+</blockquote>
+<blockquote>
+<p>分析数据：绘出数据的二维可视化显示结果，以字典方式生成树</p>
+</blockquote>
+<p>基于 CART 算法构建回归树的简单数据集<br><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_1.png" alt="基于 CART 算法构建回归树的简单数据集">  </p>
+<p>用于测试回归树的分段常数数据集<br><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_2.png" alt="用于测试回归树的分段常数数据集">  </p>
+<blockquote>
+<p>训练算法: 构造树的数据结构</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">binSplitDataSet</span><span class="params">(dataSet, feature, value)</span>:</span></span><br><span class="line">    <span class="string">"""binSplitDataSet(将数据集，按照feature列的value进行 二元切分)</span></span><br><span class="line"><span class="string">        Description：在给定特征和特征值的情况下，该函数通过数组过滤方式将上述数据集合切分得到两个子集并返回。</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataMat 数据集</span></span><br><span class="line"><span class="string">        feature 待切分的特征列</span></span><br><span class="line"><span class="string">        value 特征列要比较的值</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        mat0 小于等于 value 的数据集在左边</span></span><br><span class="line"><span class="string">        mat1 大于 value 的数据集在右边</span></span><br><span class="line"><span class="string">    Raises:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># # 测试案例</span></span><br><span class="line">    <span class="comment"># print 'dataSet[:, feature]=', dataSet[:, feature]</span></span><br><span class="line">    <span class="comment"># print 'nonzero(dataSet[:, feature] &gt; value)[0]=', nonzero(dataSet[:, feature] &gt; value)[0]</span></span><br><span class="line">    <span class="comment"># print 'nonzero(dataSet[:, feature] &lt;= value)[0]=', nonzero(dataSet[:, feature] &lt;= value)[0]</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># dataSet[:, feature] 取去每一行中，第1列的值(从0开始算)</span></span><br><span class="line">    <span class="comment"># nonzero(dataSet[:, feature] &gt; value)  返回结果为true行的index下标</span></span><br><span class="line">    mat0 = dataSet[nonzero(dataSet[:, feature] &lt;= value)[<span class="number">0</span>], :]</span><br><span class="line">    mat1 = dataSet[nonzero(dataSet[:, feature] &gt; value)[<span class="number">0</span>], :]</span><br><span class="line">    <span class="keyword">return</span> mat0, mat1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1.用最佳方式切分数据集</span></span><br><span class="line"><span class="comment"># 2.生成相应的叶节点</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">chooseBestSplit</span><span class="params">(dataSet, leafType=regLeaf, errType=regErr, ops=<span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span>)</span>:</span></span><br><span class="line">    <span class="string">"""chooseBestSplit(用最佳方式切分数据集 和 生成相应的叶节点)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataSet   加载的原始数据集</span></span><br><span class="line"><span class="string">        leafType  建立叶子点的函数</span></span><br><span class="line"><span class="string">        errType   误差计算函数(求总方差)</span></span><br><span class="line"><span class="string">        ops       [容许误差下降值，切分的最少样本数]。</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        bestIndex feature的index坐标</span></span><br><span class="line"><span class="string">        bestValue 切分的最优值</span></span><br><span class="line"><span class="string">    Raises:</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># ops=(1,4)，非常重要，因为它决定了决策树划分停止的threshold值，被称为预剪枝（prepruning），其实也就是用于控制函数的停止时机。</span></span><br><span class="line">    <span class="comment"># 之所以这样说，是因为它防止决策树的过拟合，所以当误差的下降值小于tolS，或划分后的集合size小于tolN时，选择停止继续划分。</span></span><br><span class="line">    <span class="comment"># 最小误差下降值，划分后的误差减小小于这个差值，就不用继续划分</span></span><br><span class="line">    tolS = ops[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 划分最小 size 小于，就不继续划分了</span></span><br><span class="line">    tolN = ops[<span class="number">1</span>]</span><br><span class="line">    <span class="comment"># 如果结果集(最后一列为1个变量)，就返回退出</span></span><br><span class="line">    <span class="comment"># .T 对数据集进行转置</span></span><br><span class="line">    <span class="comment"># .tolist()[0] 转化为数组并取第0列</span></span><br><span class="line">    <span class="keyword">if</span> len(set(dataSet[:, <span class="number">-1</span>].T.tolist()[<span class="number">0</span>])) == <span class="number">1</span>: <span class="comment"># 如果集合size为1，不用继续划分。</span></span><br><span class="line">        <span class="comment">#  exit cond 1</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span>, leafType(dataSet)</span><br><span class="line">    <span class="comment"># 计算行列值</span></span><br><span class="line">    m, n = shape(dataSet)</span><br><span class="line">    <span class="comment"># 无分类误差的总方差和</span></span><br><span class="line">    <span class="comment"># the choice of the best feature is driven by Reduction in RSS error from mean</span></span><br><span class="line">    S = errType(dataSet)</span><br><span class="line">    <span class="comment"># inf 正无穷大</span></span><br><span class="line">    bestS, bestIndex, bestValue = inf, <span class="number">0</span>, <span class="number">0</span></span><br><span class="line">    <span class="comment"># 循环处理每一列对应的feature值</span></span><br><span class="line">    <span class="keyword">for</span> featIndex <span class="keyword">in</span> range(n<span class="number">-1</span>): <span class="comment"># 对于每个特征</span></span><br><span class="line">        <span class="comment"># [0]表示这一列的[所有行]，不要[0]就是一个array[[所有行]]</span></span><br><span class="line">        <span class="keyword">for</span> splitVal <span class="keyword">in</span> set(dataSet[:, featIndex].T.tolist()[<span class="number">0</span>]):</span><br><span class="line">            <span class="comment"># 对该列进行分组，然后组内的成员的val值进行 二元切分</span></span><br><span class="line">            mat0, mat1 = binSplitDataSet(dataSet, featIndex, splitVal)</span><br><span class="line">            <span class="comment"># 判断二元切分的方式的元素数量是否符合预期</span></span><br><span class="line">            <span class="keyword">if</span> (shape(mat0)[<span class="number">0</span>] &lt; tolN) <span class="keyword">or</span> (shape(mat1)[<span class="number">0</span>] &lt; tolN):</span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            newS = errType(mat0) + errType(mat1)</span><br><span class="line">            <span class="comment"># 如果二元切分，算出来的误差在可接受范围内，那么就记录切分点，并记录最小误差</span></span><br><span class="line">            <span class="comment"># 如果划分后误差小于 bestS，则说明找到了新的bestS</span></span><br><span class="line">            <span class="keyword">if</span> newS &lt; bestS:</span><br><span class="line">                bestIndex = featIndex</span><br><span class="line">                bestValue = splitVal</span><br><span class="line">                bestS = newS</span><br><span class="line">    <span class="comment"># 判断二元切分的方式的元素误差是否符合预期</span></span><br><span class="line">    <span class="comment"># if the decrease (S-bestS) is less than a threshold don't do the split</span></span><br><span class="line">    <span class="keyword">if</span> (S - bestS) &lt; tolS:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span>, leafType(dataSet)</span><br><span class="line">    mat0, mat1 = binSplitDataSet(dataSet, bestIndex, bestValue)</span><br><span class="line">    <span class="comment"># 对整体的成员进行判断，是否符合预期</span></span><br><span class="line">    <span class="comment"># 如果集合的 size 小于 tolN </span></span><br><span class="line">    <span class="keyword">if</span> (shape(mat0)[<span class="number">0</span>] &lt; tolN) <span class="keyword">or</span> (shape(mat1)[<span class="number">0</span>] &lt; tolN): <span class="comment"># 当最佳划分后，集合过小，也不划分，产生叶节点</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">None</span>, leafType(dataSet)</span><br><span class="line">    <span class="keyword">return</span> bestIndex, bestValue</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># assume dataSet is NumPy Mat so we can array filtering</span></span><br><span class="line"><span class="comment"># 假设 dataSet 是 NumPy Mat 类型的，那么我们可以进行 array 过滤</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createTree</span><span class="params">(dataSet, leafType=regLeaf, errType=regErr, ops=<span class="params">(<span class="number">1</span>, <span class="number">4</span>)</span>)</span>:</span></span><br><span class="line">    <span class="string">"""createTree(获取回归树)</span></span><br><span class="line"><span class="string">        Description：递归函数：如果构建的是回归树，该模型是一个常数，如果是模型树，其模型师一个线性方程。</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataSet      加载的原始数据集</span></span><br><span class="line"><span class="string">        leafType     建立叶子点的函数</span></span><br><span class="line"><span class="string">        errType      误差计算函数</span></span><br><span class="line"><span class="string">        ops=(1, 4)   [容许误差下降值，切分的最少样本数]</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        retTree    决策树最后的结果</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 选择最好的切分方式： feature索引值，最优切分值</span></span><br><span class="line">    <span class="comment"># choose the best split</span></span><br><span class="line">    feat, val = chooseBestSplit(dataSet, leafType, errType, ops)</span><br><span class="line">    <span class="comment"># if the splitting hit a stop condition return val</span></span><br><span class="line">    <span class="comment"># 如果 splitting 达到一个停止条件，那么返回 val</span></span><br><span class="line">    <span class="keyword">if</span> feat <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> val</span><br><span class="line">    retTree = &#123;&#125;</span><br><span class="line">    retTree[<span class="string">'spInd'</span>] = feat</span><br><span class="line">    retTree[<span class="string">'spVal'</span>] = val</span><br><span class="line">    <span class="comment"># 大于在右边，小于在左边，分为2个数据集</span></span><br><span class="line">    lSet, rSet = binSplitDataSet(dataSet, feat, val)</span><br><span class="line">    <span class="comment"># 递归的进行调用，在左右子树中继续递归生成树</span></span><br><span class="line">    retTree[<span class="string">'left'</span>] = createTree(lSet, leafType, errType, ops)</span><br><span class="line">    retTree[<span class="string">'right'</span>] = createTree(rSet, leafType, errType, ops)</span><br><span class="line">    <span class="keyword">return</span> retTree</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py</a></p>
+<blockquote>
+<p>测试算法：使用测试数据上的R^2值来分析模型的效果</p>
+</blockquote>
+<blockquote>
+<p>使用算法：使用训练出的树做预测，预测结果还可以用来做很多事情</p>
+</blockquote>
+<h2 id="2、树剪枝"><a href="#2、树剪枝" class="headerlink" title="2、树剪枝"></a>2、树剪枝</h2><p>一棵树如果节点过多，表明该模型可能对数据进行了 “过拟合”。</p>
+<p>通过降低决策树的复杂度来避免过拟合的过程称为 <code>剪枝（pruning）</code>。在函数 chooseBestSplit() 中提前终止条件，实际上是在进行一种所谓的 <code>预剪枝（prepruning）</code>操作。另一个形式的剪枝需要使用测试集和训练集，称作 <code>后剪枝（postpruning）</code>。</p>
+<h3 id="2-1、预剪枝-prepruning"><a href="#2-1、预剪枝-prepruning" class="headerlink" title="2.1、预剪枝(prepruning)"></a>2.1、预剪枝(prepruning)</h3><p>顾名思义，预剪枝就是及早的停止树增长，在构造决策树的同时进行剪枝。</p>
+<p>所有决策树的构建方法，都是在无法进一步降低熵的情况下才会停止创建分支的过程，为了避免过拟合，可以设定一个阈值，熵减小的数量小于这个阈值，即使还可以继续降低熵，也停止继续创建分支。但是这种方法实际中的效果并不好。</p>
+<h3 id="2-2、后剪枝-postpruning"><a href="#2-2、后剪枝-postpruning" class="headerlink" title="2.2、后剪枝(postpruning)"></a>2.2、后剪枝(postpruning)</h3><p>决策树构造完成后进行剪枝。剪枝的过程是对拥有同样父节点的一组节点进行检查，判断如果将其合并，熵的增加量是否小于某一阈值。如果确实小，则这一组节点可以合并一个节点，其中包含了所有可能的结果。合并也被称作 <code>塌陷处理</code> ，在回归树中一般采用取需要合并的所有子树的平均值。后剪枝是目前最普遍的做法。</p>
+<p>后剪枝 prune() 的伪代码如下:</p>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">基于已有的树切分测试数据:</span></span><br><span class="line">    如果存在任一子集是一棵树，则在该子集递归剪枝过程</span><br><span class="line">    计算将当前两个叶节点合并后的误差</span><br><span class="line">    计算不合并的误差</span><br><span class="line">    如果合并会降低误差的话，就将叶节点合并</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3、剪枝-代码"><a href="#2-3、剪枝-代码" class="headerlink" title="2.3、剪枝 代码"></a>2.3、剪枝 代码</h3><p>回归树剪枝函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 判断节点是否是一个字典</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isTree</span><span class="params">(obj)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        测试输入变量是否是一棵树,即是否是一个字典</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        obj -- 输入变量</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        返回布尔类型的结果。如果 obj 是一个字典，返回true，否则返回 false</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">return</span> (type(obj).__name__ == <span class="string">'dict'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算左右枝丫的均值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getMean</span><span class="params">(tree)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        从上往下遍历树直到叶节点为止，如果找到两个叶节点则计算它们的平均值。</span></span><br><span class="line"><span class="string">        对 tree 进行塌陷处理，即返回树平均值。</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tree -- 输入的树</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        返回 tree 节点的平均值</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> isTree(tree[<span class="string">'right'</span>]):</span><br><span class="line">        tree[<span class="string">'right'</span>] = getMean(tree[<span class="string">'right'</span>])</span><br><span class="line">    <span class="keyword">if</span> isTree(tree[<span class="string">'left'</span>]):</span><br><span class="line">        tree[<span class="string">'left'</span>] = getMean(tree[<span class="string">'left'</span>])</span><br><span class="line">    <span class="keyword">return</span> (tree[<span class="string">'left'</span>]+tree[<span class="string">'right'</span>])/<span class="number">2.0</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查是否适合合并分枝</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prune</span><span class="params">(tree, testData)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        从上而下找到叶节点，用测试数据集来判断将这些叶节点合并是否能降低测试误差</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tree -- 待剪枝的树</span></span><br><span class="line"><span class="string">        testData -- 剪枝所需要的测试数据 testData </span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        tree -- 剪枝完成的树</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="comment"># 判断是否测试数据集没有数据，如果没有，就直接返回tree本身的均值</span></span><br><span class="line">    <span class="keyword">if</span> shape(testData)[<span class="number">0</span>] == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> getMean(tree)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 判断分枝是否是dict字典，如果是就将测试数据集进行切分</span></span><br><span class="line">    <span class="keyword">if</span> (isTree(tree[<span class="string">'right'</span>]) <span class="keyword">or</span> isTree(tree[<span class="string">'left'</span>])):</span><br><span class="line">        lSet, rSet = binSplitDataSet(testData, tree[<span class="string">'spInd'</span>], tree[<span class="string">'spVal'</span>])</span><br><span class="line">    <span class="comment"># 如果是左边分枝是字典，就传入左边的数据集和左边的分枝，进行递归</span></span><br><span class="line">    <span class="keyword">if</span> isTree(tree[<span class="string">'left'</span>]):</span><br><span class="line">        tree[<span class="string">'left'</span>] = prune(tree[<span class="string">'left'</span>], lSet)</span><br><span class="line">    <span class="comment"># 如果是右边分枝是字典，就传入左边的数据集和左边的分枝，进行递归</span></span><br><span class="line">    <span class="keyword">if</span> isTree(tree[<span class="string">'right'</span>]):</span><br><span class="line">        tree[<span class="string">'right'</span>] = prune(tree[<span class="string">'right'</span>], rSet)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 上面的一系列操作本质上就是将测试数据集按照训练完成的树拆分好，对应的值放到对应的节点</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果左右两边同时都不是dict字典，也就是左右两边都是叶节点，而不是子树了，那么分割测试数据集。</span></span><br><span class="line">    <span class="comment"># 1. 如果正确 </span></span><br><span class="line">    <span class="comment">#   * 那么计算一下总方差 和 该结果集的本身不分枝的总方差比较</span></span><br><span class="line">    <span class="comment">#   * 如果 合并的总方差 &lt; 不合并的总方差，那么就进行合并</span></span><br><span class="line">    <span class="comment"># 注意返回的结果： 如果可以合并，原来的dict就变为了 数值</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isTree(tree[<span class="string">'left'</span>]) <span class="keyword">and</span> <span class="keyword">not</span> isTree(tree[<span class="string">'right'</span>]):</span><br><span class="line">        lSet, rSet = binSplitDataSet(testData, tree[<span class="string">'spInd'</span>], tree[<span class="string">'spVal'</span>])</span><br><span class="line">        <span class="comment"># power(x, y)表示x的y次方</span></span><br><span class="line">        errorNoMerge = sum(power(lSet[:, <span class="number">-1</span>] - tree[<span class="string">'left'</span>], <span class="number">2</span>)) + sum(power(rSet[:, <span class="number">-1</span>] - tree[<span class="string">'right'</span>], <span class="number">2</span>))</span><br><span class="line">        treeMean = (tree[<span class="string">'left'</span>] + tree[<span class="string">'right'</span>])/<span class="number">2.0</span></span><br><span class="line">        errorMerge = sum(power(testData[:, <span class="number">-1</span>] - treeMean, <span class="number">2</span>))</span><br><span class="line">        <span class="comment"># 如果 合并的总方差 &lt; 不合并的总方差，那么就进行合并</span></span><br><span class="line">        <span class="keyword">if</span> errorMerge &lt; errorNoMerge:</span><br><span class="line">            <span class="keyword">print</span> <span class="string">"merging"</span></span><br><span class="line">            <span class="keyword">return</span> treeMean</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> tree</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> tree</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py</a></p>
+<h2 id="3、模型树"><a href="#3、模型树" class="headerlink" title="3、模型树"></a>3、模型树</h2><h3 id="3-1、模型树-简介"><a href="#3-1、模型树-简介" class="headerlink" title="3.1、模型树 简介"></a>3.1、模型树 简介</h3><p>用树来对数据建模，除了把叶节点简单地设定为常数值之外，还有一种方法是把叶节点设定为分段线性函数，这里所谓的 <code>分段线性（piecewise linear）</code> 是指模型由多个线性片段组成。</p>
+<p>我们看一下图 9-4 中的数据，如果使用两条直线拟合是否比使用一组常数来建模好呢？答案显而易见。可以设计两条分别从 0.0<del>0.3、从 0.3</del>1.0 的直线，于是就可以得到两个线性模型。因为数据集里的一部分数据（0.0<del>0.3）以某个线性模型建模，而另一部分数据（0.3</del>1.0）则以另一个线性模型建模，因此我们说采用了所谓的分段线性模型。</p>
+<p>决策树相比于其他机器学习算法的优势之一在于结果更易理解。很显然，两条直线比很多节点组成一棵大树更容易解释。模型树的可解释性是它优于回归树的特点之一。另外，模型树也具有更高的预测准确度。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_3.png" alt="分段线性数据"></p>
+<p>将之前的回归树的代码稍作修改，就可以在叶节点生成线性模型而不是常数值。下面将利用树生成算法对数据进行划分，且每份切分数据都能很容易被线性模型所表示。这个算法的关键在于误差的计算。</p>
+<p>那么为了找到最佳切分，应该怎样计算误差呢？前面用于回归树的误差计算方法这里不能再用。稍加变化，对于给定的数据集，应该先用模型来对它进行拟合，然后计算真实的目标值与模型预测值间的差值。最后将这些差值的平方求和就得到了所需的误差。</p>
+<h3 id="3-2、模型树-代码"><a href="#3-2、模型树-代码" class="headerlink" title="3.2、模型树 代码"></a>3.2、模型树 代码</h3><p>模型树的叶节点生成函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 得到模型的ws系数：f(x) = x0 + x1*featrue1+ x3*featrue2 ...</span></span><br><span class="line"><span class="comment"># create linear model and return coeficients</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">modelLeaf</span><span class="params">(dataSet)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        当数据不再需要切分的时候，生成叶节点的模型。</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataSet -- 输入数据集</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        调用 linearSolve 函数，返回得到的 回归系数ws</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    ws, X, Y = linearSolve(dataSet)</span><br><span class="line">    <span class="keyword">return</span> ws</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算线性模型的误差值</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">modelErr</span><span class="params">(dataSet)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        在给定数据集上计算误差。</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataSet -- 输入数据集</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        调用 linearSolve 函数，返回 yHat 和 Y 之间的平方误差。</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    ws, X, Y = linearSolve(dataSet)</span><br><span class="line">    yHat = X * ws</span><br><span class="line">    <span class="comment"># print corrcoef(yHat, Y, rowvar=0)</span></span><br><span class="line">    <span class="keyword">return</span> sum(power(Y - yHat, <span class="number">2</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> <span class="comment"># helper function used in two places</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">linearSolve</span><span class="params">(dataSet)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        将数据集格式化成目标变量Y和自变量X，执行简单的线性回归，得到ws</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataSet -- 输入数据</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        ws -- 执行线性回归的回归系数 </span></span><br><span class="line"><span class="string">        X -- 格式化自变量X</span></span><br><span class="line"><span class="string">        Y -- 格式化目标变量Y</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    m, n = shape(dataSet)</span><br><span class="line">    <span class="comment"># 产生一个关于1的矩阵</span></span><br><span class="line">    X = mat(ones((m, n)))</span><br><span class="line">    Y = mat(ones((m, <span class="number">1</span>)))</span><br><span class="line">    <span class="comment"># X的0列为1，常数项，用于计算平衡误差</span></span><br><span class="line">    X[:, <span class="number">1</span>: n] = dataSet[:, <span class="number">0</span>: n<span class="number">-1</span>]</span><br><span class="line">    Y = dataSet[:, <span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 转置矩阵*矩阵</span></span><br><span class="line">    xTx = X.T * X</span><br><span class="line">    <span class="comment"># 如果矩阵的逆不存在，会造成程序异常</span></span><br><span class="line">    <span class="keyword">if</span> linalg.det(xTx) == <span class="number">0.0</span>:</span><br><span class="line">        <span class="keyword">raise</span> NameError(<span class="string">'This matrix is singular, cannot do inverse,\ntry increasing the second value of ops'</span>)</span><br><span class="line">    <span class="comment"># 最小二乘法求最优解:  w0*1+w1*x1=y</span></span><br><span class="line">    ws = xTx.I * (X.T * Y)</span><br><span class="line">    <span class="keyword">return</span> ws, X, Y</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py</a></p>
+<h3 id="3-3、模型树-运行结果"><a href="#3-3、模型树-运行结果" class="headerlink" title="3.3、模型树 运行结果"></a>3.3、模型树 运行结果</h3><p><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_4.png" alt="模型树运行结果"></p>
+<h2 id="4、树回归-项目案例"><a href="#4、树回归-项目案例" class="headerlink" title="4、树回归 项目案例"></a>4、树回归 项目案例</h2><h3 id="4-1、项目案例1-树回归与标准回归的比较"><a href="#4-1、项目案例1-树回归与标准回归的比较" class="headerlink" title="4.1、项目案例1: 树回归与标准回归的比较"></a>4.1、项目案例1: 树回归与标准回归的比较</h3><h4 id="4-1-1、项目概述"><a href="#4-1-1、项目概述" class="headerlink" title="4.1.1、项目概述"></a>4.1.1、项目概述</h4><p>前面介绍了模型树、回归树和一般的回归方法，下面测试一下哪个模型最好。</p>
+<p>这些模型将在某个数据上进行测试，该数据涉及人的智力水平和自行车的速度的关系。当然，数据是假的。</p>
+<h4 id="4-1-2、开发流程"><a href="#4-1-2、开发流程" class="headerlink" title="4.1.2、开发流程"></a>4.1.2、开发流程</h4><figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">收集数据：采用任意方法收集数据</span><br><span class="line">准备数据：需要数值型数据，标称型数据应该映射成二值型数据</span><br><span class="line">分析数据：绘出数据的二维可视化显示结果，以字典方式生成树</span><br><span class="line">训练算法：模型树的构建</span><br><span class="line">测试算法：使用测试数据上的R^<span class="number">2</span>值来分析模型的效果</span><br><span class="line">使用算法：使用训练出的树做预测，预测结果还可以用来做很多事情</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据: 采用任意方法收集数据</p>
+</blockquote>
+<blockquote>
+<p>准备数据：需要数值型数据，标称型数据应该映射成二值型数据</p>
+</blockquote>
+<p>数据存储格式:</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3.000000</span>	<span class="number">46.852122</span></span><br><span class="line"><span class="number">23.000000</span>	<span class="number">178.676107</span></span><br><span class="line"><span class="number">0.000000</span>	<span class="number">86.154024</span></span><br><span class="line"><span class="number">6.000000</span>	<span class="number">68.707614</span></span><br><span class="line"><span class="number">15.000000</span>	<span class="number">139.737693</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据：绘出数据的二维可视化显示结果，以字典方式生成树</p>
+</blockquote>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/RegTree_5.png" alt="骑自行车速度和智商之间的关系"></p>
+<blockquote>
+<p>训练算法：模型树的构建</p>
+</blockquote>
+<p>用树回归进行预测的代码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 回归树测试案例</span></span><br><span class="line"><span class="comment"># 为了和 modelTreeEval() 保持一致，保留两个输入参数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">regTreeEval</span><span class="params">(model, inDat)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        对 回归树 进行预测</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        model -- 指定模型，可选值为 回归树模型 或者 模型树模型，这里为回归树</span></span><br><span class="line"><span class="string">        inDat -- 输入的测试数据</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        float(model) -- 将输入的模型数据转换为 浮点数 返回</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">return</span> float(model)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 模型树测试案例</span></span><br><span class="line"><span class="comment"># 对输入数据进行格式化处理，在原数据矩阵上增加第0列，元素的值都是1，</span></span><br><span class="line"><span class="comment"># 也就是增加偏移值，和我们之前的简单线性回归是一个套路，增加一个偏移量</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">modelTreeEval</span><span class="params">(model, inDat)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        对 模型树 进行预测</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        model -- 输入模型，可选值为 回归树模型 或者 模型树模型，这里为模型树模型</span></span><br><span class="line"><span class="string">        inDat -- 输入的测试数据</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        float(X * model) -- 将测试数据乘以 回归系数 得到一个预测值 ，转化为 浮点数 返回</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    n = shape(inDat)[<span class="number">1</span>]</span><br><span class="line">    X = mat(ones((<span class="number">1</span>, n+<span class="number">1</span>)))</span><br><span class="line">    X[:, <span class="number">1</span>: n+<span class="number">1</span>] = inDat</span><br><span class="line">    <span class="comment"># print X, model</span></span><br><span class="line">    <span class="keyword">return</span> float(X * model)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算预测的结果</span></span><br><span class="line"><span class="comment"># 在给定树结构的情况下，对于单个数据点，该函数会给出一个预测值。</span></span><br><span class="line"><span class="comment"># modelEval是对叶节点进行预测的函数引用，指定树的类型，以便在叶节点上调用合适的模型。</span></span><br><span class="line"><span class="comment"># 此函数自顶向下遍历整棵树，直到命中叶节点为止，一旦到达叶节点，它就会在输入数据上</span></span><br><span class="line"><span class="comment"># 调用modelEval()函数，该函数的默认值为regTreeEval()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">treeForeCast</span><span class="params">(tree, inData, modelEval=regTreeEval)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        对特定模型的树进行预测，可以是 回归树 也可以是 模型树</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tree -- 已经训练好的树的模型</span></span><br><span class="line"><span class="string">        inData -- 输入的测试数据</span></span><br><span class="line"><span class="string">        modelEval -- 预测的树的模型类型，可选值为 regTreeEval（回归树） 或 modelTreeEval（模型树），默认为回归树</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        返回预测值</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isTree(tree):</span><br><span class="line">        <span class="keyword">return</span> modelEval(tree, inData)</span><br><span class="line">    <span class="keyword">if</span> inData[tree[<span class="string">'spInd'</span>]] &lt;= tree[<span class="string">'spVal'</span>]:</span><br><span class="line">        <span class="keyword">if</span> isTree(tree[<span class="string">'left'</span>]):</span><br><span class="line">            <span class="keyword">return</span> treeForeCast(tree[<span class="string">'left'</span>], inData, modelEval)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> modelEval(tree[<span class="string">'left'</span>], inData)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">if</span> isTree(tree[<span class="string">'right'</span>]):</span><br><span class="line">            <span class="keyword">return</span> treeForeCast(tree[<span class="string">'right'</span>], inData, modelEval)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> modelEval(tree[<span class="string">'right'</span>], inData)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 预测结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createForeCast</span><span class="params">(tree, testData, modelEval=regTreeEval)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Desc:</span></span><br><span class="line"><span class="string">        调用 treeForeCast ，对特定模型的树进行预测，可以是 回归树 也可以是 模型树</span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        tree -- 已经训练好的树的模型</span></span><br><span class="line"><span class="string">        inData -- 输入的测试数据</span></span><br><span class="line"><span class="string">        modelEval -- 预测的树的模型类型，可选值为 regTreeEval（回归树） 或 modelTreeEval（模型树），默认为回归树</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        返回预测值矩阵</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    m = len(testData)</span><br><span class="line">    yHat = mat(zeros((m, <span class="number">1</span>)))</span><br><span class="line">    <span class="comment"># print yHat</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(m):</span><br><span class="line">        yHat[i, <span class="number">0</span>] = treeForeCast(tree, mat(testData[i]), modelEval)</span><br><span class="line">        <span class="comment"># print "yHat==&gt;", yHat[i, 0]</span></span><br><span class="line">    <span class="keyword">return</span> yHat</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/regTrees.py</a></p>
+<blockquote>
+<p>测试算法：使用测试数据上的R^2值来分析模型的效果</p>
+</blockquote>
+<p>R^2 判定系数就是拟合优度判定系数，它体现了回归模型中自变量的变异在因变量的变异中所占的比例。如 R^2=0.99999 表示在因变量 y 的变异中有 99.999% 是由于变量 x 引起。当 R^2=1 时表示，所有观测点都落在拟合的直线或曲线上；当 R^2=0 时，表示自变量与因变量不存在直线或曲线关系。</p>
+<p>所以我们看出， R^2 的值越接近 1.0 越好。</p>
+<blockquote>
+<p>使用算法：使用训练出的树做预测，预测结果还可以用来做很多事情</p>
+</blockquote>
+<h2 id="5、附加-Python-中-GUI-的使用"><a href="#5、附加-Python-中-GUI-的使用" class="headerlink" title="5、附加 Python 中 GUI 的使用"></a>5、附加 Python 中 GUI 的使用</h2><h3 id="5-1、使用-Python-的-Tkinter-库创建-GUI"><a href="#5-1、使用-Python-的-Tkinter-库创建-GUI" class="headerlink" title="5.1、使用 Python 的 Tkinter 库创建 GUI"></a>5.1、使用 Python 的 Tkinter 库创建 GUI</h3><p>如果能让用户不需要任何指令就可以按照他们自己的方式来分析数据，就不需要对数据做出过多解释。其中一个能同时支持数据呈现和用户交互的方式就是构建一个图形用户界面(GUI，Graphical User Interface)，如图9-7所示。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/GUI%E7%A4%BA%E4%BE%8B%E5%9B%BE.png" alt="GUI示例图" title="GUI示例图"></p>
+<h3 id="5-2、用-Tkinter-创建-GUI"><a href="#5-2、用-Tkinter-创建-GUI" class="headerlink" title="5.2、用 Tkinter 创建 GUI"></a>5.2、用 Tkinter 创建 GUI</h3><p>Python 有很多 GUI 框架，其中一个易于使用的 Tkinter，是随 Python 的标准版编译版本发布的。Tkinter 可以在 Windows、Mac OS和大多数的 Linux 平台上使用。</p>
+<h3 id="5-3、集成-Matplotlib-和-Tkinter"><a href="#5-3、集成-Matplotlib-和-Tkinter" class="headerlink" title="5.3、集成 Matplotlib 和 Tkinter"></a>5.3、集成 Matplotlib 和 Tkinter</h3><p>MatPlotlib 的构建程序包含一个前端，也就是面向用户的一些代码，如 plot() 和 scatter() 方法等。事实上，它同时创建了一个后端，用于实现绘图和不同应用之间接口。</p>
+<p>通过改变后端可以将图像绘制在PNG、PDF、SVG等格式的文件上。下面将设置后端为 TkAgg (Agg 是一个 C++ 的库，可以从图像创建光栅图)。TkAgg可以在所选GUI框架上调用Agg，把 Agg 呈现在画布上。我们可以在Tk的GUI上放置一个画布，并用 .grid()来调整布局。</p>
+<h3 id="5-4、用treeExplore-的GUI构建的模型树示例图"><a href="#5-4、用treeExplore-的GUI构建的模型树示例图" class="headerlink" title="5.4、用treeExplore 的GUI构建的模型树示例图"></a>5.4、用treeExplore 的GUI构建的模型树示例图</h3><p><img src="http://data.apachecn.org/img/AiLearning/ml/9.TreeRegression/GUI%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%A4%BA%E4%BE%8B%E5%9B%BE.png" alt="取得更好预测效果的GUI示例图" title="取得更好预测效果的GUI示例图"></p>
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/treeExplore.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/treeExplore.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/9.RegTrees/treeExplore.py</a></p>
+<h2 id="6、树回归-小结"><a href="#6、树回归-小结" class="headerlink" title="6、树回归 小结"></a>6、树回归 小结</h2><p>数据集中经常包含一些复杂的相关关系，使得输入数据和目标变量之间呈现非线性关系。对这些复杂的关系建模，一种可行的方式是使用树来对预测值分段，包括分段常数或分段直线。一般采用树结构来对这种数据建模。相应地，若叶节点使用的模型是分段常数则称为回归树，若叶节点使用的模型师线性回归方程则称为模型树。</p>
+<p>CART 算法可以用于构建二元树并处理离散型或连续型数据的切分。若使用不同的误差准则，就可以通过CART 算法构建模型树和回归树。该算法构建出的树会倾向于对数据过拟合。一棵过拟合的树常常十分复杂，剪枝技术的出现就是为了解决这个问题。两种剪枝方法分别是预剪枝（在树的构建过程中就进行剪枝）和后剪枝（当树构建完毕再进行剪枝），预剪枝更有效但需要用户定义一些参数。</p>
+<p>Tkinter 是 Python 的一个 GUI 工具包。虽然并不是唯一的包，但它最常用。利用 Tkinter ，我们可以轻轻松松绘制各种部件并安排它们的位置。另外，可以为 Tkinter 构造一个特殊的部件来显示 Matplotlib 绘出的图。所以，Matplotlib 和 Tkinter 的集成可以构建出更强大的 GUI ，用户可以以更自然的方式来探索机器学习算法的奥妙。</p>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a>      </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/02/8.%E5%9B%9E%E5%BD%92/" rel="prev" title="第8章 预测数值型数据：回归">
+      <i class="fa fa-chevron-left"></i> 第8章 预测数值型数据：回归
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/02/10.k-means%E8%81%9A%E7%B1%BB/" rel="next" title="第10章 K-Means（K-均值）聚类算法">
+      第10章 K-Means（K-均值）聚类算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#树回归-概述"><span class="nav-number">1.</span> <span class="nav-text">树回归 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#树回归-场景"><span class="nav-number">2.</span> <span class="nav-text">树回归 场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1、树回归-原理"><span class="nav-number">3.</span> <span class="nav-text">1、树回归 原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1、树回归-原理概述"><span class="nav-number">3.1.</span> <span class="nav-text">1.1、树回归 原理概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2、树构建算法-比较"><span class="nav-number">3.2.</span> <span class="nav-text">1.2、树构建算法 比较</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1、附加-各常见树构造算法的划分分支方式"><span class="nav-number">3.2.1.</span> <span class="nav-text">1.2.1、附加 各常见树构造算法的划分分支方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3、树回归-工作原理"><span class="nav-number">3.3.</span> <span class="nav-text">1.3、树回归 工作原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4、树回归-开发流程"><span class="nav-number">3.4.</span> <span class="nav-text">1.4、树回归 开发流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5、树回归-算法特点"><span class="nav-number">3.5.</span> <span class="nav-text">1.5、树回归 算法特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6、回归树-项目案例"><span class="nav-number">3.6.</span> <span class="nav-text">1.6、回归树 项目案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-1、项目概述"><span class="nav-number">3.6.1.</span> <span class="nav-text">1.6.1、项目概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-2、开发流程"><span class="nav-number">3.6.2.</span> <span class="nav-text">1.6.2、开发流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、树剪枝"><span class="nav-number">4.</span> <span class="nav-text">2、树剪枝</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1、预剪枝-prepruning"><span class="nav-number">4.1.</span> <span class="nav-text">2.1、预剪枝(prepruning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2、后剪枝-postpruning"><span class="nav-number">4.2.</span> <span class="nav-text">2.2、后剪枝(postpruning)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3、剪枝-代码"><span class="nav-number">4.3.</span> <span class="nav-text">2.3、剪枝 代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、模型树"><span class="nav-number">5.</span> <span class="nav-text">3、模型树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1、模型树-简介"><span class="nav-number">5.1.</span> <span class="nav-text">3.1、模型树 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2、模型树-代码"><span class="nav-number">5.2.</span> <span class="nav-text">3.2、模型树 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3、模型树-运行结果"><span class="nav-number">5.3.</span> <span class="nav-text">3.3、模型树 运行结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、树回归-项目案例"><span class="nav-number">6.</span> <span class="nav-text">4、树回归 项目案例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1、项目案例1-树回归与标准回归的比较"><span class="nav-number">6.1.</span> <span class="nav-text">4.1、项目案例1: 树回归与标准回归的比较</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1、项目概述"><span class="nav-number">6.1.1.</span> <span class="nav-text">4.1.1、项目概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2、开发流程"><span class="nav-number">6.1.2.</span> <span class="nav-text">4.1.2、开发流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、附加-Python-中-GUI-的使用"><span class="nav-number">7.</span> <span class="nav-text">5、附加 Python 中 GUI 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1、使用-Python-的-Tkinter-库创建-GUI"><span class="nav-number">7.1.</span> <span class="nav-text">5.1、使用 Python 的 Tkinter 库创建 GUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2、用-Tkinter-创建-GUI"><span class="nav-number">7.2.</span> <span class="nav-text">5.2、用 Tkinter 创建 GUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3、集成-Matplotlib-和-Tkinter"><span class="nav-number">7.3.</span> <span class="nav-text">5.3、集成 Matplotlib 和 Tkinter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4、用treeExplore-的GUI构建的模型树示例图"><span class="nav-number">7.4.</span> <span class="nav-text">5.4、用treeExplore 的GUI构建的模型树示例图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6、树回归-小结"><span class="nav-number">8.</span> <span class="nav-text">6、树回归 小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">118k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:48</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : 'd756ea4188298f8c8ae265432815afb0',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
