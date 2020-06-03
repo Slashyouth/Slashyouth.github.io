@@ -20,21 +20,23 @@
     var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Pandas学习笔记—002基础用法1. df.head(n) 和 df.tail() 默认n&#x3D;5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]     2. 合并重叠数据集 有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，">
+  <meta name="description" content="背景与挖掘目标随着互联网的快速发展，用户很难快速从海量信息中寻找到自己感兴趣的信息。因此诞生了：搜索引擎+推荐系统 本章节-推荐系统：  帮助用户发现其感兴趣和可能感兴趣的信息。 让网站价值信息脱颖而出，得到广大用户的认可。 提高用户对网站的忠诚度和关注度，建立稳固用户群体。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pandas学习笔记---002">
-<meta property="og:url" content="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/index.html">
+<meta property="og:title" content="第16章 推荐系统">
+<meta property="og:url" content="https://slashyouth.github.io/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="Slash Youth">
-<meta property="og:description" content="Pandas学习笔记—002基础用法1. df.head(n) 和 df.tail() 默认n&#x3D;5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]     2. 合并重叠数据集 有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，">
+<meta property="og:description" content="背景与挖掘目标随着互联网的快速发展，用户很难快速从海量信息中寻找到自己感兴趣的信息。因此诞生了：搜索引擎+推荐系统 本章节-推荐系统：  帮助用户发现其感兴趣和可能感兴趣的信息。 让网站价值信息脱颖而出，得到广大用户的认可。 提高用户对网站的忠诚度和关注度，建立稳固用户群体。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-31T07:12:39.769Z">
-<meta property="article:modified_time" content="2020-05-31T07:15:40.024Z">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/16.RecommendedSystem/%E6%8E%A8%E8%8D%90%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94.png">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/16.RecommendedSystem/%E5%9F%BA%E4%BA%8E%E7%9F%A5%E8%AF%86%E7%9A%84%E6%8E%A8%E8%8D%90.jpg">
+<meta property="article:published_time" content="2020-06-03T09:33:44.949Z">
+<meta property="article:modified_time" content="2020-06-03T09:33:10.670Z">
 <meta property="article:author" content="Jack Can">
-<meta property="article:tag" content="Pandas">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://data.apachecn.org/img/AiLearning/ml/16.RecommendedSystem/%E6%8E%A8%E8%8D%90%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94.png">
 
-<link rel="canonical" href="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/">
+<link rel="canonical" href="https://slashyouth.github.io/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">
 
 
 <script id="page-configurations">
@@ -47,7 +49,7 @@
   };
 </script>
 
-  <title>Pandas学习笔记---002 | Slash Youth</title>
+  <title>第16章 推荐系统 | Slash Youth</title>
   
 
 
@@ -197,7 +199,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/05/31/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---002/">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
@@ -210,7 +212,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Pandas学习笔记---002
+          第16章 推荐系统
         </h1>
 
         <div class="post-meta">
@@ -221,7 +223,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-05-31 15:12:39 / 修改时间：15:15:40" itemprop="dateCreated datePublished" datetime="2020-05-31T15:12:39+08:00">2020-05-31</time>
+              <time title="创建时间：2020-06-03 17:33:44 / 修改时间：17:33:10" itemprop="dateCreated datePublished" datetime="2020-06-03T17:33:44+08:00">2020-06-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -245,13 +247,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>542</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -263,107 +265,99 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Pandas学习笔记—002"><a href="#Pandas学习笔记—002" class="headerlink" title="Pandas学习笔记—002"></a>Pandas学习笔记—002</h1><h2 id="基础用法"><a href="#基础用法" class="headerlink" title="基础用法"></a>基础用法</h2><h3 id="1-df-head-n-和-df-tail"><a href="#1-df-head-n-和-df-tail" class="headerlink" title="1. df.head(n) 和 df.tail()"></a>1. df.head(n) 和 df.tail()</h3><blockquote>
-<p>默认n=5，同时n还可以取负值，对于head来说就是展示df[:-n],对于tail来说就是展示df[-n:]   </p>
-</blockquote>
-<h3 id="2-合并重叠数据集"><a href="#2-合并重叠数据集" class="headerlink" title="2. 合并重叠数据集"></a>2. 合并重叠数据集</h3><blockquote>
-<p>有时，要合并两个相似的数据集，两个数据集里的其中一个的数据比另一个多。<br>比如，展示特定经济指标的两个数据序列，其中一个是“高质量”指标，<a id="more"></a><br>另一个是“低质量”指标。一般来说，低质量序列可能包含更多的历史数据，或覆盖更广的数据。<br>因此，要合并这两个 DataFrame 对象，其中一个 DataFrame 中的缺失值将按指定条件用另一个<br>DataFrame 里类似标签中的数据进行填充。                    </p>
-<blockquote>
-<p>函数df1.combine_first(df2): 由df2只填df1的NaN值    </p>
-</blockquote>
-</blockquote>
-<h3 id="3-描述性统计"><a href="#3-描述性统计" class="headerlink" title="3. 描述性统计"></a>3. 描述性统计</h3><table>
+        <h2 id="背景与挖掘目标"><a href="#背景与挖掘目标" class="headerlink" title="背景与挖掘目标"></a>背景与挖掘目标</h2><p>随着互联网的快速发展，用户很难快速从海量信息中寻找到自己感兴趣的信息。因此诞生了：搜索引擎+推荐系统</p>
+<p>本章节-推荐系统：</p>
+<ol>
+<li>帮助用户发现其感兴趣和可能感兴趣的信息。</li>
+<li>让网站价值信息脱颖而出，得到广大用户的认可。</li>
+<li>提高用户对网站的忠诚度和关注度，建立稳固用户群体。<a id="more"></a>
+<h2 id="分析方法与过程"><a href="#分析方法与过程" class="headerlink" title="分析方法与过程"></a>分析方法与过程</h2></li>
+</ol>
+<p>本案例的目标是对用户进行推荐，即以一定的方式将用户与物品（本次指网页）之间建立联系。</p>
+<p>由于用户访问网站的数据记录很多，如果不对数据进行分类处理，对所有的记录直接采用推荐系统进行推荐，这样会存在一下问题。</p>
+<ol>
+<li>数据量太大意味着物品数与用户数很多，在模型构建用户与物品稀疏矩阵时，出现设备内存空间不够的情况，并且模型计算需要消耗大量的时间。</li>
+<li>用户区别很大，不同的用户关注的信息不一样，因此，即使能够得到推荐结果，其效果也会不好。</li>
+</ol>
+<p>为了避免出现上述问题，需要进行分类处理与分析。</p>
+<p>正常的情况下，需要对用户的兴趣爱好以及需求进行分类。<br>因为在用户访问记录中，没有记录用户访问页面时间的长短，因此不容易判断用户兴趣爱好。<br>因此，本文根据用户浏览的网页信息进行分析处理，主要采用以下方法处理：以用户浏览网页的类型进行分类，然后对每个类型中的内容进行推荐。</p>
+<p>分析过程如下：</p>
+<ul>
+<li>从系统中获取用户访问网站的原始记录。</li>
+<li>对数据进行多维分析，包括用户访问内容，流失用户分析以及用户分类等分析。</li>
+<li>对数据进行预处理，包含数据去重、数据变换和数据分类鞥处理过程。</li>
+<li>以用户访问html后缀的页面为关键条件，对数据进行处理。</li>
+<li>对比多种推荐算法进行推荐，通过模型评价，得到比较好的智能推荐模型。通过模型对样本数据进行预测，获得推荐结果。</li>
+</ul>
+<h2 id="主流推荐算法"><a href="#主流推荐算法" class="headerlink" title="主流推荐算法"></a>主流推荐算法</h2><table>
 <thead>
 <tr>
-<th align="center">函数</th>
-<th align="center">描述</th>
+<th>推荐方法</th>
+<th>描述</th>
 </tr>
 </thead>
 <tbody><tr>
-<td align="center">count</td>
-<td align="center">统计非空值数量</td>
+<td>基于内容推荐</td>
+<td></td>
 </tr>
 <tr>
-<td align="center">sum</td>
-<td align="center">汇总值</td>
+<td>协同过滤推荐</td>
+<td></td>
 </tr>
 <tr>
-<td align="center">mean</td>
-<td align="center">平均值</td>
+<td>基于规则推荐</td>
+<td></td>
 </tr>
 <tr>
-<td align="center">mad</td>
-<td align="center">平均绝对偏差</td>
+<td>基于效用推荐</td>
+<td></td>
 </tr>
 <tr>
-<td align="center">median</td>
-<td align="center">算数中位数</td>
+<td>基于知识推荐</td>
+<td></td>
 </tr>
 <tr>
-<td align="center">min</td>
-<td align="center">最小值</td>
-</tr>
-<tr>
-<td align="center">max</td>
-<td align="center">最大值</td>
-</tr>
-<tr>
-<td align="center">mode</td>
-<td align="center">众数</td>
-</tr>
-<tr>
-<td align="center">abs</td>
-<td align="center">绝对值</td>
-</tr>
-<tr>
-<td align="center">prod</td>
-<td align="center">乘积</td>
-</tr>
-<tr>
-<td align="center">std</td>
-<td align="center">贝塞尔校正的样本标准偏差</td>
-</tr>
-<tr>
-<td align="center">var</td>
-<td align="center">无偏方差</td>
-</tr>
-<tr>
-<td align="center">sem</td>
-<td align="center">平均值的标准误差</td>
-</tr>
-<tr>
-<td align="center">skew</td>
-<td align="center">样本偏度 (第三阶)</td>
-</tr>
-<tr>
-<td align="center">kurt</td>
-<td align="center">样本峰度 (第四阶)</td>
-</tr>
-<tr>
-<td align="center">quantile</td>
-<td align="center">样本分位数 (不同 % 的值)</td>
-</tr>
-<tr>
-<td align="center">cumsum</td>
-<td align="center">累加</td>
-</tr>
-<tr>
-<td align="center">cumprod</td>
-<td align="center">累乘</td>
-</tr>
-<tr>
-<td align="center">cummax</td>
-<td align="center">累积最大值</td>
-</tr>
-<tr>
-<td align="center">cummin</td>
-<td align="center">累积最小值</td>
-</tr>
-<tr>
-<td align="center">describe</td>
-<td align="center">数据总描述</td>
+<td>组合推荐</td>
+<td></td>
 </tr>
 </tbody></table>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/16.RecommendedSystem/%E6%8E%A8%E8%8D%90%E6%96%B9%E6%B3%95%E5%AF%B9%E6%AF%94.png" alt="推荐方法对比"></p>
+<h3 id="基于知识推荐"><a href="#基于知识推荐" class="headerlink" title="基于知识推荐"></a>基于知识推荐</h3><p>基于知识的推荐（Knowledge-based Recommendation）在某种程度是可以看成是一种推理（Inference）技术，它不是建立在用户需要和偏好基础上推荐的。基于知识的方法因它们所用的功能知识不同而有明显区别。效用知识（Functional Knowledge）是一种关于一个项目如何满足某一特定用户的知识，因此能解释需要和推荐的关系，所以用户资料可以是任何能支持推理的知识结构，它可以是用户已经规范化的查询，也可以是一个更详细的用户需要的表示。</p>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/16.RecommendedSystem/%E5%9F%BA%E4%BA%8E%E7%9F%A5%E8%AF%86%E7%9A%84%E6%8E%A8%E8%8D%90.jpg" alt="基于知识的推荐"></p>
+<h3 id="协同过滤推荐"><a href="#协同过滤推荐" class="headerlink" title="协同过滤推荐"></a>协同过滤推荐</h3><ul>
+<li>memory-based推荐<ul>
+<li>Item-based方法</li>
+<li>User-based方法</li>
+<li>Memory-based推荐方法通过执行最近邻搜索，把每一个Item或者User看成一个向量，计算其他所有Item或者User与它的相似度。有了Item或者User之间的两两相似度之后，就可以进行预测与推荐了。 </li>
+</ul>
+</li>
+<li>model-based推荐<ul>
+<li>Model-based推荐最常见的方法为Matrix factorization.</li>
+<li>矩阵分解通过把原始的评分矩阵R分解为两个矩阵相乘，并且只考虑有评分的值，训练时不考虑missing项的值。R矩阵分解成为U与V两个矩阵后，评分矩阵R中missing的值就可以通过U矩阵中的某列和V矩阵的某行相乘得到</li>
+<li>矩阵分解的目标函数: U矩阵与V矩阵的可以通过梯度下降(gradient descent)算法求得，通过交替更新u与v多次迭代收敛之后可求出U与V。 </li>
+<li>矩阵分解背后的核心思想，找到两个矩阵，它们相乘之后得到的那个矩阵的值，与评分矩阵R中有值的位置中的值尽可能接近。这样一来，分解出来的两个矩阵相乘就尽可能还原了评分矩阵R，因为有值的地方，值都相差得尽可能地小，那么missing的值通过这样的方式计算得到，比较符合趋势。 </li>
+</ul>
+</li>
+<li>协同过滤中主要存在如下两个问题：稀疏性与冷启动问题。已有的方案通常会通过引入多个不同的数据源或者辅助信息(Side information)来解决这些问题，用户的Side information可以是用户的基本个人信息、用户画像信息等，而Item的Side information可以是物品的content信息等。</li>
+</ul>
+<h2 id="效果评估"><a href="#效果评估" class="headerlink" title="效果评估"></a>效果评估</h2><ol>
+<li>召回率和准确率 【人为统计分析】</li>
+<li>F值(P-R曲线) 【偏重：非均衡问题】</li>
+<li>ROC和AUC  【偏重：不同结果的对比】</li>
+</ol>
+<blockquote>
+<p>摘录的原文地址：</p>
+</blockquote>
+<ul>
+<li><a href="http://www.36dsj.com/archives/9519" target="_blank" rel="noopener">推荐系统中常用算法 以及优点缺点对比</a></li>
+<li><a href="https://zhidao.baidu.com/question/2013524494179442228.html" target="_blank" rel="noopener">推荐算法的基于知识推荐</a></li>
+<li><a href="http://www.iteye.com/news/32100" target="_blank" rel="noopener">推荐系统中基于深度学习的混合协同过滤模型</a></li>
+</ul>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a> </li>
+</ul>
 
     </div>
 
@@ -373,7 +367,6 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Pandas/" rel="tag"><i class="fa fa-tag"></i> Pandas</a>
               <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
           </div>
 
@@ -383,13 +376,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/28/Pandas%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0---001/" rel="prev" title="Pandas学习笔记---001">
-      <i class="fa fa-chevron-left"></i> Pandas学习笔记---001
+    <a href="/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/" rel="prev" title="第15章 大数据与MapReduce">
+      <i class="fa fa-chevron-left"></i> 第15章 大数据与MapReduce
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/05/31/1.%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/" rel="next" title="第1章 机器学习基础">
-      第1章 机器学习基础 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -449,7 +439,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Pandas学习笔记—002"><span class="nav-number">1.</span> <span class="nav-text">Pandas学习笔记—002</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础用法"><span class="nav-number">1.1.</span> <span class="nav-text">基础用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-df-head-n-和-df-tail"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. df.head(n) 和 df.tail()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-合并重叠数据集"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 合并重叠数据集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-描述性统计"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 描述性统计</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景与挖掘目标"><span class="nav-number">1.</span> <span class="nav-text">背景与挖掘目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分析方法与过程"><span class="nav-number">2.</span> <span class="nav-text">分析方法与过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主流推荐算法"><span class="nav-number">3.</span> <span class="nav-text">主流推荐算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于知识推荐"><span class="nav-number">3.1.</span> <span class="nav-text">基于知识推荐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协同过滤推荐"><span class="nav-number">3.2.</span> <span class="nav-text">协同过滤推荐</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果评估"><span class="nav-number">4.</span> <span class="nav-text">效果评估</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -618,7 +608,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'gitalk-commnet',
       owner       : 'Slashyouth',
       admin       : ['Slashyouth'],
-      id          : 'd16fe54b35a8b8e11b4f9094966119b9',
+      id          : '0cff6b425a834a86348a72b9dccdadc7',
         language: 'zh-CN',
       distractionFreeMode: true
     });

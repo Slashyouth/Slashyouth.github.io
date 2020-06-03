@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="大数据 概述大数据: 收集到的数据已经远远超出了我们的处理能力。 大数据 场景1234假如你为一家网络购物商店工作，很多用户访问该网站，其中有些人会购买商品，有些人则随意浏览后就离开。对于你来说，可能很想识别那些有购物意愿的用户。那么问题就来了，数据集可能会非常大，在单机上训练要运行好几天。接下来：我们讲讲 MapRedece 如何来解决这样的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第15章 大数据与MapReduce">
+<meta property="og:url" content="https://slashyouth.github.io/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="大数据 概述大数据: 收集到的数据已经远远超出了我们的处理能力。 大数据 场景1234假如你为一家网络购物商店工作，很多用户访问该网站，其中有些人会购买商品，有些人则随意浏览后就离开。对于你来说，可能很想识别那些有购物意愿的用户。那么问题就来了，数据集可能会非常大，在单机上训练要运行好几天。接下来：我们讲讲 MapRedece 如何来解决这样的问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://data.apachecn.org/img/AiLearning/ml/15.BigData_MapReduce/mr_1_cluster.jpg">
+<meta property="article:published_time" content="2020-06-03T09:33:36.735Z">
+<meta property="article:modified_time" content="2020-06-03T09:32:51.348Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://data.apachecn.org/img/AiLearning/ml/15.BigData_MapReduce/mr_1_cluster.jpg">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>第15章 大数据与MapReduce | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">1</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">18</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第15章 大数据与MapReduce
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-06-03 17:33:36 / 修改时间：17:32:51" itemprop="dateCreated datePublished" datetime="2020-06-03T17:33:36+08:00">2020-06-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="大数据-概述"><a href="#大数据-概述" class="headerlink" title="大数据 概述"></a>大数据 概述</h2><p><code>大数据: 收集到的数据已经远远超出了我们的处理能力。</code></p>
+<h2 id="大数据-场景"><a href="#大数据-场景" class="headerlink" title="大数据 场景"></a>大数据 场景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">假如你为一家网络购物商店工作，很多用户访问该网站，其中有些人会购买商品，有些人则随意浏览后就离开。</span><br><span class="line">对于你来说，可能很想识别那些有购物意愿的用户。</span><br><span class="line">那么问题就来了，数据集可能会非常大，在单机上训练要运行好几天。</span><br><span class="line">接下来：我们讲讲 MapRedece 如何来解决这样的问题</span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+<h2 id="MapRedece"><a href="#MapRedece" class="headerlink" title="MapRedece"></a>MapRedece</h2><h3 id="Hadoop-概述"><a href="#Hadoop-概述" class="headerlink" title="Hadoop 概述"></a>Hadoop 概述</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">Hadoop</span> <span class="string">是 MapRedece 框架的一个免费开源实现。</span></span><br><span class="line"><span class="attr">MapReduce</span>: <span class="string">分布式的计算框架，可以将单个计算作业分配给多台计算机执行。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MapRedece-原理"><a href="#MapRedece-原理" class="headerlink" title="MapRedece 原理"></a>MapRedece 原理</h3><blockquote>
+<p>MapRedece 工作原理</p>
+</blockquote>
+<ul>
+<li>主节点控制 MapReduce 的作业流程</li>
+<li>MapReduce 的作业可以分成map任务和reduce任务</li>
+<li>map 任务之间不做数据交流，reduce 任务也一样</li>
+<li>在 map 和 reduce 阶段中间，有一个 sort 和 combine 阶段</li>
+<li>数据被重复存放在不同的机器上，以防止某个机器失效</li>
+<li>mapper 和 reducer 传输的数据形式为 key/value对</li>
+</ul>
+<p><img src="http://data.apachecn.org/img/AiLearning/ml/15.BigData_MapReduce/mr_1_cluster.jpg" alt="MapReduce框架的示意图" title="MapReduce框架的示意图"></p>
+<blockquote>
+<p>MapRedece 特点</p>
+</blockquote>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">优点: 使程序以并行的方式执行，可在短时间内完成大量工作。</span></span><br><span class="line"><span class="section">缺点: 算法必须经过重写，需要对系统工程有一定的理解。</span></span><br><span class="line"><span class="section">适用数据类型: 数值型和标称型数据。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Hadoop-流-Python-调用"><a href="#Hadoop-流-Python-调用" class="headerlink" title="Hadoop 流(Python 调用)"></a>Hadoop 流(Python 调用)</h3><blockquote>
+<p>理论简介</p>
+</blockquote>
+<p>例如: Hadoop流可以像Linux命令一样执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat inputFile.txt | python mapper.py | sort | python reducer.py &gt; outputFile.txt</span><br></pre></td></tr></table></figure>
+
+<p>类似的Hadoop流就可以在多台机器上分布式执行，用户可以通过Linux命令来测试Python语言编写的MapReduce脚本。</p>
+<blockquote>
+<p>实战脚本</p>
+</blockquote>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 测试 Mapper</span><br><span class="line"># Linux</span><br><span class="line"><span class="keyword">cat</span> data/<span class="number">15</span>.BigData_MapReduce/inputFile.txt | <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanMapper.<span class="keyword">py</span></span><br><span class="line"># Window</span><br><span class="line"># <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanMapper.<span class="keyword">py</span> &lt; data/<span class="number">15</span>.BigData_MapReduce/inputFile.txt</span><br><span class="line"></span><br><span class="line"># 测试 Reducer</span><br><span class="line"># Linux</span><br><span class="line"><span class="keyword">cat</span> data/<span class="number">15</span>.BigData_MapReduce/inputFile.txt | <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanMapper.<span class="keyword">py</span> | <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanReducer.<span class="keyword">py</span></span><br><span class="line"># Window</span><br><span class="line"># <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanMapper.<span class="keyword">py</span> &lt; data/<span class="number">15</span>.BigData_MapReduce/inputFile.txt | <span class="keyword">python</span> src/<span class="keyword">python</span>/<span class="number">15</span>.BigData_MapReduce/mrMeanReducer.<span class="keyword">py</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="MapReduce-机器学习"><a href="#MapReduce-机器学习" class="headerlink" title="MapReduce 机器学习"></a>MapReduce 机器学习</h3><h4 id="Mahout-in-Action"><a href="#Mahout-in-Action" class="headerlink" title="Mahout in Action"></a>Mahout in Action</h4><ol>
+<li>简单贝叶斯：它属于为数不多的可以很自然的使用MapReduce的算法。通过统计在某个类别下某特征的概率。</li>
+<li>k-近邻算法：高维数据下（如文本、图像和视频）流行的近邻查找方法是局部敏感哈希算法。</li>
+<li>支持向量机(SVM)：使用随机梯度下降算法求解，如Pegasos算法。</li>
+<li>奇异值分解：Lanczos算法是一个有效的求解近似特征值的算法。</li>
+<li>k-均值聚类：canopy算法初始化k个簇，然后再运行K-均值求解结果。</li>
+</ol>
+<h3 id="使用-mrjob-库将-MapReduce-自动化"><a href="#使用-mrjob-库将-MapReduce-自动化" class="headerlink" title="使用 mrjob 库将 MapReduce 自动化"></a>使用 mrjob 库将 MapReduce 自动化</h3><blockquote>
+<p>理论简介</p>
+</blockquote>
+<ul>
+<li>MapReduce 作业流自动化的框架：Cascading 和 Oozie.</li>
+<li>mrjob 是一个不错的学习工具，与2010年底实现了开源，来之于 Yelp(一个餐厅点评网站).</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python src/python/15.BigData_MapReduce/mrMean.py &lt; data/15.BigData_MapReduce/inputFile.txt &gt; data/15.BigData_MapReduce/myOut.txt</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>实战脚本</p>
+</blockquote>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># 测试 mrjob的案例</span></span><br><span class="line"><span class="meta"># 先测试一下mapper方法</span></span><br><span class="line"><span class="meta"># python src/python/15.BigData_MapReduce/mrMean.py --mapper &lt; data/15.BigData_MapReduce/inputFile.txt</span></span><br><span class="line"><span class="meta"># 运行整个程序，移除 --mapper 就行</span></span><br><span class="line">python src/python/<span class="number">15.</span>BigData_MapReduce/mrMean.py &lt; data/<span class="number">15.</span>BigData_MapReduce/inputFile.txt</span><br></pre></td></tr></table></figure>
+
+<h3 id="项目案例：分布式-SVM-的-Pegasos-算法"><a href="#项目案例：分布式-SVM-的-Pegasos-算法" class="headerlink" title="项目案例：分布式 SVM 的 Pegasos 算法"></a>项目案例：分布式 SVM 的 Pegasos 算法</h3><p>Pegasos是指原始估计梯度求解器(Peimal Estimated sub-GrAdient Solver)</p>
+<h4 id="Pegasos-工作原理"><a href="#Pegasos-工作原理" class="headerlink" title="Pegasos 工作原理"></a>Pegasos 工作原理</h4><ol>
+<li>从训练集中随机挑选一些样本点添加到待处理列表中</li>
+<li>按序判断每个样本点是否被正确分类<ul>
+<li>如果是则忽略</li>
+<li>如果不是则将其加入到待更新集合。</li>
+</ul>
+</li>
+<li>批处理完毕后，权重向量按照这些错分的样本进行更新。</li>
+</ol>
+<p>上述算法伪代码如下：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">将 回归系数w 初始化为<span class="number">0</span></span><br><span class="line">对每次批处理</span><br><span class="line">    随机选择 k 个样本点(向量)</span><br><span class="line">    对每个向量</span><br><span class="line">        如果该向量被错分：</span><br><span class="line">            更新权重向量 w</span><br><span class="line">    累加对 w 的更新</span><br></pre></td></tr></table></figure>
+
+<h4 id="开发流程"><a href="#开发流程" class="headerlink" title="开发流程"></a>开发流程</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">收集数据：数据按文本格式存放。</span><br><span class="line">准备数据：输入数据已经是可用的格式，所以不需任何准备工作。如果你需要解析一个大规模的数据集，建议使用 <span class="built_in">map</span> 作业来完成，从而达到并行处理的目的。</span><br><span class="line">分析数据：无。</span><br><span class="line">训练算法：与普通的 SVM 一样，在分类器训练上仍需花费大量的时间。</span><br><span class="line">测试算法：在二维空间上可视化之后，观察超平面，判断算法是否有效。</span><br><span class="line">使用算法：本例不会展示一个完整的应用，但会展示如何在大数据集上训练SVM。该算法其中一个应用场景就是本文分类，通常在文本分类里可能有大量的文档和成千上万的特征。</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>收集数据</p>
+</blockquote>
+<p>文本文件数据格式如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0.365032</span>        <span class="number">2.465645</span>        <span class="number">-1</span></span><br><span class="line"><span class="number">-2.494175</span>       <span class="number">-0.292380</span>       <span class="number">-1</span></span><br><span class="line"><span class="number">-3.039364</span>       <span class="number">-0.123108</span>       <span class="number">-1</span></span><br><span class="line"><span class="number">1.348150</span>        <span class="number">0.255696</span>        <span class="number">1</span></span><br><span class="line"><span class="number">2.768494</span>        <span class="number">1.234954</span>        <span class="number">1</span></span><br><span class="line"><span class="number">1.232328</span>        <span class="number">-0.601198</span>       <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>准备数据</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loadDataSet</span><span class="params">(fileName)</span>:</span></span><br><span class="line">    dataMat = []</span><br><span class="line">    labelMat = []</span><br><span class="line">    fr = open(fileName)</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> fr.readlines():</span><br><span class="line">        lineArr = line.strip().split(<span class="string">'\t'</span>)</span><br><span class="line">        <span class="comment"># dataMat.append([float(lineArr[0]), float(lineArr[1]), float(lineArr[2])])</span></span><br><span class="line">        dataMat.append([float(lineArr[<span class="number">0</span>]), float(lineArr[<span class="number">1</span>])])</span><br><span class="line">        labelMat.append(float(lineArr[<span class="number">2</span>]))</span><br><span class="line">    <span class="keyword">return</span> dataMat, labelMat</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>分析数据: 无</p>
+</blockquote>
+<blockquote>
+<p>训练算法</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">batchPegasos</span><span class="params">(dataSet, labels, lam, T, k)</span>:</span></span><br><span class="line">    <span class="string">"""batchPegasos()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Args:</span></span><br><span class="line"><span class="string">        dataMat    特征集合</span></span><br><span class="line"><span class="string">        labels     分类结果集合</span></span><br><span class="line"><span class="string">        lam        固定值</span></span><br><span class="line"><span class="string">        T          迭代次数</span></span><br><span class="line"><span class="string">        k          待处理列表大小</span></span><br><span class="line"><span class="string">    Returns:</span></span><br><span class="line"><span class="string">        w          回归系数</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    m, n = shape(dataSet)</span><br><span class="line">    w = zeros(n)  <span class="comment"># 回归系数</span></span><br><span class="line">    dataIndex = range(m)</span><br><span class="line">    <span class="keyword">for</span> t <span class="keyword">in</span> range(<span class="number">1</span>, T+<span class="number">1</span>):</span><br><span class="line">        wDelta = mat(zeros(n))  <span class="comment"># 重置 wDelta</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 它是学习率，代表了权重调整幅度的大小。（也可以理解为随机梯度的步长，使它不断减小，便于拟合）</span></span><br><span class="line">        <span class="comment"># 输入T和K分别设定了迭代次数和待处理列表的大小。在T次迭代过程中，每次需要重新计算eta</span></span><br><span class="line">        eta = <span class="number">1.0</span>/(lam*t)</span><br><span class="line">        random.shuffle(dataIndex)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(k):      <span class="comment"># 全部的训练集  内循环中执行批处理，将分类错误的值全部做累加后更新权重向量</span></span><br><span class="line">            i = dataIndex[j]</span><br><span class="line">            p = predict(w, dataSet[i, :])              <span class="comment"># mapper 代码</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 如果预测正确，并且预测结果的绝对值&gt;=1，因为最大间隔为1, 认为没问题。</span></span><br><span class="line">            <span class="comment"># 否则算是预测错误, 通过预测错误的结果，来累计更新w.</span></span><br><span class="line">            <span class="keyword">if</span> labels[i]*p &lt; <span class="number">1</span>:                        <span class="comment"># mapper 代码</span></span><br><span class="line">                wDelta += labels[i]*dataSet[i, :].A    <span class="comment"># 累积变化</span></span><br><span class="line">        <span class="comment"># w通过不断的随机梯度的方式来优化</span></span><br><span class="line">        w = (<span class="number">1.0</span> - <span class="number">1</span>/t)*w + (eta/k)*wDelta             <span class="comment"># 在每个 T上应用更改</span></span><br><span class="line">        <span class="comment"># print '-----', w</span></span><br><span class="line">    <span class="comment"># print '++++++', w</span></span><br><span class="line">    <span class="keyword">return</span> w</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/pegasos.py" target="_blank" rel="noopener">完整代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/pegasos.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/pegasos.py</a></p>
+<p>运行方式：<code>python /opt/git/MachineLearning/src/python/15.BigData_MapReduce/mrSVM.py &lt; data/15.BigData_MapReduce/inputFile.txt</code><br><a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/mrSVM.py" target="_blank" rel="noopener">MR版本的代码地址</a>: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/mrSVM.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/15.BigData_MapReduce/mrSVM.py</a></p>
+<hr>
+<ul>
+<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
+<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a>      </li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/06/03/14.%E5%88%A9%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/" rel="prev" title="第14章 利用SVD简化数据">
+      <i class="fa fa-chevron-left"></i> 第14章 利用SVD简化数据
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" rel="next" title="第16章 推荐系统">
+      第16章 推荐系统 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#大数据-概述"><span class="nav-number">1.</span> <span class="nav-text">大数据 概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#大数据-场景"><span class="nav-number">2.</span> <span class="nav-text">大数据 场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MapRedece"><span class="nav-number">3.</span> <span class="nav-text">MapRedece</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-概述"><span class="nav-number">3.1.</span> <span class="nav-text">Hadoop 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapRedece-原理"><span class="nav-number">3.2.</span> <span class="nav-text">MapRedece 原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hadoop-流-Python-调用"><span class="nav-number">3.3.</span> <span class="nav-text">Hadoop 流(Python 调用)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MapReduce-机器学习"><span class="nav-number">3.4.</span> <span class="nav-text">MapReduce 机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mahout-in-Action"><span class="nav-number">3.4.1.</span> <span class="nav-text">Mahout in Action</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-mrjob-库将-MapReduce-自动化"><span class="nav-number">3.5.</span> <span class="nav-text">使用 mrjob 库将 MapReduce 自动化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目案例：分布式-SVM-的-Pegasos-算法"><span class="nav-number">3.6.</span> <span class="nav-text">项目案例：分布式 SVM 的 Pegasos 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pegasos-工作原理"><span class="nav-number">3.6.1.</span> <span class="nav-text">Pegasos 工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开发流程"><span class="nav-number">3.6.2.</span> <span class="nav-text">开发流程</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">163k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:28</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : 'd70fa69e887a0711e88b4a6481894b74',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
