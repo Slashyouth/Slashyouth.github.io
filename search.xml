@@ -3042,6 +3042,8 @@
     <url>/2020/07/21/%E7%BF%BB%E8%AF%91-A%20Survey%20on%20Knowledge%20Graphs-Representation%20Acquisition%20and%20Applications/</url>
     <content><![CDATA[<p><strong>【导读】</strong>最近Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, Philip S. Yu等学者发表了关于知识图谱的最新综述论文《<strong>A Survey on Knowledge Graphs: Representation, Acquisition and Applications</strong>》，25页pdf涵盖107篇参考文献，对知识图谱进行了全面的综述，涵盖了<strong>知识图谱表示学习、知识获取与补全、时序知识图谱、知识感知应用</strong>等方面的研究课题，并总结了最近的突破和未来的研究方向。我们提出对这些主题进行全视角分类和新的分类法。是关于知识图谱最近非常重要的参考文献。</p>
 <p><img src="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1NaTOE7Yq92GIeibKbA7vPEvoiaSYjSze9qzicVpnh8giaR5a23Dmdnxx2mt9tjgojj1OVTxy4XL5SYA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img"></p>
+<a id="more"></a>
+
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h2><p>人类知识提供了对世界的认知理解。表征实体间结构关系的知识图谱已经成为认知和人类智能研究的一个日益流行的方向。在本次综述论文中，我们对知识图谱进行了全面的综述，涵盖了<strong>知识图谱表示学习、知识获取与补全、时序知识图谱、知识感知应用</strong>等方面的研究课题，并总结了最近的突破和未来的研究方向。我们提出对这些主题进行全视角分类和新的分类法。<strong>知识图谱嵌入从表示空间、得分函数、编码模型和辅助信息四个方面进行组织</strong>。对<strong>知识获取，特别是知识图谱的补全、嵌入方法、路径推理和逻辑规则</strong>推理进行了综述。我们进一步探讨了几个新兴的主题，包括<strong>元关系学习、常识推理和时序知识图谱</strong>。为了方便未来对知识图的研究，我们还提供了不同任务的数据集和开源库的集合。最后，我们对几个有前景的研究方向进行了深入的展望。</p>
 <h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a><strong>1. 引言</strong></h2><p>融合人类知识是人工智能的研究方向之一。知识表示与推理是受人类解决问题方式的启发，为智能系统表示知识以获得解决复杂任务的能力。近年来，知识图谱作为结构化人类知识的一种形式，受到了学术界和产业界的广泛关注。<strong>知识图谱是事实的结构化表示，由实体、关系和语义描述组成</strong>。实体可以是现实世界的对象和抽象概念，关系表示实体之间的关联，实体及其关系的语义描述包含定义良好的类型和属性。属性图或性质图被广泛使用，其中节点和关系具有属性或性质。</p>
 <p>知识图谱与知识库是同义的，只是略有不同。当考虑知识图谱的图结构时，知识图谱可以看作是一个图。当它涉及到形式语义时，它可以作为解释和推断事实的知识库。知识库实例和知识图谱如图1所示。知识可以用事实的三元组形式来表达（头实体，关系，尾实体）或者（主语，谓语，宾语）(head, relation,tail)或 (subject, predicate,object) </p>
