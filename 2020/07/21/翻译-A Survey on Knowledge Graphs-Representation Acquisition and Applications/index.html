@@ -20,28 +20,49 @@
     var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Slash Youth">
-<meta property="og:url" content="https://slashyouth.github.io/index.html">
+  <meta name="description" content="【导读】最近Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, Philip S. Yu等学者发表了关于知识图谱的最新综述论文《A Survey on Knowledge Graphs: Representation, Acquisition and Applications》，25页pdf涵盖107篇参考文献，对知识图谱进行了全面的综">
+<meta property="og:type" content="article">
+<meta property="og:title" content="翻译-A Survey on Knowledge Graphs-Representation Acquisition and Applications">
+<meta property="og:url" content="https://slashyouth.github.io/2020/07/21/%E7%BF%BB%E8%AF%91-A%20Survey%20on%20Knowledge%20Graphs-Representation%20Acquisition%20and%20Applications/index.html">
 <meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="【导读】最近Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, Philip S. Yu等学者发表了关于知识图谱的最新综述论文《A Survey on Knowledge Graphs: Representation, Acquisition and Applications》，25页pdf涵盖107篇参考文献，对知识图谱进行了全面的综">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1NaTOE7Yq92GIeibKbA7vPEvoiaSYjSze9qzicVpnh8giaR5a23Dmdnxx2mt9tjgojj1OVTxy4XL5SYA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw3y4gISW2dgzIZJuoPqiahfDljpZGtTkr9fNADtF790ojtnWGZGealiacSMGiaQficticUia94QJMpuFXDg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw3y4gISW2dgzIZJuoPqiahfDCocVMYjvtusR5Xm21Hv9H3PZPGQEcGr2ak4Sf1DxTMtlVcEWudpBXg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcPtfCcplT3tFP5wQRcZrJqnQaS6ich4FrvicJe0YpxCt8ecBMaHv6nnlw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcKvhVw33icTt7fMW03kpdjsAYYRyMyn1pxdJTerkS7PwmNh6R7c3C5xQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcgvH1Te5D7cG2IIBsu7XGTw3joD2jSwUxBXRFHyvYVY2AiaiaN66fibkjw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcwVxuEaKDTTM33fP2sRHcxgQtzxUA4IWU2Tf2TlIP1OScsEia2vhVwKQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFct7MkJrYbQ7SI0RlXp8wfZj3Rm75j77ABlBeSVBYkzAx9wlTIJTbn5A/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcoGEnoLfzvXx7XcbAOEZZDNpZUhyaD2wbBIhLLOrTcoEoBF07cTYKIg/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFc0IU8wcvCdhhQNoPQWXbDScRqV3ibJQInIuIv0iaWMAjLrkdIuaxq6nsw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcfG3X5emvoiaoDInwP06L6Kav9EOgk98d6PT3JPYeXhRgibTibSnd2Pa6g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFcxhvzGBxbNsobnSiaCRBlBdkhtWRiagZ1ib6P8AkYbiaTWPhwiaictnlyPQKA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1cVpgRZMk258hyicM9JBoFc38oXzOAmjibpoCL1DpZn1fT0X2bIv9pRQhO8G29CySqNPdrvVmYQibQA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="article:published_time" content="2020-07-21T07:50:03.109Z">
+<meta property="article:modified_time" content="2020-07-21T07:51:13.005Z">
 <meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="知识图谱">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="知识图谱综述">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1NaTOE7Yq92GIeibKbA7vPEvoiaSYjSze9qzicVpnh8giaR5a23Dmdnxx2mt9tjgojj1OVTxy4XL5SYA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
 
-<link rel="canonical" href="https://slashyouth.github.io/">
+<link rel="canonical" href="https://slashyouth.github.io/2020/07/21/%E7%BF%BB%E8%AF%91-A%20Survey%20on%20Knowledge%20Graphs-Representation%20Acquisition%20and%20Applications/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Slash Youth</title>
+  <title>翻译-A Survey on Knowledge Graphs-Representation Acquisition and Applications | Slash Youth</title>
   
 
 
@@ -184,9 +205,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -202,10 +224,9 @@
       <meta itemprop="name" content="Slash Youth">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/21/%E7%BF%BB%E8%AF%91-A%20Survey%20on%20Knowledge%20Graphs-Representation%20Acquisition%20and%20Applications/" class="post-title-link" itemprop="url">翻译-A Survey on Knowledge Graphs-Representation Acquisition and Applications</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          翻译-A Survey on Knowledge Graphs-Representation Acquisition and Applications
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -228,6 +249,13 @@
             </span>
 
           
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
             <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
@@ -250,7 +278,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><strong>【导读】</strong>最近Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, Philip S. Yu等学者发表了关于知识图谱的最新综述论文《<strong>A Survey on Knowledge Graphs: Representation, Acquisition and Applications</strong>》，25页pdf涵盖107篇参考文献，对知识图谱进行了全面的综述，涵盖了<strong>知识图谱表示学习、知识获取与补全、时序知识图谱、知识感知应用</strong>等方面的研究课题，并总结了最近的突破和未来的研究方向。我们提出对这些主题进行全视角分类和新的分类法。是关于知识图谱最近非常重要的参考文献。</p>
+        <p><strong>【导读】</strong>最近Shaoxiong Ji, Shirui Pan, Erik Cambria, Pekka Marttinen, Philip S. Yu等学者发表了关于知识图谱的最新综述论文《<strong>A Survey on Knowledge Graphs: Representation, Acquisition and Applications</strong>》，25页pdf涵盖107篇参考文献，对知识图谱进行了全面的综述，涵盖了<strong>知识图谱表示学习、知识获取与补全、时序知识图谱、知识感知应用</strong>等方面的研究课题，并总结了最近的突破和未来的研究方向。我们提出对这些主题进行全视角分类和新的分类法。是关于知识图谱最近非常重要的参考文献。</p>
 <p><img src="https://mmbiz.qpic.cn/mmbiz_png/AefvpgiaIPw1NaTOE7Yq92GIeibKbA7vPEvoiaSYjSze9qzicVpnh8giaR5a23Dmdnxx2mt9tjgojj1OVTxy4XL5SYA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img"></p>
 <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a><strong>摘要</strong></h2><p>人类知识提供了对世界的认知理解。表征实体间结构关系的知识图谱已经成为认知和人类智能研究的一个日益流行的方向。在本次综述论文中，我们对知识图谱进行了全面的综述，涵盖了<strong>知识图谱表示学习、知识获取与补全、时序知识图谱、知识感知应用</strong>等方面的研究课题，并总结了最近的突破和未来的研究方向。我们提出对这些主题进行全视角分类和新的分类法。<strong>知识图谱嵌入从表示空间、得分函数、编码模型和辅助信息四个方面进行组织</strong>。对<strong>知识获取，特别是知识图谱的补全、嵌入方法、路径推理和逻辑规则</strong>推理进行了综述。我们进一步探讨了几个新兴的主题，包括<strong>元关系学习、常识推理和时序知识图谱</strong>。为了方便未来对知识图的研究，我们还提供了不同任务的数据集和开源库的集合。最后，我们对几个有前景的研究方向进行了深入的展望。</p>
 <h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1. 引言"></a><strong>1. 引言</strong></h2><p>融合人类知识是人工智能的研究方向之一。知识表示与推理是受人类解决问题方式的启发，为智能系统表示知识以获得解决复杂任务的能力。近年来，知识图谱作为结构化人类知识的一种形式，受到了学术界和产业界的广泛关注。<strong>知识图谱是事实的结构化表示，由实体、关系和语义描述组成</strong>。实体可以是现实世界的对象和抽象概念，关系表示实体之间的关联，实体及其关系的语义描述包含定义良好的类型和属性。属性图或性质图被广泛使用，其中节点和关系具有属性或性质。</p>
@@ -344,666 +372,42 @@
 <p>主流的研究主要集中在静态知识图谱上，在预测时间范围有效性和学习时间信息和实体动态方面也有一些工作。许多事实只在特定的时期内有效。考虑到知识图铺的时间特性，动态知识图谱可以解决传统知识表示和推理的局限性。</p>
 <h2 id="8-结论"><a href="#8-结论" class="headerlink" title="8 结论"></a><strong>8 结论</strong></h2><p><strong>知识图谱作为人类知识的集合</strong>，随着知识表示学习、知识获取方法的出现和知识感知应用的广泛，知识图谱的研究越来越受到重视。本文从四个方面进行了全面的综述: 1)知识图谱嵌入，从嵌入空间、评分指标、编码模型、外部信息嵌入、训练策略等方面进行了全方位的系统综述; 2)从嵌入学习、关系路径推理、逻辑规则推理三个角度对实体发现、关系提取、图补全的知识获取;时序知识图表示学习与完成；4) 在自然语言理解，推荐系统，问题回答和其他杂项应用上的真实世界的知识感知应用。此外，还介绍了数据集和开源库的一些有用资源，并对未来的研究方向进行了讨论。知识图谱承载着一个庞大的研究社区，并具有广泛的方法和应用。我们进行这项综述是为了总结当前有代表性的研究工作和趋势，并期望它能促进未来的研究。</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" rel="tag"><i class="fa fa-tag"></i> 知识图谱</a>
+              <a href="/tags/NLP/" rel="tag"><i class="fa fa-tag"></i> NLP</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E7%BB%BC%E8%BF%B0/" rel="tag"><i class="fa fa-tag"></i> 知识图谱综述</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/" class="post-title-link" itemprop="url">Neural Snowball for Few-Shot Relation Learning-翻译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-07-21 15:32:35 / 修改时间：15:49:01" itemprop="dateCreated datePublished" datetime="2020-07-21T15:32:35+08:00">2020-07-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" itemprop="url" rel="index"><span itemprop="name">知识图谱</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>10k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>9 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Neural-Snowball-for-Few-Shot-Relation-Learning"><a href="#Neural-Snowball-for-Few-Shot-Relation-Learning" class="headerlink" title="Neural Snowball for Few-Shot Relation Learning"></a>Neural Snowball for Few-Shot Relation Learning</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>知识图谱正处于新的关系不断增长的状况，基于大量充足信息预先定义好关系的关系抽取方法不能很好的处理这种状况。在利用少量的样本来处理新的关系的目标下，我们提出了一种新颖的自展方法-<strong>Neural Snowball</strong>，通过转换现有关系的语义知识来学习新的关系。更详细地说，我们使用了关系连体网络（<a href="https://blog.csdn.net/hei653779919/article/details/106588973" target="_blank" rel="noopener">RSN</a>）来学习基于已有关系及其标记数据的实例之间的关系相似性度量，然后，在给定一个新关系及其少量实例的基础上，利用RSN从未标记的语料库中积累可靠的实例，并用这些实例训练一个关系分类器，进一步识别新关系的新事实。这个过程就像雪球一样反复进行。实验表明我们的模型对于小样本学习可以获取更高质量的实例，并且相比于baseline，性能有重大的提升。代码与数据集发布在<a href="https://github.com/thunlp/Neural-Snowball" target="_blank" rel="noopener">https://github.com/thunlp/Neural-Snowball</a>。<img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-01.PNG" alt=""></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">第16章 推荐系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:33:44 / 修改时间：17:33:10" itemprop="dateCreated datePublished" datetime="2020-06-03T17:33:44+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>1.8k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="背景与挖掘目标"><a href="#背景与挖掘目标" class="headerlink" title="背景与挖掘目标"></a>背景与挖掘目标</h2><p>随着互联网的快速发展，用户很难快速从海量信息中寻找到自己感兴趣的信息。因此诞生了：搜索引擎+推荐系统</p>
-<p>本章节-推荐系统：</p>
-<ol>
-<li>帮助用户发现其感兴趣和可能感兴趣的信息。</li>
-<li>让网站价值信息脱颖而出，得到广大用户的认可。</li>
-<li>提高用户对网站的忠诚度和关注度，建立稳固用户群体。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/16.%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/" rel="prev" title="Neural Snowball for Few-Shot Relation Learning-翻译">
+      <i class="fa fa-chevron-left"></i> Neural Snowball for Few-Shot Relation Learning-翻译
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
   
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/" class="post-title-link" itemprop="url">第15章 大数据与MapReduce</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:33:36 / 修改时间：17:32:51" itemprop="dateCreated datePublished" datetime="2020-06-03T17:33:36+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="大数据-概述"><a href="#大数据-概述" class="headerlink" title="大数据 概述"></a>大数据 概述</h2><p><code>大数据: 收集到的数据已经远远超出了我们的处理能力。</code></p>
-<h2 id="大数据-场景"><a href="#大数据-场景" class="headerlink" title="大数据 场景"></a>大数据 场景</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">假如你为一家网络购物商店工作，很多用户访问该网站，其中有些人会购买商品，有些人则随意浏览后就离开。</span><br><span class="line">对于你来说，可能很想识别那些有购物意愿的用户。</span><br><span class="line">那么问题就来了，数据集可能会非常大，在单机上训练要运行好几天。</span><br><span class="line">接下来：我们讲讲 MapRedece 如何来解决这样的问题</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/15.%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8EMapReduce/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/14.%E5%88%A9%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/14.%E5%88%A9%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/" class="post-title-link" itemprop="url">第14章 利用SVD简化数据</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:31:26 / 修改时间：17:31:14" itemprop="dateCreated datePublished" datetime="2020-06-03T17:31:26+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>8.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="SVD-概述"><a href="#SVD-概述" class="headerlink" title="SVD 概述"></a>SVD 概述</h2><figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">奇异值分解（<span class="built_in">SVD</span>, Singular Value Decomposition）:</span><br><span class="line">    提取信息的一种方法，可以把 <span class="built_in">SVD</span> 看成是从噪声数据中抽取相关特征。从生物信息学到金融学，<span class="built_in">SVD</span> 是提取信息的强大工具。</span><br></pre></td></tr></table></figure>
-
-<h2 id="SVD-场景"><a href="#SVD-场景" class="headerlink" title="SVD 场景"></a>SVD 场景</h2><blockquote>
-<p>信息检索-隐性语义检索（Latent Semantic Indexing, LSI）或 隐形语义分析（Latent Semantic Analysis, LSA）</p>
-</blockquote>
-<p>隐性语义索引：矩阵 = 文档 + 词语</p>
-<ul>
-<li>是最早的 SVD 应用之一，我们称利用 SVD 的方法为隐性语义索引（LSI）或隐性语义分析（LSA）。
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/14.%E5%88%A9%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/13.%E5%88%A9%E7%94%A8PCA%E6%9D%A5%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/13.%E5%88%A9%E7%94%A8PCA%E6%9D%A5%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/" class="post-title-link" itemprop="url">第13章 利用PCA来简化数据</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:30:27 / 修改时间：17:30:00" itemprop="dateCreated datePublished" datetime="2020-06-03T17:30:27+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>18k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>17 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="降维技术"><a href="#降维技术" class="headerlink" title="降维技术"></a>降维技术</h2><blockquote>
-<p>场景</p>
-</blockquote>
-<ul>
-<li><p>我们正通过电视观看体育比赛，在电视的显示器上有一个球。</p>
-</li>
-<li><p>显示器大概包含了100万像素点，而球则可能是由较少的像素点组成，例如说一千个像素点。</p>
-</li>
-<li><p>人们实时的将显示器上的百万像素转换成为一个三维图像，该图像就给出运动场上球的位置。</p>
-</li>
-<li><p>在这个过程中，人们已经将百万像素点的数据，降至为三维。这个过程就称为<code>降维(dimensionality reduction)</code></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/13.%E5%88%A9%E7%94%A8PCA%E6%9D%A5%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/" class="post-title-link" itemprop="url">第12章 使用FP-growth算法来高效发现频繁项集</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:30:02 / 修改时间：17:28:56" itemprop="dateCreated datePublished" datetime="2020-06-03T17:30:02+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 <a href="">第11章</a> 时我们已经介绍了用 <code>Apriori</code> 算法发现 <code>频繁项集</code> 与 <code>关联规则</code>。<br>本章将继续关注发现 <code>频繁项集</code> 这一任务，并使用 <code>FP-growth</code> 算法更有效的挖掘 <code>频繁项集</code>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/11.%E4%BD%BF%E7%94%A8Apriori%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
-      <meta itemprop="name" content="Jack Can">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Slash Youth">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/03/11.%E4%BD%BF%E7%94%A8Apriori%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" class="post-title-link" itemprop="url">第11章 使用Apriori算法进行关联分析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-06-03 17:27:50 / 修改时间：17:27:31" itemprop="dateCreated datePublished" datetime="2020-06-03T17:27:50+08:00">2020-06-03</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-              <span>9.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-              <span>9 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="关联分析"><a href="#关联分析" class="headerlink" title="关联分析"></a>关联分析</h2><p>关联分析是一种在大规模数据集中寻找有趣关系的任务。<br>这些关系可以有两种形式: </p>
-<ul>
-<li><p>频繁项集（frequent item sets）: 经常出现在一块的物品的集合。</p>
-</li>
-<li><p>关联规则（associational rules）: 暗示两种物品之间可能存在很强的关系。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/06/03/11.%E4%BD%BF%E7%94%A8Apriori%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
 
 
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -1050,6 +454,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-引言"><span class="nav-number">2.</span> <span class="nav-text">1. 引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-概述"><span class="nav-number">3.</span> <span class="nav-text">2 概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-知识库简史"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 知识库简史</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-定义和符号"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 定义和符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-知识图研究的分类"><span class="nav-number">3.3.</span> <span class="nav-text">2.3 知识图研究的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-相关综述论文"><span class="nav-number">3.4.</span> <span class="nav-text">2.4 相关综述论文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-知识表示学习"><span class="nav-number">4.</span> <span class="nav-text">3 知识表示学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-表示空间"><span class="nav-number">4.1.</span> <span class="nav-text">3.1 表示空间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-评分函数"><span class="nav-number">4.2.</span> <span class="nav-text">3.2 评分函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-编码模型"><span class="nav-number">4.3.</span> <span class="nav-text">3.3 编码模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-嵌入辅助信息"><span class="nav-number">4.4.</span> <span class="nav-text">3.4 嵌入辅助信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-总结"><span class="nav-number">4.5.</span> <span class="nav-text">3.5 总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-知识获取"><span class="nav-number">5.</span> <span class="nav-text">4 知识获取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-知识图谱补全"><span class="nav-number">5.1.</span> <span class="nav-text">4.1 知识图谱补全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-实体的发现"><span class="nav-number">5.2.</span> <span class="nav-text">4.2 实体的发现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-关系提取"><span class="nav-number">5.3.</span> <span class="nav-text">4.3 关系提取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-总结"><span class="nav-number">5.4.</span> <span class="nav-text">4.4 总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-时序知识图"><span class="nav-number">6.</span> <span class="nav-text">5 时序知识图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-知识图谱嵌入应用"><span class="nav-number">7.</span> <span class="nav-text">6 知识图谱嵌入应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1自然语言理解"><span class="nav-number">7.1.</span> <span class="nav-text">6.1自然语言理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-问答"><span class="nav-number">7.2.</span> <span class="nav-text">6.2 问答</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-推荐系统"><span class="nav-number">7.3.</span> <span class="nav-text">6.3 推荐系统</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-未来的发展方向"><span class="nav-number">8.</span> <span class="nav-text">7 未来的发展方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-复杂推理"><span class="nav-number">8.1.</span> <span class="nav-text">7.1 复杂推理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-统一框架"><span class="nav-number">8.2.</span> <span class="nav-text">7.2 统一框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-可解释性"><span class="nav-number">8.3.</span> <span class="nav-text">7.3 可解释性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-可扩展性"><span class="nav-number">8.4.</span> <span class="nav-text">7.4 可扩展性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-5-知识聚合"><span class="nav-number">8.5.</span> <span class="nav-text">7.5 知识聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-6-自动构建和动态知识图谱"><span class="nav-number">8.6.</span> <span class="nav-text">7.6 自动构建和动态知识图谱</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-结论"><span class="nav-number">9.</span> <span class="nav-text">8 结论</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1207,6 +612,25 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : '7da2ddd329cc6f9cb1b52186d8b009d0',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
