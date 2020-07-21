@@ -2949,4 +2949,90 @@
         <tag>Python</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Neural Snowball for Few-Shot Relation Learning-翻译</title>
+    <url>/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/</url>
+    <content><![CDATA[<h1 id="Neural-Snowball-for-Few-Shot-Relation-Learning"><a href="#Neural-Snowball-for-Few-Shot-Relation-Learning" class="headerlink" title="Neural Snowball for Few-Shot Relation Learning"></a>Neural Snowball for Few-Shot Relation Learning</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>知识图谱正处于新的关系不断增长的状况，基于大量充足信息预先定义好关系的关系抽取方法不能很好的处理这种状况。在利用少量的样本来处理新的关系的目标下，我们提出了一种新颖的自展方法-<strong>Neural Snowball</strong>，通过转换现有关系的语义知识来学习新的关系。更详细地说，我们使用了关系连体网络（<a href="https://blog.csdn.net/hei653779919/article/details/106588973" target="_blank" rel="noopener">RSN</a>）来学习基于已有关系及其标记数据的实例之间的关系相似性度量，然后，在给定一个新关系及其少量实例的基础上，利用RSN从未标记的语料库中积累可靠的实例，并用这些实例训练一个关系分类器，进一步识别新关系的新事实。这个过程就像雪球一样反复进行。实验表明我们的模型对于小样本学习可以获取更高质量的实例，并且相比于baseline，性能有重大的提升。代码与数据集发布在<a href="https://github.com/thunlp/Neural-Snowball" target="_blank" rel="noopener">https://github.com/thunlp/Neural-Snowball</a>。<img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-01.PNG" alt=""></p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>知识图谱(KG)，如WordNet、Freebase 和 Wikidata，在<strong>信息检索</strong>、<strong>问答系统</strong>、<strong>推荐系统</strong>等领域有广泛应用。知识图谱由表示实体<strong>$e_h$</strong>和实体之<strong>$e_t$</strong>间联系r的三元组形式<strong>$(e_h,r,e_t)$</strong>的事实联系组成。虽然已有的知识图谱包含了大量的事实，但相比较于现实世界的数据来说，知识图谱还有很大的完善空间。为了丰富知识图谱，关系抽取（RE）就是研究从纯文本信息中抽取事实关系的。</p>
+<p>知识抽取（RE）的一大挑战就是，在知识图谱中新型的关系出现的较快，然而大多数关系抽取模型不能很好处理这种出现新关系的情况，原因是抽取模型是基于有限预先定义好关系的数据集，最大的抽取数据集之一FewRel在2018年只有100个关系，然而Wikidata在2014年就已经有了920个关系，更不用说它目前已经包含了6000多个关系。</p>
+<p>为了提取新关系中的关系事实，大多数方法研究了自展的知识抽取，其通过少量的关系事实种子去提取新的三元组关系。Brin（1998）提出用一小组（作者，书名）pairs集合作为输入去提取作者-书名的关系事实，它不断地从网站查找种子pairs集合的信息，然后从这些信息中提取句子样式，然后通过样式匹配去发现新的pairs。Agichtein和Gravano (2000)进一步改进改方法，而且将其命名为<strong>Snowball</strong>，因为信息以及事实的累积像滚雪球一样。</p>
+<p>然而，大多数现有的自展模型都局限于他们自己只利用种子关系事实，而未利用大规模标记数据集的优势，其已经被证明是一种有价值的资源。虽然已存在的关系事实数据与新的关系可能有很不同的分布，但是这些数据依旧可以使用去训练深度学习的模型，该模型可以抽取对既符合事实又没法可见的高纬度的表示特征(Bengio 2012)。这种叫迁移学习的技术已近被广泛被应用与图小样本任务。先前的工作已经研究了用以衡量对象与元信息之间相似度（Ravi and Larochelle 2017）的转移指标（Koch,Zemel, and Salakhutdinov 2015），其为了快速适应新的任务。</p>
+<p>基于自展和迁移学习的方法，我们提出了<strong>Neural Snowball</strong>方法在利用不充足的训练数据去对新关系进行分类。输入一些新的关系事实作为种子实例，<strong>Neural Snowball</strong>发现这些事实的可信赖信息，然后讲这些信息用来去训练通过新关系事实去发现可信赖实例的关系分类器，这些实例然后又作为新的种子输入进行迭代。</p>
+<p>我们也利用关系连体网络（RSN）去选择高可信度的实例。连体网络一般包含双编码器和通过学习度量来衡量两个对象之间的相似性。Wu(2019)等人用神经连体网络去判断两个句子是否表达的是相同的关系，设计了RSN 。在传统的自展系统中，模板用于去选择新的实例。由于神经网络具有比模板更好的泛化性能，我们使用RSN通过比较候选实例与现有的来选择高可信度的新实例。</p>
+<p>实验结果表明，在少样本情况下，<strong>Neural Snowball</strong>方法学习新的关系性能有了显著的提升。进一步的研究表明了该方法以及该迭代过程的有效性，而且证明了该方法有能力去选择更可信的实例以及抽取新的关系事实。</p>
+<p>总结一下，我们主要的贡献在一下三个方向：</p>
+<ul>
+<li>我们提出了<strong>Neural Snowball</strong>新颖的方法，该方法在利用少量新的关系实例情况下，能够从未标签的数据中，利用先前已存在的关系，不断迭代地去累积新的实例与关系事实，能够更好地去训练关系神经网络关系分类器。</li>
+<li>为了给新关系选择更好的新的能够支撑的实例，我们研究了RSN来评估候选实例与存在实例之间关系的相似度。</li>
+<li>实验结果以及后续的分析表明了该模型的有效性和鲁棒性。   </li>
+</ul>
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><h4 id="Supervised-RE"><a href="#Supervised-RE" class="headerlink" title="Supervised RE"></a><strong>Supervised RE</strong></h4><p>早先的监督学习RE用核函数方法(Zelenko, Aone, and Richardella 2003)和嵌入式方法(Gormley, Yu, and Dredze 2015)去利用语法信息来预测关系，近年来，提出的如RNN和CNN的神经模型能够更好的从词序列中提取特征，除此之外，依存句法分析树法也被证实在RE中非常有效。</p>
+<h4 id="Distant-Supervision"><a href="#Distant-Supervision" class="headerlink" title="Distant Supervision"></a><strong>Distant Supervision</strong></h4><p>监督RE方法依赖手工标注的语料库，其通常只覆盖有限的关系和实例的数量。Mintz等人提出远程监督的方法，通过把语料库和知识图谱之间的实体对齐来自动生成新的关系。为减少错误标签，Riedel, Yao, 和McCallum (2010）以及Hoffmann et al. (2011)将远程监督设计成多任务多标签任务模型。</p>
+<h4 id="RE-for-New-Relations"><a href="#RE-for-New-Relations" class="headerlink" title="RE for New Relations"></a><strong>RE for New Relations</strong></h4><p>自展的RE方法可以快速利用少数事实或者句子作为种子集合来适应新的关系。Brin1998年首次提出通过从网上不断迭代扩增的模式来抽取关系事实，Agichtein和Gravano (2000)提出的<strong>Snowball</strong>利用更好的模式抽取和评估方法来提升这种不断迭代的机制。基于上诉，Zhu2019年对于模式选择采用了概率统计的方法。Batista, Martins, 和Silva (2015)使用词嵌入方法去提升<strong>Snowball</strong>方法，许多相似的自展想法已经被研究应用在了RE上面。</p>
+<p>与远程监督方法相比，自展方法迭代地扩增关系事实，从而有很高的准确率。除此之外外，远程监督方法还限制于预先定义好的关系，时至今日自展的方法对于开放式的关系增长更具扩展性，当然其他半监督方法也可以应用在RE中，然而这些方法需要足够多的注释而且其目标主要是分类预先定义好的关系而不是去发现新的关系，因此我们不在进一步讨论这些方法。</p>
+<p>受到人类可以通过少数的实例来掌握新知识现象的启发，解决数据缺乏的小样本学习方法收到了研究人员的青睐。少样本学习的关键点是从已有的数据，将与任务无关的信息从已有的信息转移到新的任务中去。zhang等人研究了一种学习距离分布，以最近邻策略来对新的种类进行分类。Ravi等人提出元学习方法来理解怎么使用少量的样例来快速优化模型。Qiao等人提出的通过学习来预测新任务的分类参数，现有的少样本学习模型主要应用于视觉任务。为了在文本上利用该方法，Han等人发布了一个大规模的少任务抽取数据集-FewRel。</p>
+<h4 id="OpenRE"><a href="#OpenRE" class="headerlink" title="OpenRE"></a><strong>OpenRE</strong></h4><p>上述的自展和少任务学习方法对新任务的学习仅需要少量人为的参与。开放式关系抽取（OpenRE）一方面主要是从没有预先定义关系的文本信息中抽取关系，一种OpenER系统主要聚焦于发现关系信息，而其他的探究通过聚集语义模式来自动形成关系类型。相比较于传统的方法这是一种不同的具有挑战性的观点，值得被继续探索。</p>
+<h4 id="Siamese-Networks"><a href="#Siamese-Networks" class="headerlink" title="Siamese Networks"></a><strong>Siamese Networks</strong></h4><p>连体网络通过其双编码器和距离训练函数来评估两个对象之间的相似性。它的目的是为了少样本学习和评估文本相似度的。Wu提出RSN网络用来学习所给的实例的关系度量，这里我们使用RSN，通过比较候选的样例与已有的样例，来选择更高的可信实例。</p>
+<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a><strong>Methodology</strong></h2><p>这节我们将以介绍<strong>Neural Snowball</strong>的相关符号以及定义开始。</p>
+<h4 id="Terminology-and-Problem-Definition"><a href="#Terminology-and-Problem-Definition" class="headerlink" title="Terminology and Problem Definition"></a>Terminology and Problem Definition</h4><p>所给的实例 $x$ 是包含目标实体 $e_h$ 和 $e_t$ 的一个词序列 ${w_1,w_2,…,w_l}$ ,RE的目的是预测实体 $e_h$ 和 $e_t$ 之间的关系标签 $r$ 。<strong>Relation mentions</strong>是指表示所给关系的实例。<strong>Entity pair mentions</strong>是指所给的实体对。<strong>Relation facts</strong>是指三元组<strong>$(e_h,r,e_t)$</strong>表示在实体$e_h$ 和 $e_t$ 之间存在关系 $r$ 。$x^r$ 表示 $x$   是关系 $r$ 的关系描述实例。</p>
+<p>既然我强调从真实现实场景中学习去抽取新的关系，我们在已有的监督RE和少样本RE采取了不同的问题设置。在已有的关系提供大量的标签数据和对于新的关系提供少量的实例集情况下，我们的目的是从包含已有关系，新关系和隐藏关系的查询集合中抽取新关系的实例。</p>
+<p>该任务的输入由一个大量的标签语义库 $S_N = {x_j^{r_i} | r_i \epsilon R_N }$ ，其中 $R_N$ 是预先定义好的关系集合，为标签的语义库 $T$ 和一个包含 $k$ 个新关系 $r$ 实例的种子集合 $S_r$ 组成。我们首先在 $S_N$ 基础上训练神经网络，然后对于新的关系 $r$ ，我们训练一个二分类器 $g$ 。更具体一点，给一个实例 $x$ ，$g(x)$ 输出 $x$  表示关系 $r$ 的概率 ，在试验阶段，分类器 $g$ 对属于 $R_N$ 预先定义好关系的实例，包含新关系 $r$ 的实例以及一些包含隐藏关系的实例进行分类，这相当于现实场景的模拟。 </p>
+<h4 id="Neural-Snowball-Process"><a href="#Neural-Snowball-Process" class="headerlink" title="Neural Snowball Process"></a>Neural Snowball Process</h4><p>以一个小的种子集合  $S_r$ 作为输入， <strong>Neural Snowball</strong>对新关系 $r$ 不断地累积可信赖的实例。每轮迭代中，$S_r$ 都会被选择的未标签实例进行扩充，然后新的 $S_r$ 作为下一轮的输入。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-02.PNG" alt=""></p>
+<p><strong>输入：</strong>关于关系的种子实例集合 $S_r$</p>
+<p><strong>第一阶段：</strong>结构化实体对<br>$$<br>\varepsilon = {(e_h,e_t)\space|\space Ent(x) = (e_h,e_t),\space x\space \in \space S_r} \tag1<br>$$<br>其中 $Ent(x)$ 表示实例 $x$ 的实体对，然后我们从语义库 $T$ 里面得到候选集合 $C1$ ，其满足<br>$$<br>C_1 = {X\space | \space Ent(x)\space \in \space \varepsilon， x \in T} \tag2<br>$$<br>因为  $C_1$ 的实例的实体对和 $S_r$ 中一样，我们认为其之间很有可能是关系 $r$ 。为了进一步缓解错误实例的影响，对于每个在  $C_1$ 中的实例   $x$ ，我们将其和 $x’\in S_r$ 中具有相同是实数对的实例匹配，利用RSN去获得相似的分数，然后求其分数的均值作为其评估分 $score_1(x)$  。</p>
+<p>接下里我们对 $C_1$ 里的实例按照评估分进行降序排序，选取前 $K_1$ 名加入到集合 $S_r$ 中去。因为在$K_1$ 中有些不属于关系 $r$  这种情况存在，我们添加了额外的条件，对于实例评估分数少于某个门槛值  $\alpha$  的实例将不会加入集合 $S_r$ 中去。</p>
+<p>在这些步骤之后，我们获取了具有高可信度的关于关系 $r$  的新实例。伴随着集合 $S_r$ 的扩增，我们可以微调接下来将讲解的关系分类器 $g$ ，因为分类器在下一步骤中将使用。</p>
+<p><strong>第二阶段：</strong>经过上一步骤，我们扩增了集合 $S_r$ ，然而实体对依旧保存没变。所以这个阶段，我们的目标是<strong>去发现关于关系 $r$  的新的实体对</strong>。</p>
+<p>在该阶段构使用关系分类器 $g$  造候选实体集合 $C_2$，<br>$$<br>C_2 = {x\space | \space g(x)\space &gt; \space \theta， x \in T} \tag3<br>$$<br>  其中 $\theta$ 是可信度的阈值 。每一个候选实例 $x$ 和 每一个$x’\in S_r$ 作为RSN的输入，$score_2(x)$ 作为其可信度的评价函数，其是与所有实体$x’$ 匹配的均值 ，对于排序后的前 $K_2$ 名同时$score_2(x)$ 大于阈值 $\beta$ 的加入到集合 $S_r$ 中去。</p>
+<p>经过这个阶段后，我们回到第一阶段重新开始。伴随着过程进行，实例集合 $S_r$ 不断扩增，而且分类器的性能会一直到达其顶峰。关于其最佳的迭代次数以及参数将在下面进行讨论。</p>
+<h4 id="Neural-Modules"><a href="#Neural-Modules" class="headerlink" title="Neural Modules"></a>Neural Modules</h4><p><strong>Neural Snowball</strong>包含两个关键部分：一个是从未标签数据中心，通过评估候选实例与存在的关系实例之间相似性来选择高可信度的实例，另一个是判断实例是否属于新关系的分类器。</p>
+<p><strong>Relational Siamese Network (RSN)</strong> $s(x,y)$ ，其输入为两个实例，输出在0到1之间，用来表示其实例之间是否具有相同的关系类型。图3展示了RSN的结构，其包含两个具有相同参数的编码器 $f_s$ 和一个距离评估函数。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-03.PNG" alt=""></p>
+<p>随着两个实例输入，编码器将其表示为向量，然后我们用下面的公式计算实例之间的相似分数：<br>$$<br>s(x,y) = \sigma(w^T_s(f_s(x)-f_s(y))^2+b_s) \tag4<br>$$<br>其中的平方符号是对向量每一维度进行平方，而不是向量的点乘，而 $\sigma(\cdot)$ 为激活函数。距离评估函数是带权重的L2范数距离，由可训练的权重 $w_s$ 和偏差参数 $b_s$ 组成。一个高的距离评估分数说明两个实例很有可能关系是同一类型（其中权重 $w_s$ 取负值可以达到这种效果）。</p>
+<p><strong>Relation Classifier $g(x)$</strong>，其有一个神经编码器 $f$ 组成，其作用是将原始数据转换为实值向量，一个由参数$w$和$b$组成的线性层来判断输入实例是否属于关系 $r$ ，如下所表示：<br>$$<br>g(x)=\sigma(w^Tf(x)+b) \tag5<br>$$<br>其中$g(x)$ 输出类别可能性，而 $\sigma(\cdot)$ 激活函数将结果限制在0到1之间。注意函数 $g(x)$ 只是一个二分类器，所以其只输出一个值，而不是一个N类别情景下的一个向量。</p>
+<p>选择二分类器的而不选择训练N分类器或者使用softmax去限制输出的原因是现实世界中的关系抽取需要处理那些负样本，那些表示这未知的关系而且占语义集很大一部分。这些负样本的表示不能被类聚，而且将其考虑为一种类别也不合适。另一个原因是通过二分类器，我们可以通过增加性分类器来应对新的关系的发生情况。而对于N分类器来说则需要重新训练，而且数据的不平衡可能对新关系和已有的关系导致更差的结果。</p>
+<p>使用N个二分类器，我们可以将其结果与N个分类器比较判断，选取最高概率，其结果和N分类器一样，当没有结果超过阈值的时候，这个句子我们认为为负样本，其表示的关系不存在于已有的关系中。</p>
+<p><strong>Pre-training and Fine-tuning</strong>，为了衡量实例之间在新关系的相似度以及快速使分类器适应新的任务，我们需要提前训练两个神经网络。通过存在的标签数据 $S_N$ ，我们可以通过监督学习N分类方法去预先训练分类器的隐藏层参数，对于RSN，我们可以从 $S_N$ 中随机选取包含相同关系或者不同关系的样例，通过<a href="https://zhuanlan.zhihu.com/p/35709485" target="_blank" rel="noopener">交叉熵</a>损失函数来训练模型。</p>
+<p>当给与一个新关系 $r$ 的集合  $S_r$，对整个RSN以及关系分类器的编码器的参数将固定，因为他们已经通过预先的训练学到了一般性的特征，后续的通过一小部分数据进行的调整可能会对参数的分布带来噪音和偏差。</p>
+<p>然后我们通过从 $S_r$中选取小批量样本作为正样本，从 $S_N$中选取的为负样本对分类器参数$w$和$b$进行优化，将正样本表示为$S_b$，负样本表示为$T_b$ ，损失函数为如下：<br>$$<br>L_{S_b,T_b}(g_{w,b}) = \sum_{x\in S_b}log \space g_{w,b}(x)\space +\space \mu \sum_{x\in T_b}log \space(1- g_{w,b}(x)) \tag6<br>$$<br>其中$\mu$是负样本系数，所以我们对每一组正负样本可以选取固定的数目大小，实际在新关系中正样本与负样本的数量相差很大，所以很有必要将负样本系数设置的更小一些。</p>
+<p>基于上述的样本选择策略以及损失函数，我们可以基于梯度对参数$w$和$b$进行优化，这里我们选择Adam (Kingma and Ba 2015)作为我们的优化器，那些超参数包含训练周期数$e$，分批次的大小$b_s$吗，学习率$\lambda$，以及负样本的损失系数$\mu$。算法1表述该过程<img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-04.PNG" alt=""></p>
+<p>微调过程做我们baseline一部分，我们在对$S_r$累积了新的实例后，我们在<strong>Neural Snowball</strong>中的每一步都采用了该算法，虽然这是一种简单获取参数$w$和$b$的方式，但是他比基于度量的小样本算法更好，因为它对于新的关系的适应性更好，而基于度量的通常在小样本基础上获取所有参数，相比较它对于大范围的训练数据更具扩展性。同事负样本能够改善模型对新关系抽取的精度。</p>
+<h4 id="Neural-Encoders"><a href="#Neural-Encoders" class="headerlink" title="Neural Encoders"></a>Neural Encoders</h4><p>正如上述的，编码器使我们RSN和分类器的部分，目的是从标记的实体和原始句子中提取抽象的一般性特征。这份报告中我们采用了CNN和BERT编码器。</p>
+<p>CNN的模型我们采用了Nguyen and Grishman(2015)的CNN编码器模型，这个模型采用词嵌入和位子嵌入作为输入，然后嵌入序列被输入到一个卷积神经网络中去提取特征，然后这些特征被最大池化为一个实值向量作为实例的表示。</p>
+<p>BERT由Devlin等人在2019年提出的一个新颖的语言模型，是<strong>Bidirectional Encoder Representations from Transformers</strong>的简称，相比较于CNN或者RNN模型，在NLP相关任务中去得新的成就。BERT将句子的符号作为输入，经过几个注意层后输出隐藏的特征。为了适应关系抽取任务，我们在句子的前后端添加了特殊的标记。前后的标记是不同的。然后我们取隐藏特征的第一个符号作为句子的表示。</p>
+<h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><p>这部分我们将展示关系分类器怎么通过<strong>Neural Snowball</strong>机制来实现较大的性能提升，其是相比较于小样本关系学习的baseline。我们还进行了两次定量分析进一步证明<strong>RSN</strong>和<strong>Snowball</strong>的有效性。</p>
+<h4 id="Datasets-and-Evaluation-Settings"><a href="#Datasets-and-Evaluation-Settings" class="headerlink" title="Datasets and Evaluation Settings"></a>Datasets and Evaluation Settings</h4><p>我们的实验要求一个大量的，精确人为注释的，同时方便远程监督学习的数据集。目前满足条件的数据是FewRel (Han et al. 2018），这个包含来自Wikipedia的100中关系和7000个实例。这个数据集被分为一下三个子集。训练数据集包含64个关系，验证数据集包含16个关系，以及测试数据集包含20个关系。我们还从Wikipedia下载了大量未标签包含实体标签的语义集，其中实例899996个，以及464218对实体对，这些是用来训练snowball过程的。</p>
+<p>我们实验采用原先相关节的设置。首先我们将训练数据分为集合$A$和$B$，我们经集合$A$作为$S_N$，在验证集或者测试集的中抽取一张关系作为新的关系$r$，取其前k个实例作为$S_r$，从集合$B$和测试或者验证集中抽取一个查询集合$Q$，然后模型对查询实例进行二分类，判断每一个实例是否是描述的关系$r$。注意查询集合$Q$包含训练数据集的N种关系，关系$r$的少数实例以及大量的位置关系。这是一种非常具有挑战性的设置，相比较于N-way K-shot few-shot来说更接近于现实世界情况，因为在现实中的语义库不会局限于有限的关系。</p>
+<h4 id="Parameter-Settings"><a href="#Parameter-Settings" class="headerlink" title="Parameter Settings"></a>Parameter Settings</h4><p>我们在验证集上调整超参数。对于于编码器的参数，我们遵循Han等人（2018）的CNN和Devlin等人（2019）年的BERT。对于微调，在网格搜索之后，我们采用训练周期e=50，批处理尺寸bs=10，学习率为0.05，负损失系数为0.2。BERT微调共享相同的参数,除了学习率0.01和负损失系数为0,5。</p>
+<p>对于Neural Snowball过程，我们依旧还是通过网格搜索方法进行确认，我们设置$K_1$和$K_2$，每次增加的实例树为5，RSN的阈值为0.5，分类器阈值为0.9。</p>
+<p>在我们实验中，所有模型的评估都是对查询实例输出对于某种关系的可能性描述，为了获得一个可信的结果，我们设置一个阈值，对于fine-tuning和Neural Snowball我们设置为0.5，而对于RSN我们设置为0.7。</p>
+<h4 id="Few-Shot-Relation-Learning"><a href="#Few-Shot-Relation-Learning" class="headerlink" title="Few-Shot Relation Learning"></a>Few-Shot Relation Learning</h4><p>Table 1展示了小样本学习任务的结果。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-05.PNG" alt=""></p>
+<hr>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-06.PNG" alt=""></p>
+<p>我们评估了五种模型结构。BREDS是原始snowball的改进版本，其实使用词嵌入来进行模式选择。Fine-tuning是直接使用算法1对少样本实例进行训练分类器。Relational Siamese Network (RSN)通过计算查询实例和每个$S_r$中的实例的相似度，然后去其平均值作为结果。Distant Supervision是指用所有实例共享种子实例的实体对信息用来进行训练，也是使用算法1。Neural Snowball是我们提出的方法，我们没有评估其他半监督方法和样本学习方法，因为不适宜我们对新关系学习的设置。</p>
+<p>从表1中我们可以确认，我们的Neural Snowball在两个集合中以及编码器中结果都较好。然而fine-tuning, distant supervision和Neural Snowball随着种子数目增多而性能提升，而BREDS和RSN则提升较小。</p>
+<p>进一步将Neural Snowball与其他模型比较，我们模型具有较好的召回率，同时获取比较高的准确率。这表明我们的Neural Snowball不仅可以能累积高质量的训练实例，而且也可以比较成功地抽取新关系事实以及模式来扩增对新关系的实例。</p>
+<h4 id="Analysis-on-Relational-Siamese-Network"><a href="#Analysis-on-Relational-Siamese-Network" class="headerlink" title="Analysis on Relational Siamese Network"></a>Analysis on Relational Siamese Network</h4><p>为了评估RSN选取的实例的质量，我们随机化取样一种关系以及5个相应的实例，将剩下的实例作为查询集合。我们使用前面提及的方法去评估计算分数，然后我们计算前N个实例的准确率。</p>
+<p>我们可以看到，RSN在5%的实例下获得了82.15%的准确率。考虑这个值比较高我们只给少数量的实例，甚至一些没见过的关系。同时注意到，RSN只训练训练集里面关系，对于测试集里面的关系的表现只有很小的差距，进一步证实了RSN的有效性。</p>
+<h4 id="Analysis-on-Neural-Snowball-Process"><a href="#Analysis-on-Neural-Snowball-Process" class="headerlink" title="Analysis on Neural Snowball Process"></a>Analysis on Neural Snowball Process</h4><p>进一步分析Neural Snowball的迭代过程，我们对新累积的实例和分类器给出了主关系上定量分析，是以五个种子实例为增量的。注意到它是随机选择关系和其他关系展示了相关性。由于空间有限，我们只选择了主关系进行样例。</p>
+<p>图4展示了伴随迭代过程中评估函数的变化过程。这里我们采用两种设置：NS setting是关于由Neural Snowball选择实例的分类器微调设置，另一个random setting是指在知道实例所有关系前提下，对随机选取的和NS一样数目的主关系实例的微调设置。注意到随机设置以一种理想情况，因为其反应了新关系随机分布的真实情况，而且将随机设置的整体表现作为上限。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/KG-paper-001-07.PNG" alt=""></p>
+<p>从随机设置的结果来看，我们可以看到二分类器获得了较高的召回率以及稍逊的准确率，在训练大范围的随机分布的数据下。这个由更多的数据带来更多的在表达方面的模式，改善了抽取的完全性虽然牺牲了部分质量。</p>
+<p>然后再比较两者设置，我们得到两个观测结果。1.随着迭代次数的增加以及实例数目的增加，分类器在NS上的微调获得了更高的准确率，这个证实了RSN能在抽取高可信度实例以及高质量模式上的性能较好。2.NS的召回率比预期增长较慢，表明RSN可能对于存在的模式过拟合了。为了使模型的具有高准确率，NS陷入了已有高质量模式的局部最优区，从而无法跳出这个区域去发现更多种类的模式。我们打算未来研究这个。</p>
+<h2 id="Conclusion-and-Future-Work"><a href="#Conclusion-and-Future-Work" class="headerlink" title="Conclusion and Future Work"></a>Conclusion and Future Work</h2><p>这篇论文中，我们提出了Neural Snowball，一种新颖的方法，以小样本数据去学习分类新关系。我们使用RSN，它预先基于历史数据去迭代从未标签数据中抽取可信赖的实例。大规模的关系抽取评估解释了Neural Snowball在使用少样例基础上，抽取新关系中带来了显著的性能提升。进一步分析证实了RSN以及snowball process的有效性。未来我们将探究一下方向：</p>
+<p>（1）我们模型的缺点是抽取的模式与所给的语义很相近，这个限制了召回率。在未来，我们将探索怎样跳出局部最优区去发现更多实例种类。</p>
+<p>（2）目前RSN在新关系学习中参数被固定了，如果能利用好新给的关系实例，使RSN更具适应性将更好。我们将研究这个并提升其RSN的性能。</p>
+<h2 id="Acknowledgments"><a href="#Acknowledgments" class="headerlink" title="Acknowledgments"></a>Acknowledgments</h2><p>这项工作得到了国家自然科学基金的支持，中国基金（国家自然科学基金第6157227361661146007号，<br>61772302）和清华大学研究基金-腾讯互联网创新技术联合实验室。Han和Gao得到2018年和2019年腾讯的支持犀鸟精英训练计划。Gao也是清华大学自主科研资助项目。</p>
+<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2>]]></content>
+      <categories>
+        <category>知识图谱</category>
+      </categories>
+      <tags>
+        <tag>知识图谱</tag>
+        <tag>NLP</tag>
+        <tag>知识抽取ER</tag>
+      </tags>
+  </entry>
 </search>
