@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》1. 简介 题目：《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》 来源：AAAI-2019 链接：https:&#x2F;&#x2F;people.eng.unimelb.edu.au&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记003-Entity Alignment between Knowledge Graphs Using Attribute Embeddings">
+<meta property="og:url" content="https://slashyouth.github.io/2020/07/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0003-Entity%20Alignment%20between%20Knowledge%20Graphs%20Using%20Attribute%20Embeddings/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》1. 简介 题目：《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》 来源：AAAI-2019 链接：https:&#x2F;&#x2F;people.eng.unimelb.edu.au&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-01.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-02.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-03.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-04.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-05.PNG">
+<meta property="article:published_time" content="2020-07-29T08:08:41.999Z">
+<meta property="article:modified_time" content="2020-07-29T09:00:56.944Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="知识图谱">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="知识融合">
+<meta property="article:tag" content="论文笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-01.PNG">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/07/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0003-Entity%20Alignment%20between%20Knowledge%20Graphs%20Using%20Attribute%20Embeddings/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文笔记003-Entity Alignment between Knowledge Graphs Using Attribute Embeddings | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">19</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/07/29/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0003-Entity%20Alignment%20between%20Knowledge%20Graphs%20Using%20Attribute%20Embeddings/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文笔记003-Entity Alignment between Knowledge Graphs Using Attribute Embeddings
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-07-29 16:08:41 / 修改时间：17:00:56" itemprop="dateCreated datePublished" datetime="2020-07-29T16:08:41+08:00">2020-07-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" itemprop="url" rel="index"><span itemprop="name">知识图谱</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="《Entity-Alignment-between-Knowledge-Graphs-Using-Attribute-Embeddings》"><a href="#《Entity-Alignment-between-Knowledge-Graphs-Using-Attribute-Embeddings》" class="headerlink" title="《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》"></a>《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》</h1><h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><blockquote>
+<p>题目：《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》</p>
+<p>来源：AAAI-2019</p>
+<p>链接：<a href="https://people.eng.unimelb.edu.au/jianzhongq/papers/AAAI2019_EntityAlignment.pdf" target="_blank" rel="noopener">https://people.eng.unimelb.edu.au/jianzhongq/papers/AAAI2019_EntityAlignment.pdf</a></p>
+<p>代码：<a href="https://bitbucket.org/bayudt/kba/src/master/" target="_blank" rel="noopener">Code和Dataset</a></p>
+</blockquote>
+<h2 id="2-研究背景"><a href="#2-研究背景" class="headerlink" title="2. 研究背景"></a>2. 研究背景</h2><p>&emsp;&emsp;早期的实体对齐研究<strong>基于属性之间的相似性</strong>，依赖于<strong>用户定义的规则来确定实体之间需要比较的属性</strong>。由于<strong>不同实体之间可能需要不同的属性</strong>来进行比较，所以这种方法容易出现误差。</p>
+<p>&emsp;&emsp;最近，针对实体对齐任务提出了<strong>基于嵌入的模型</strong>，它要求将两个KG嵌入到同一个向量空间中，以适应KG嵌入在两个KG之间的实体对齐。但该方法<strong>需要大量的种子实体</strong>，这在现实使用中难以获取。</p>
+<p>本文针对上述的局限性，提出了一种新的嵌入模型，本文的主要贡献如下：</p>
+<ul>
+<li>提出两个KG之间的实体对齐框架，由<strong>谓词对齐模块(predicate alignment module)</strong>、<strong>嵌入学习模块(embedding learning module)</strong>、<strong>实体对齐模块(entity alignment module)</strong>组成</li>
+<li>提出一种新的嵌入模型，将实体嵌入和属性嵌入集成在一起，用来学习对于两个KGs的统一嵌入空间</li>
+<li>在三对KGs上对模型进行评估，就<a href="https://blog.csdn.net/hello_acm/article/details/95070669" target="_blank" rel="noopener">hits@1</a>指数而言，模型优于现有模型50%以上</li>
+</ul>
+<a id="more"></a>
+
+
+<h2 id="3-模型"><a href="#3-模型" class="headerlink" title="3. 模型"></a>3. 模型</h2><p> &emsp;&emsp; 一个知识图谱 $G$ 由三元组$&lt;h,r,t&gt;$组成，对于  $G_1和G_2$，实体对齐的任务是寻找实体对，其中$&lt;h_1,h_2&gt;$，其中$h_1\in G_1,h_2 \in G_2$  。其模型主要由三个部分组成：<img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-01.PNG" alt=""></p>
+<h3 id="3-1-谓词对齐-predicate-alignment"><a href="#3-1-谓词对齐-predicate-alignment" class="headerlink" title="3.1. 谓词对齐(predicate alignment)"></a>3.1. 谓词对齐(predicate alignment)</h3><p>&emsp;&emsp;谓词对齐模块通过使用统一的命名方案重命名两个KG的谓词来合并两个KG，以便为关系嵌入提供统一的向量空间。除了<strong>符合命名规范</strong>的谓词，如：rdfs:label、geo:wgs84 pos#lat等；还有一些相互匹配的谓词，例如：dbp:bornIn 和yago:wasBornIn 我们就需要统一命名，比如将dbp:bornIn和yago:wasBornIn统一为 :bornIn。</p>
+<p>为了找到部分匹配的谓词，作者计算谓词URI的最后部分的<a href="https://www.jianshu.com/p/a617d20162cf" target="_blank" rel="noopener">编辑距离</a>（例如，bornIn与wasBornIn）并将0.95设置为相似性阈值。</p>
+<h3 id="3-2-嵌入学习-Embedding-Learning"><a href="#3-2-嵌入学习-Embedding-Learning" class="headerlink" title="3.2. 嵌入学习(Embedding Learning)"></a>3.2. 嵌入学习(Embedding Learning)</h3><h4 id="3-2-1-结构嵌入-Structure-Embedding"><a href="#3-2-1-结构嵌入-Structure-Embedding" class="headerlink" title="3.2.1. 结构嵌入(Structure Embedding)"></a>3.2.1. 结构嵌入(Structure Embedding)</h4><p>&emsp;&emsp;作者采用<a href="https://zhuanlan.zhihu.com/p/32993044" target="_blank" rel="noopener">TransE</a>来学习对于实体的结构嵌入。与<a href="https://zhuanlan.zhihu.com/p/32993044" target="_blank" rel="noopener">TransE</a>不同的是，模型希望更关注已对齐的三元组，也就是包含<strong>对齐谓词</strong>的三元组。模型通过添加权重来实现这一目的。Structure embedding的目标函数 $J_{SE}$ 如下：<br>$$<br>J_{SE}=\sum_{t_r \in T_r} \sum_{t_r^\prime \in T_r^\prime }max(0 \ , \ \gamma + \alpha(f(t_r)-f(t^\prime_r)))  \<br>  \alpha = \frac{count(r)}{|T|}<br>$$<br>&emsp;&emsp;其中$t_r$是有效关系的三元组集合，而$t_r^\prime$是通过随机替换三元组$&lt;h,r,t&gt;$中实体$h$或者$r$形成的损坏样本，即负样本。$T$为合并后的$G_{1_2}$中三元组总数目，$count(r)$为关系$r$出现的次数，$\alpha$为权重，对于对齐的谓词关系，正常情况下，由于在两个KGs中都包含，其占的比例高一些，也就是更希望模型学习对齐的关系。</p>
+<h4 id="3-2-2-属性字符嵌入-Attribute-Character-Embedding"><a href="#3-2-2-属性字符嵌入-Attribute-Character-Embedding" class="headerlink" title="3.2.2. 属性字符嵌入(Attribute Character Embedding)"></a>3.2.2. 属性字符嵌入(Attribute Character Embedding)</h4><p>&emsp;&emsp;对于属性字符嵌入，也参考<a href="https://zhuanlan.zhihu.com/p/32993044" target="_blank" rel="noopener">TransE</a>的思想，将谓词 $r$ 解释为从头部实体 $h$ 到属性 $a$ 的转换。但是，相同的属性$a$可以在两个KG中以不同的形式出现，例如50.9989对50.9988888889作为实体的纬度；“Barack Obama”与“Barack Hussein Obama”作为人名等。因此，本文提出使用组合函数对属性值进行编码，并将属性三元组中每个元素的关系定义为$h+r=f_a(a)$。 其中$f_a(a)$是组合函数，$a$是属性值$a={c_1,c_2,\cdots,c_t}$的字符序列。 组合函数将属性值编码为单个向量，并将类似的属性值映射到类似的向量表示。 作者定义了三个组成函数如下：</p>
+<h5 id="3-2-2-1-Sum-compositional-function-SUM"><a href="#3-2-2-1-Sum-compositional-function-SUM" class="headerlink" title="3.2.2.1. Sum compositional function (SUM)"></a>3.2.2.1. Sum compositional function (SUM)</h5><p>&emsp;&emsp;思路：简单的求属性值的所有字符的嵌入总和</p>
+<p>&emsp;&emsp;函数：$f_a(a)\ = c_1+c_2+ \dots +c_t$</p>
+<p>&emsp;&emsp;问题：包含相同字符不同顺序的属性值会有相同的向量表示，如50.15和15.05将具有相同的向量表示</p>
+<h5 id="3-2-2-2-LSTM-based-compositional-function-LSTM"><a href="#3-2-2-2-LSTM-based-compositional-function-LSTM" class="headerlink" title="3.2.2.2. LSTM-based compositional function (LSTM)"></a>3.2.2.2. LSTM-based compositional function (LSTM)</h5><p>&emsp;&emsp;思路：使用LSTM模型将一个字符序列编码为一个向量，将最终隐藏状态作为属性值的向量表示</p>
+<p>&emsp;&emsp;函数：$f_a(a)\ = f_{lstm}(c_1,c_2,\dots,c_t)$</p>
+<h5 id="3-2-2-3-N-gram-based-compositional-function-N-gram"><a href="#3-2-2-3-N-gram-based-compositional-function-N-gram" class="headerlink" title="3.2.2.3. N-gram-based compositional function (N-gram)"></a>3.2.2.3. N-gram-based compositional function (<a href="https://blog.csdn.net/songbinxu/article/details/80209197" target="_blank" rel="noopener">N-gram</a>)</h5><p>&emsp;&emsp;思路：备选方案，使用属性值的n-gram组合的总和</p>
+<p>&emsp;&emsp;函数：$f_a(a)\ = \ \sum^N_{n=1}(\frac{\sum^t_{i=1}\sum^n_{j=1}c_j}{t-i-1})$</p>
+<p>&emsp;&emsp;其中N表示n-gram组合中使用的N的最大值N=10，t为属性值的长度，其最小化目标函数$J_{CE}$为：<br>$$<br>J_{CE}=\sum_{t_a \in T_a} \sum_{t_a^\prime \in T_a^\prime }max(0 \ , \ \gamma + \alpha(f(t_a)-f(t^\prime_a))) \<br>T_a \ = \ {&lt;h^\prime,r,a&gt; \in G } \<br>f(t_a) \ = \ ||h \ + \ r-f_a(a)|| \<br>T_a^\prime \ = \ {&lt;h^\prime,r,a&gt;|h^\prime \in E \ } \cup \ {&lt;h,r,a^\prime&gt;|a^\prime \in A \ }<br>$$</p>
+<h4 id="3-2-3-结构嵌入和属性特征嵌入的联合学习-Joint-Learning-of-Structure-Embedding-and-Attribute-Character-Embedding"><a href="#3-2-3-结构嵌入和属性特征嵌入的联合学习-Joint-Learning-of-Structure-Embedding-and-Attribute-Character-Embedding" class="headerlink" title="3.2.3. 结构嵌入和属性特征嵌入的联合学习(Joint Learning of Structure Embedding and Attribute Character Embedding)"></a>3.2.3. 结构嵌入和属性特征嵌入的联合学习(Joint Learning of Structure Embedding and Attribute Character Embedding)</h4><p>&emsp;&emsp;通过属性字符嵌入 $h_{ce}$ 来帮助结构嵌入 $h_{se}$ 在同一向量空间进行训练，最小目标函数$J_{SIM}$为：<br>$$<br>J_{SIM} \ = \ \sum_{h  \in G_1 \cup G_2}[1-\cos(h_{ce},h_{se})]<br>$$<br>&emsp;&emsp;结构嵌入基于实体关系获取实体之间的相似度，属性字符嵌入基于属性值获取实体之间的相似度。结构嵌入和属性特征嵌入联合学习的总体目标函数$J$为:<br>$$<br>J = J_{SE}+J_{CE}+J_{SIM}<br>$$</p>
+<h3 id="3-4-实体对齐-Entity-Alignment"><a href="#3-4-实体对齐-Entity-Alignment" class="headerlink" title="3.4. 实体对齐(Entity Alignment)"></a>3.4. 实体对齐(Entity Alignment)</h3><p>&emsp;&emsp;在经过上述训练过程之后，来自不同KG的相似的实体将会有相似的向量表示，因此可通过下面公式确定潜在的需要对齐的实体：<br>$$<br>h_{map}= \arg\max \limits_{h_2 \in G_2} \cos(h_1,h_2)<br>$$<br>&emsp;&emsp;给定实体$h_1$，计算它与$G_2$中的每个实体时间的相似性，最后$&lt;h_1,h_{maxp}&gt;$就是对齐的实体对，同时其使用了$\beta$来过滤不对齐的实体。</p>
+<h3 id="3-5-Triple-Enrichment-via-Transitivity-Rule"><a href="#3-5-Triple-Enrichment-via-Transitivity-Rule" class="headerlink" title="3.5. Triple Enrichment via Transitivity Rule"></a>3.5. Triple Enrichment via Transitivity Rule</h3><p>&emsp;&emsp;这里使用了一个小 $trick$ ,通过传递关系来丰富三元组。</p>
+<h2 id="4-Experiments-and-Results"><a href="#4-Experiments-and-Results" class="headerlink" title="4.Experiments and Results"></a>4.Experiments and Results</h2><p>&emsp;&emsp;本文从 DBpedia (DBP)、LinkedGeoData (LGD)、Geonames (GEO) 和 YAGO 四个 KG 中抽取构建了三个数据集，分别是DBP-LGD、DBP-GEO和DBP-YAGO。具体的数据统计如下：<img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-02.PNG" alt=""></p>
+<p>&emsp;&emsp;作者使用hits@k(k=1,10)来评估模型性能，对比了TransE、MTransE、JAPE三种模型，使用30%的对齐实体作为MTransE、JAPE的预对齐种子。在三种组合函数中，N-gram函数的优势较为明显。此外，基于传递规则的三元组丰富模型对结果也有一定的提升。具体结果如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-03.PNG" alt=""></p>
+<p>&emsp;&emsp;为了进一步衡量 attribute character embedding 捕获实体间相似信息的能力，本文设计了基于规则的实体对齐模型。本实验对比了三种不同的模型：以label的字符串相似度作为基础模型；针对数据集特点，在基础模型的基础之上增加了坐标属性（由于只包含LOCATION的实体），以此作为第二个模型；第三个模型是把本文提出的模型作为附加模型，与基础模型相结合。具体结果如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-04.PNG" alt=""></p>
+<p>&emsp;&emsp;本文还在KG补全任务上验证了模型的有效性。模型主要测试了链接预测和三元组分类两个标准任务，在这两个任务中，模型也取得了不错的效果。具体结果如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/003/KG-paper-003-05.PNG" alt=""></p>
+<h2 id="5-Summary"><a href="#5-Summary" class="headerlink" title="5. Summary"></a>5. Summary</h2><p>&emsp;&emsp;作者的模型设计很巧妙，将大量的属性三元组充分利用起来，辅助去将不同KG的实体构建到统一向量空间。作者在其中设计很多技巧来优化结果，而且整体来说其将一个比较难的问题充分化解为几个小问题，并在每个小问题上提出创新思路，并最后能够将其完美的整合起来达到显著的性能提升。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" rel="tag"><i class="fa fa-tag"></i> 知识图谱</a>
+              <a href="/tags/NLP/" rel="tag"><i class="fa fa-tag"></i> NLP</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E8%9E%8D%E5%90%88/" rel="tag"><i class="fa fa-tag"></i> 知识融合</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" rel="tag"><i class="fa fa-tag"></i> 论文笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/21/%E7%BF%BB%E8%AF%91-Neural%20Snowball%20for%20Few-Shot%20Relation%20Learning/" rel="prev" title="Neural Snowball for Few-Shot Relation Learning-翻译">
+      <i class="fa fa-chevron-left"></i> Neural Snowball for Few-Shot Relation Learning-翻译
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#《Entity-Alignment-between-Knowledge-Graphs-Using-Attribute-Embeddings》"><span class="nav-number">1.</span> <span class="nav-text">《Entity Alignment between Knowledge Graphs Using Attribute Embeddings》</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-简介"><span class="nav-number">1.1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-研究背景"><span class="nav-number">1.2.</span> <span class="nav-text">2. 研究背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-模型"><span class="nav-number">1.3.</span> <span class="nav-text">3. 模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-谓词对齐-predicate-alignment"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1. 谓词对齐(predicate alignment)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-嵌入学习-Embedding-Learning"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2. 嵌入学习(Embedding Learning)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-结构嵌入-Structure-Embedding"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">3.2.1. 结构嵌入(Structure Embedding)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-属性字符嵌入-Attribute-Character-Embedding"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">3.2.2. 属性字符嵌入(Attribute Character Embedding)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-2-1-Sum-compositional-function-SUM"><span class="nav-number">1.3.2.2.1.</span> <span class="nav-text">3.2.2.1. Sum compositional function (SUM)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-2-2-LSTM-based-compositional-function-LSTM"><span class="nav-number">1.3.2.2.2.</span> <span class="nav-text">3.2.2.2. LSTM-based compositional function (LSTM)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-2-3-N-gram-based-compositional-function-N-gram"><span class="nav-number">1.3.2.2.3.</span> <span class="nav-text">3.2.2.3. N-gram-based compositional function (N-gram)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-结构嵌入和属性特征嵌入的联合学习-Joint-Learning-of-Structure-Embedding-and-Attribute-Character-Embedding"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">3.2.3. 结构嵌入和属性特征嵌入的联合学习(Joint Learning of Structure Embedding and Attribute Character Embedding)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-实体对齐-Entity-Alignment"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.4. 实体对齐(Entity Alignment)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-Triple-Enrichment-via-Transitivity-Rule"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.5. Triple Enrichment via Transitivity Rule</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Experiments-and-Results"><span class="nav-number">1.4.</span> <span class="nav-text">4.Experiments and Results</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Summary"><span class="nav-number">1.5.</span> <span class="nav-text">5. Summary</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">178k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:42</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : '69e35f2c30653fbaffa4990f768c09de',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
