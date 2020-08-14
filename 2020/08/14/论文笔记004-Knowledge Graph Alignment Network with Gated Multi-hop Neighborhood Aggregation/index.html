@@ -37,8 +37,8 @@
 <meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/004/KG-paper-004-08.PNG">
 <meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/004/KG-paper-004-09.PNG">
 <meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/004/KG-paper-004-010.PNG">
-<meta property="article:published_time" content="2020-08-14T04:35:54.227Z">
-<meta property="article:modified_time" content="2020-08-14T07:38:28.606Z">
+<meta property="article:published_time" content="2020-08-14T08:03:45.314Z">
+<meta property="article:modified_time" content="2020-08-14T08:01:02.676Z">
 <meta property="article:author" content="Jack Can">
 <meta property="article:tag" content="知识图谱">
 <meta property="article:tag" content="NLP">
@@ -234,7 +234,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-08-14 12:35:54 / 修改时间：15:38:28" itemprop="dateCreated datePublished" datetime="2020-08-14T12:35:54+08:00">2020-08-14</time>
+              <time title="创建时间：2020-08-14 16:03:45 / 修改时间：16:01:02" itemprop="dateCreated datePublished" datetime="2020-08-14T16:03:45+08:00">2020-08-14</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -258,7 +258,7 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>6.3k</span>
+              <span>6.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -317,9 +317,9 @@
 <h3 id="Gated-Multi-hop-Neighborhood-Aggregation"><a href="#Gated-Multi-hop-Neighborhood-Aggregation" class="headerlink" title="Gated Multi-hop Neighborhood Aggregation"></a>Gated Multi-hop Neighborhood Aggregation</h3><p>&emsp;&emsp;one-hop的节点，即直连的节点，对于GNNs网络中实体的的特征获取是非常重要的。作者对这些节点的表示，使用了<strong>vanilla GCN</strong>的层，其表示如上面方程式（1），表示为$\mathbf h^{(l)}_{i,1}$。虽然有L 层的GCN可以捕获L-hop的邻接信息，但是这的传播是低效的。</p>
 <p>&emsp;&emsp;作者对于k=2的邻接点整合方程如下：<br>$$<br>\mathbf h^{(l)}<em>{i,2} \space = \space \sigma(\sum</em>{j\in N_2(i) \cup{i}}\alpha_{ij}^{ (l) }W^{ (l) }<em>2h^{ (l-1) }_j) \tag 3<br>$$<br>&emsp;&emsp;其中j为k=2的邻接节点，$\alpha</em>{ij}^{(l)}$ 是实体i和其邻接点j的一个可以学习的注意机制的权重，而 $W^{(l)}<em>2$ 是一个权重矩阵。受神经网络中<strong>跳跃连接</strong>（skip connections）的启发，作者提出使用<strong>门机制</strong>以<strong>结合1-hop邻居和2-hop邻居</strong>。实体i在第l层的隐层表示: $\mathbf{h}^{(l)}_i$计算如下：<br>$$<br>h^{ (l) }_i = g(h</em>{i,2}^{ (l) } ) \cdot h^{ (l) }<em>{i,1}+(1-g(h</em>{i,2}^{ (l) } ) )\cdot h^{(l)}<em>{i,2}  \tag 4<br>$$<br>其中$g(h</em>{i,2}^{(l)}) = \sigma(Mh^{(l)}_{i,2}+b)$作为门机制去整合one-hop与two-hop的节点。</p>
 <h3 id="Attention-for-Distant-Neighborhood"><a href="#Attention-for-Distant-Neighborhood" class="headerlink" title="Attention for Distant Neighborhood"></a>Attention for Distant Neighborhood</h3><p>&emsp;&emsp;远距离的邻接点的数目与其直连的节点的数目成指数关系。当然不是每个远距离节点都是有用的。对于k=2的聚合方式，我们得计算权重来强调有用的邻节点。<strong>GAT</strong>对每个注意力函数中的实体应用了一个<strong>共享的线性变换</strong>。然而，<strong>KG中的中心实体和其邻居可能是非常不同的</strong>，这样的<strong>共享变换会对区别它们带来负影响</strong>。因此作者使用了两个矩阵来进行线性变换，然后用softmax函数得到权重参数：<br>$$<br>c^{ (l) }_{i j}=LeaklyReLU[ (M_1^{ (l) }h^{l}_i)^T(M_2^{ (l) }h^{l}_j) ] \tag 5<br>$$</p>
-<p>$$<br>\alpha^{ (l) }<em>{i j} = softmax_j(c^{ (l) }</em>{i j} )=\frac{exp(c^{ (l) }<em>{i j} ) } {\sum</em>{n\in N_2(i) \cup{i} }exp(c^{ (l) }_{i j} ) }  \tag 6<br>$$</p>
-<h3 id="Contrastive-Alignment-Loss"><a href="#Contrastive-Alignment-Loss" class="headerlink" title="Contrastive Alignment Loss"></a>Contrastive Alignment Loss</h3><p>&emsp;&emsp;作者最小化<strong>contrastive alignment loss</strong>函数让对齐的实体对距离尽可能小，而不对应得到实体对距离尽可能大。<br>$$<br>L_1 = \sum_{ (i,j)\in A^+} ||h_i-h_j|| +\sum_{ (i^{‘},j^{‘} )\in A^-} \alpha_1[\lambda - ||h_i^{‘}-h_j^{‘} || ]<em>+ \tag 7<br>$$<br>&emsp;&emsp;其中$A^-$由随机替换原先对齐的实体对的负样本集，$[\cdot]</em>+$表示$max(0,\cdot)$。一般会用最后一层的结果表示实体，然后每一层的都传播了对齐的信息，因此我们使用所用的隐藏层的信息表示实体：<br>$$<br>h_i=\bigoplus^{L}_{l=1}norm(h_i^{ (l) } ) \tag 8<br>$$<br>&emsp;&emsp;其中$\bigoplus$是并接操作，$ norm(\cdot)$ 是$L_2$正则化操作。</p>
-<h3 id="Relation-Semantics-Modeling"><a href="#Relation-Semantics-Modeling" class="headerlink" title="Relation Semantics Modeling"></a>Relation Semantics Modeling</h3><p>&emsp;&emsp;作者认为对于图中提供的语义关系，很本能地应该利用这些信息，上面讨论的R-GCN需要高度相似的图结构以及对其的关系。这里作者借用TransE的思想，<strong>为了避免参数过多，作者没有引入针对特定关系的嵌入</strong>。关系rr<em>r</em>的表示r\mathbf{r}<strong>r</strong>，可以通过和它相关的实体嵌入得到：<br>$$<br>r = \frac{1} {T_r} \sum <em>{ (s,o) \in T_r} (h_s-h_o) \tag 9<br>$$<br>&emsp;&emsp;其中$T_r$是subject-object实体对的关系r，然后最小化下面的关系损失函数：<br>$$<br>L_2=\sum</em>{r_\in R} \frac {1} {T_r} \sum _{ (s,o) \in T_r} (h_s-h_o-r)  \tag {10}<br>$$</p>
+<p>$$<br>\alpha^{(1)}<em>{i \space j}=softmax_j(c^{(1)}</em>{i \space j})=\frac{exp(c^{(1)}<em>{i\space j})}{\sum</em>{n\in N_2(i) \cup {i}}exp(c^{(l)}_{i\space j})}  \tag 6<br>$$</p>
+<h3 id="Contrastive-Alignment-Loss"><a href="#Contrastive-Alignment-Loss" class="headerlink" title="Contrastive Alignment Loss"></a>Contrastive Alignment Loss</h3><p>&emsp;&emsp;作者最小化<strong>contrastive alignment loss</strong>函数让对齐的实体对距离尽可能小，而不对应得到实体对距离尽可能大。<br>$$<br>L_1 = \sum_{ (i,j)\in A^+} ||h_i-h_j|| +\sum_{ (i^{‘},j^{‘} )\in A^-} \alpha_1[\lambda - ||h_i^{‘}-h_j^{‘} || ]<em>+ \tag 7<br>$$<br>&emsp;&emsp;其中$A^{-}$由随机替换原先对齐的实体对的负样本集，$[{\cdot}]</em>{+}$表示$max(0,{\cdot})$。一般会用最后一层的结果表示实体，然后每一层的都传播了对齐的信息，因此我们使用所用的隐藏层的信息表示实体：<br>$$<br>h_i=\bigoplus^{L}_{l=1}norm(h_i^{ (l) } ) \tag 8<br>$$<br>&emsp;&emsp;其中$\bigoplus$是并接操作，$norm({\cdot)}$ 是 $L_2$ 正则化操作。</p>
+<h3 id="Relation-Semantics-Modeling"><a href="#Relation-Semantics-Modeling" class="headerlink" title="Relation Semantics Modeling"></a>Relation Semantics Modeling</h3><p>&emsp;&emsp;作者认为对于图中提供的语义关系，很本能地应该利用这些信息，上面讨论的R-GCN需要高度相似的图结构以及对其的关系。这里作者借用TransE的思想，<strong>为了避免参数过多，作者没有引入针对特定关系的嵌入</strong>。关系r的表示$\mathbf{r}$，可以通过和它相关的实体嵌入得到：<br>$$<br>r = \frac{1} {T_r} \sum <em>{ (s,o) \in T_r} (h_s-h_o) \tag 9<br>$$<br>&emsp;&emsp;其中$T_r$是subject-object实体对的关系r，然后最小化下面的关系损失函数：<br>$$<br>L_2=\sum</em>{r_\in R} \frac {1} {T_r} \sum _{ (s,o) \in T_r} (h_s-h_o-r)  \tag {10}<br>$$</p>
 <h3 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation"></a>Implementation</h3><ul>
 <li><strong>Objective</strong></li>
 </ul>
