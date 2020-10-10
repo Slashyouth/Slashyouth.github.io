@@ -3168,4 +3168,68 @@
         <tag>论文笔记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>论文笔记004-Multi-view Knowledge Graph Embedding for Entity Alignment</title>
+    <url>/2020/10/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0005-Multi-view%20Knowledge%20Graph%20Embedding%20for%20Entity%20Alignment/</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>题目：《<em>Multi-view Knowledge Graph Embedding for Entity Alignment</em>》</p>
+<p>来源：IJCAI-2019</p>
+<p>链接：<a href="https://www.ijcai.org/Proceedings/2019/754" target="_blank" rel="noopener">论文链接</a></p>
+<p>代码：<a href="https://github.com/nju-websoft/MultiKE" target="_blank" rel="noopener">Code和Dataset</a></p>
+<p>关键字：Entity Alignment、Embedding、Multi-view</p>
+</blockquote>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>&emsp;&emsp;原先的<strong>实体对齐</strong>工作主要关注在实体的<strong>关系结构</strong>特征，这就导致一些其他类型的特征被忽视，例如其<strong>属性（Attributes）</strong>特征，由于没有对这类特征给予一样的重要性，这会影响基于嵌入式的实体对齐工作的<strong>鲁棒性和准确性</strong>。</p>
+<p>&emsp;&emsp;作者基于上述的缺点，提出了一种新颖的框架，从<strong>实体名、关系、属性</strong>三个方面来学习实体的嵌入表示，并提出了相应的<strong>整合策略</strong>，其最终结果在数据集DBP-WD和DBP-YG上相对已有的方法有显著的提升。</p>
+<a id="more"></a>
+
+<h2 id="研究背景"><a href="#研究背景" class="headerlink" title="研究背景"></a>研究背景</h2><p>&emsp;&emsp;传统的方法：主要基于<strong>symbolic freature</strong>，如名字、文本描述、属性值等来判断实体的相似度。虽然有不错的结果，但是还是有以下两点限制：</p>
+<ul>
+<li>实体有很多的特征，但是目前只使用一种或者两种。<ol>
+<li>MTransE [Chen et al.,2017]、 IPTransE [Zhu et al., 2017] 、BootEA [Sun et al.,2018]均只是使用图谱的<strong>关系结构</strong>进行嵌入表达；</li>
+<li>JAPE [Sun et al., 2017]、KDCoE[Chen et al., 2018]、AttrE [Trsedya et al., 2019]在上述基础上使用了<strong>属性值</strong>的特征；</li>
+</ol>
+</li>
+<li>实体对齐依赖于<strong>种子实体对</strong>。然而实际情况中一般不容易找到这样的实体对，但是研究发现实体的对齐会受到<strong>关系和属性值</strong>的对齐影响，而且现实中这两类特征对齐比较容易找到。</li>
+</ul>
+<p>&emsp;&emsp;作者基于上述的两个缺点，提出了<strong>MultiKE</strong>方法，分为3个部分：<strong>不同视角的嵌入学习；不同视角的推理；不同的整合视角的方式</strong>，其方法甚至可以进行<strong>无监督学习</strong>的方式进行实体对齐。</p>
+<p>&emsp;&emsp;文中的<strong>Related Work</strong>的文段有对<strong>基于嵌入式的实体对齐方法发展的总结</strong>，可以详细看一下。</p>
+<h2 id="多视角的嵌入学习"><a href="#多视角的嵌入学习" class="headerlink" title="多视角的嵌入学习"></a>多视角的嵌入学习</h2><h3 id="模型的表述"><a href="#模型的表述" class="headerlink" title="模型的表述"></a>模型的表述</h3><p>&emsp;&emsp;作者通过分析将图谱表示为 $7$ 元组 $ \mathcal G = (\mathcal E,\mathcal R, \mathcal A,\mathcal V,\mathcal N,\mathcal X,\mathcal Y,)$ ，其中 $\mathcal {E,R,A,V}$ 分别表示的是<strong>实体、关系、属性、文本值</strong>，而 $\mathcal {N \subseteq E \times V}$ 表示实体名视角，$\mathcal {X \subseteq E \times R \times E}$ 表示关系视角， $\mathcal {Y \subseteq E \times A \times V}$ 表示属性视角。</p>
+<h3 id="文本的嵌入"><a href="#文本的嵌入" class="headerlink" title="文本的嵌入"></a>文本的嵌入</h3><p>&emsp;&emsp;文本是由一段字符和标点组成的序列，即<strong>tokens</strong>，作为多视角的嵌入的基础，其中 $ l = (o_1,o_2,\cdots,o_n)$ 表示输入的文本的序列，我们使用 $LP(\cdot)$ 来生成嵌入向量。其函数如下：<br>$$<br>LP(o_i) = \begin{cases} word_embed(o_i)，if,o_i,has,a,word,embedding\ char_embed(o_i)， otherwise \end{cases}  \tag 1<br>$$<br>&emsp;&emsp;作者这里使用了别人已经训练好的字嵌入模型，对于 $word_embde(\cdot)$ 采用[Mikolov et al.,2018] 的训练好的词嵌入数据，而对于 $char_embde(\cdot)$ 的采用 Skip-Gram model [Mikolov et al., 2013]。我们将使用函数 $\phi(\cdot)$ 表示，利用 $Auto-Encoder$ 以无监督的方式将 $tokens$ 嵌入编码为 $literal$ 嵌入：<br>$$<br>\phi(l) = encode([LP(o_1);LP(o_2);\cdots;LP(o_n)]) \tag 2<br>$$<br>&emsp;&emsp;&emsp;<strong>其中的“；”表示串接操作，这里作者限制输入字符数 $n$ 为5，多的截取掉，少的补充占位符。</strong></p>
+<h2 id="实体名视角嵌入"><a href="#实体名视角嵌入" class="headerlink" title="实体名视角嵌入"></a>实体名视角嵌入</h2><p>&emsp;&emsp;采用上面文本嵌入方法，实体名的嵌入表达如下：<br>$$<br>h^{(1)} = \phi(name(h)) \tag 3<br>$$<br>&emsp;&emsp;其中 $name(\cdot)$ 表示对实体名的提取，文中规定长度为5，变量上的 $^{(1)}$ 代表的是实体名视角，$\Theta^{(1)}$作为实体名视角的表示，下面的类似。</p>
+<h2 id="关系视角嵌入"><a href="#关系视角嵌入" class="headerlink" title="关系视角嵌入"></a>关系视角嵌入</h2><p>&emsp;&emsp;对于关系视角，作者采用了<strong>TransE [Bordes et al., 2013]</strong>的模型 $(h,r,t)$ ，把关系看成两个实体之间的转换向量。作者采用如下方式来评价关系的合理性：<br>$$<br>f_{rel}(h^{(2)},r,t^{(2)}) = - ||h^{(2)},+,r,-t^{(2)}|| \tag 4<br>$$<br>&emsp;&emsp;其定义了方程 $5$ 来描述其关系的可能性：<br>$$<br>P_{rel}(\zeta_{(h,r,t)}=1,|, \Theta^{(2)})=sigmoid(f_{rel}(h^{(2)},r,t^{(2)})) \tag 5<br>$$<br>&emsp;&emsp;其中 $\Theta^{(2)}$ 表示关系视角下的表示，而 $\zeta_{(h,r,t)}$ 则是对关系组 $(h,r,t)$ 的标签，取值为 $1$ 或者 $-1$ ,这样情况下就通过最小化下面的逻辑损失函数求解参数 $\Theta^{(2)}$ ：<br>$$<br>L(\Theta^{(2)}) = \sum_{(h,r,t)\in X^+ \cup X^-} log(1 ,+,exp(-\zeta_{(h,r,t)}*f_{rel}(h^{(2)},r,t^{(2)})))  \tag 6<br>$$<br>&emsp;&emsp;其中 $X^+ = X_a + X_b$ 表示在两个KG中的正确关系事实，而 $X^-$ 则是随机替换头实体或者尾实体的负样本。</p>
+<h2 id="属性视角嵌入"><a href="#属性视角嵌入" class="headerlink" title="属性视角嵌入"></a>属性视角嵌入</h2><p>&emsp;&emsp;对于属性视角，作者将其属性和属性值整合进一个矩阵 $ \left \langle a;v \right \rangle \in R^{2\times d}$ ,将其输入一个CNN网络去提取特征：<br>$$<br>CNN(\left \langle a;v \right \rangle) = \sigma(vec(\sigma(\left \langle a;v \right \rangle*\Omega)W)  \tag 7<br>$$<br>&emsp;&emsp;其中的卷积核是 $2 \times c, c&lt;d$ 的大小，$vec(\cdot)$ 是将其变形为一个向量，然后采用全连接的矩阵 $W$ 输出表示。对于属性的合理性判断采用如下方程：<br>$$<br>f_{attr}(h^{(3)},a,v) = -||h^{(3)} - CNN(\left \langle a;v \right \rangle)|| \tag 8<br>$$<br>&emsp;&emsp;基于上述的分析，其头结点希望和属性和属性值尽可能接近，这个通过如下损失函数获取：<br>$$<br>L(\Theta^{(3)}) = \sum_{(h,r,t)\in Y^+} log(1 ,+,exp(-f_{attr}(h^{(3)},a,v))  \tag 9<br>$$</p>
+<h1 id="跨KG的实体对齐训练"><a href="#跨KG的实体对齐训练" class="headerlink" title="跨KG的实体对齐训练"></a>跨KG的实体对齐训练</h1><p>&emsp;&emsp;本部分针对种子实体对进行训练模型，同时作者提出了对关系和属性的推理部分，进而进一步增强实体对齐的准确性。</p>
+<h2 id="实体推理"><a href="#实体推理" class="headerlink" title="实体推理"></a>实体推理</h2><p>&emsp;&emsp;作者通过种子对中的实体对来增加存在的联系，比如在关系 $(h,r,t)$ 中，实体对 $(h,\hat{h})$ 存在于种子中，那么我们可以增加附加的表达式：<br>$$<br>P_{rel}^{\prime}(\zeta_{(h,r,t)}=1,|, \Theta^{(2)})=sigmoid(f_{rel}(\hat{h}^{(2)},r,t^{(2)})) \tag {10}<br>$$</p>
+<p>$$<br>P_{rel}^{\prime\prime}(\zeta_{(h,r,t)}=1,|, \Theta^{(2)})=sigmoid(f_{rel}(h^{(2)},r,\hat{t}^{(2)})) \tag {11}<br>$$</p>
+<p>&emsp;&emsp;所以相应的损失函数变为,这个表达式和前面的式子 $6$ 还是有点点差别，<strong>少了负样本</strong>：<br>$$<br>L_{CE}(\Theta^{(2)}) = \sum_{(h,r,t)\in X^{\prime}} log(1 ,+,exp(-f_{rel}(\hat{h}^{(2)},r,t^{(2)}))),+,\sum_{(h,r,t)\in X^{\prime\prime}} log(1 ,+,exp(-f_{rel}(h^{(2)},r,\hat{t}^{(2)})))  \tag {12}<br>$$<br>&emsp;&emsp;相应的属性的里面的实体推理损失函数变为：<br>$$<br>L_{CE}(\Theta^{(3)}) = \sum_{(h,r,t)\in Y^{\prime}} log(1 ,+,exp(-f_{attr}(\hat{h}^{(3)},a,v))  \tag {13}<br>$$</p>
+<h2 id="关系和属性的推理"><a href="#关系和属性的推理" class="headerlink" title="关系和属性的推理"></a>关系和属性的推理</h2><p>&emsp;&emsp;类似上面相似的处理原理，对于关系 $(h,r,t)$ 中，关系对 $(r,\hat{r})$  ,采用如下表达式：<br>$$<br>P_{rel}^{\prime\prime\prime}(\zeta_{(h,r,t)}=1,|, \Theta^{(2)})=sigmoid(f_{rel}(h^{(2)},\hat{r},t^{(2)})) \tag {14}<br>$$<br>&emsp;&emsp;但是不和原先的论文中假设不一样，存在对齐的关系和属性的种子。作者采用了一种 $\bf soft$ 的对齐方式去自动对齐关系和属性。作者不采用严格的对齐要求，在[Cheatham and Hitzler, 2014]中说明了发现对齐的关系和属性更难，作者采用一个阈值来确定两者的对齐性：$S_{rel} = {(r,\hat{r},sim(r,\hat{r})) , |,sim(r,\hat{r}) \geq \ \eta }$ ，对于属性之间的相似度大于阈值的就认为是对齐的，这里考虑两种相似度：<strong>基于文本的相似度</strong>和<strong>基于关系嵌入的相似度</strong><br>$$<br>sim(r,\hat{r}) = \alpha_1,cos(\phi(name(r)),\phi(name(\hat{r}))),+\alpha_2,cos(r,\hat{r}) \tag {15}<br>$$<br>&emsp;&emsp;其中 $\alpha_1,\alpha_2 &gt; 0 ,\alpha_1 + \alpha_2 = 1$ ，为了缓解其对齐的不准确性，作者采用了下列方程作为损失函数：<br>$$<br>L_{CRA}(\Theta^{(2)}) = \sum_{(h,r,t)\in X^{\prime\prime\prime}} sim(r,\hat{r}),log(1 ,+,exp(-f_{rel}(h^{(2)},\hat{r},{t}^{(2)})))  \tag {16}<br>$$<br>&emsp;&emsp;其中的关系对在训练过程中实时迭代更新，同时对于属性的推理的损失函数类似，记为 $L_{CRA}(\Theta^{(3)}) $。</p>
+<h1 id="多视觉的整合"><a href="#多视觉的整合" class="headerlink" title="多视觉的整合"></a>多视觉的整合</h1><h2 id="Weighted-View-Averaging"><a href="#Weighted-View-Averaging" class="headerlink" title="Weighted View Averaging"></a>Weighted View Averaging</h2><p>&emsp;&emsp;一种简单的整合方式就是计算平均值，但是这个可能会受某一个极端偏差带来影响，我们可以对其先求出平均值 $\overline{h} = \frac{1}{D}\sum^{D}<em>{j=1}h^{(j)}$ ，其中的 $D$ 代表视觉的数目，然后计算各自与平均值的相似度，进而计算出各自的权重 $w_i=\frac{cos(h^{(i)},\overline{h})}{\sum^{D}</em>{j=1}cos(h^{(j)},\overline{h})}$ ，然后求出其表示 $\tilde{h}= \sum^{D}_{i=1}w_ih^{(i)}$ 。</p>
+<h3 id="Shared-Space-Learning"><a href="#Shared-Space-Learning" class="headerlink" title="Shared Space Learning"></a>Shared Space Learning</h3><p>&emsp;&emsp;作者基于一种各种视觉的嵌入表达来自一个<strong>共享的隐藏的</strong>视觉的假设，对每个视觉寻找一个<strong>正交矩阵</strong>将其变换到共享的空间中来，其中 $\tilde{H}$ 是所有实体的嵌入表达结合的矩阵，每一行代表一个实体，$H^{(i)}$ 是第 $i$ 个视觉的嵌入表达，其求下面的最小化损失函数：<br>$$<br>L_{SSL}(\tilde{H},Z)=\sum_{i=1}^{D}(||\tilde{H}-H^{(i)}Z^{(i)}||^{2}<em>{F}+||I-Z^{(i)\top}Z^{(i)}||^{2}</em>{F})  \tag {17}<br>$$<br>&emsp;&emsp;其中 $Z=\cup^{D}_{i=1}Z^{(i)}$ ，$Z^{(i)}$ 的作用是一个转换矩阵，将各自视觉的表达转换到共享的空间中，然后等式的第二部分主要是保证转换矩阵的正交化，保证转换能够保持原先实体之间的距离相对关系。</p>
+<h2 id="In-training-Combination"><a href="#In-training-Combination" class="headerlink" title="In-training Combination"></a>In-training Combination</h2><p>&emsp;&emsp;作者上述的整合方式都是在周期训练完成后才整合，为了进一步使各种视角时间互相吸收特征，作者想出了一种在训练过程中就不断整合的策略，其损失函数如下：<br>$$<br>L_{ITC}(\tilde{H},H)=\sum_{i=1}^{D}||\tilde{H}-H^{(i)}||^{2}<em>{F}  \tag {18}<br>$$<br>&emsp;&emsp;&emsp;其中 $H=\cup^{D}</em>{i=1}H^{(i)}$ ，其目标是最大化该损失函数。</p>
+<h2 id="Combined-Training-Process"><a href="#Combined-Training-Process" class="headerlink" title="Combined Training Process"></a>Combined Training Process</h2><p>&emsp;&emsp;其整合过程如下图，注意的是其姓名的嵌入表达在后续训练过程中不会更新：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/005/KG-paper-005-001.PNG" alt=""></p>
+<h1 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h1><ul>
+<li>数据集</li>
+</ul>
+<p>&emsp;&emsp;来自<strong>DBP-WD和DBP-YG(Sun et al., 2018)</strong>的两个数据集，其使用30%作为种子实体对。</p>
+<ul>
+<li>实验结果</li>
+</ul>
+<p>&emsp;&emsp;结果如图所示：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/005/KG-paper-005-002.PNG" alt=""></p>
+<p>&emsp;&emsp;同时作者进行了对照试验在推理上面的对比，以及在无监督上的实体对齐任务比较。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/005/KG-paper-005-003.PNG" alt=""></p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/005/KG-paper-005-004.PNG" alt=""></p>
+<p>&emsp;&emsp;整体来说，作者提出的多视角实体对齐方案相比已有的方法有了很大的提升，而且思路的解释性很强，对相应的策略做了实验加以验证解释，后续作者想增加视觉角度，如实体的类别等，以及尝试跨语言进行实体对齐。</p>
+]]></content>
+      <categories>
+        <category>知识图谱</category>
+      </categories>
+      <tags>
+        <tag>知识图谱</tag>
+        <tag>NLP</tag>
+        <tag>知识融合</tag>
+        <tag>论文笔记</tag>
+      </tags>
+  </entry>
 </search>
