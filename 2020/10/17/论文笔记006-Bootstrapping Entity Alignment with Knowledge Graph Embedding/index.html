@@ -20,20 +20,28 @@
     var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="前言在 第11章 时我们已经介绍了用 Apriori 算法发现 频繁项集 与 关联规则。本章将继续关注发现 频繁项集 这一任务，并使用 FP-growth 算法更有效的挖掘 频繁项集。">
+  <meta name="description" content="简介 题目：《Bootstrapping Entity Alignment with Knowledge Graph Embedding》 来源：IJCAI-2018 链接：论文链接 代码：Code和Dataset 关键字：Entity Alignment、Bootstrapping、Embedding  研究背景&amp;emsp;&amp;emsp;近些年（基于2018年的），一些基于Embedding的实体">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第12章 使用FP-growth算法来高效发现频繁项集">
-<meta property="og:url" content="https://slashyouth.github.io/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/index.html">
+<meta property="og:title" content="论文笔记006-Bootstrapping Entity Alignment with Knowledge Graph Embedding">
+<meta property="og:url" content="https://slashyouth.github.io/2020/10/17/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0006-Bootstrapping%20Entity%20Alignment%20with%20Knowledge%20Graph%20Embedding/index.html">
 <meta property="og:site_name" content="Slash Youth">
-<meta property="og:description" content="前言在 第11章 时我们已经介绍了用 Apriori 算法发现 频繁项集 与 关联规则。本章将继续关注发现 频繁项集 这一任务，并使用 FP-growth 算法更有效的挖掘 频繁项集。">
+<meta property="og:description" content="简介 题目：《Bootstrapping Entity Alignment with Knowledge Graph Embedding》 来源：IJCAI-2018 链接：论文链接 代码：Code和Dataset 关键字：Entity Alignment、Bootstrapping、Embedding  研究背景&amp;emsp;&amp;emsp;近些年（基于2018年的），一些基于Embedding的实体">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-06-03T09:30:02.226Z">
-<meta property="article:modified_time" content="2020-06-03T09:28:56.845Z">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-001.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-002.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-003.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-004.PNG">
+<meta property="article:published_time" content="2020-10-17T15:42:59.518Z">
+<meta property="article:modified_time" content="2020-10-17T15:46:24.052Z">
 <meta property="article:author" content="Jack Can">
-<meta property="article:tag" content="Python">
+<meta property="article:tag" content="知识图谱">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="知识融合">
+<meta property="article:tag" content="论文笔记">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-001.PNG">
 
-<link rel="canonical" href="https://slashyouth.github.io/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/">
+<link rel="canonical" href="https://slashyouth.github.io/2020/10/17/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0006-Bootstrapping%20Entity%20Alignment%20with%20Knowledge%20Graph%20Embedding/">
 
 
 <script id="page-configurations">
@@ -46,7 +54,7 @@
   };
 </script>
 
-  <title>第12章 使用FP-growth算法来高效发现频繁项集 | Slash Youth</title>
+  <title>论文笔记006-Bootstrapping Entity Alignment with Knowledge Graph Embedding | Slash Youth</title>
   
 
 
@@ -196,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/06/03/12.%E4%BD%BF%E7%94%A8FP-growth%E7%AE%97%E6%B3%95%E6%9D%A5%E9%AB%98%E6%95%88%E5%8F%91%E7%8E%B0%E9%A2%91%E7%B9%81%E9%A1%B9%E9%9B%86/">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/10/17/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0006-Bootstrapping%20Entity%20Alignment%20with%20Knowledge%20Graph%20Embedding/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
@@ -209,7 +217,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          第12章 使用FP-growth算法来高效发现频繁项集
+          论文笔记006-Bootstrapping Entity Alignment with Knowledge Graph Embedding
         </h1>
 
         <div class="post-meta">
@@ -220,7 +228,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-06-03 17:30:02 / 修改时间：17:28:56" itemprop="dateCreated datePublished" datetime="2020-06-03T17:30:02+08:00">2020-06-03</time>
+              <time title="创建时间：2020-10-17 23:42:59 / 修改时间：23:46:24" itemprop="dateCreated datePublished" datetime="2020-10-17T23:42:59+08:00">2020-10-17</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -228,7 +236,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                  <a href="/categories/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" itemprop="url" rel="index"><span itemprop="name">知识图谱</span></a>
                 </span>
             </span>
 
@@ -244,13 +252,13 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-              <span>2.6k</span>
+              <span>4.8k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-              <span>2 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -262,43 +270,49 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在 <a href="">第11章</a> 时我们已经介绍了用 <code>Apriori</code> 算法发现 <code>频繁项集</code> 与 <code>关联规则</code>。<br>本章将继续关注发现 <code>频繁项集</code> 这一任务，并使用 <code>FP-growth</code> 算法更有效的挖掘 <code>频繁项集</code>。</p>
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>题目：《<em>Bootstrapping Entity Alignment with Knowledge Graph Embedding</em>》</p>
+<p>来源：IJCAI-2018</p>
+<p>链接：<a href="https://www.ijcai.org/Proceedings/2018/611" target="_blank" rel="noopener">论文链接</a></p>
+<p>代码：<a href="https://github.com/nju-websoft/BootEA" target="_blank" rel="noopener">Code和Dataset</a></p>
+<p>关键字：Entity Alignment、Bootstrapping、Embedding</p>
+</blockquote>
+<h2 id="研究背景"><a href="#研究背景" class="headerlink" title="研究背景"></a>研究背景</h2><p>&emsp;&emsp;近些年（基于2018年的），一些基于<strong>Embedding</strong>的实体对齐方法被提出，虽然取得了不错的效果，但是仍存在一些问题：</p>
+<p>1) KG Embedding部分主要复用面向KG补全的Embedding模型，面向实体对齐的Embedding模型有待探索。</p>
+<p>2)在训练数据比较少的情况下，当前方法精度很低。</p>
+<p>&emsp;&emsp;为此我们提出了一个<strong>Bootstrapping</strong>的方法，将实体对齐转化为一个分类问题，期望学习的Embeddings具有最大的实体对齐似然。<strong>具体地，我们提出了一个面向实体对齐的KG Embedding模型(AlignE)；然后动态标记新的实体对齐作为训练数据来增强匹配效果(BootEA)。</strong></p>
 <a id="more"></a>
-<h2 id="FP-growth-算法简介"><a href="#FP-growth-算法简介" class="headerlink" title="FP-growth 算法简介"></a>FP-growth 算法简介</h2><ul>
-<li>一种非常好的发现频繁项集算法。</li>
-<li>基于Apriori算法构建,但是数据结构不同，使用叫做 <code>FP树</code> 的数据结构结构来存储集合。下面我们会介绍这种数据结构。</li>
-</ul>
-<h2 id="FP-growth-算法步骤"><a href="#FP-growth-算法步骤" class="headerlink" title="FP-growth 算法步骤"></a>FP-growth 算法步骤</h2><ul>
-<li>基于数据构建FP树   </li>
-<li>从FP树种挖掘频繁项集 </li>
-</ul>
-<h2 id="FP树-介绍"><a href="#FP树-介绍" class="headerlink" title="FP树 介绍"></a>FP树 介绍</h2><ul>
-<li>FP树的节点结构如下:</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">treeNode</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, nameValue, numOccur, parentNode)</span>:</span></span><br><span class="line">        self.name = nameValue     <span class="comment"># 节点名称</span></span><br><span class="line">        self.count = numOccur     <span class="comment"># 节点出现次数</span></span><br><span class="line">        self.nodeLink = <span class="literal">None</span>      <span class="comment"># 不同项集的相同项通过nodeLink连接在一起</span></span><br><span class="line">        <span class="comment"># needs to be updated</span></span><br><span class="line">        self.parent = parentNode  <span class="comment"># 指向父节点</span></span><br><span class="line">        self.children = &#123;&#125;        <span class="comment"># 存储叶子节点</span></span><br><span class="line">```   </span><br><span class="line">         </span><br><span class="line"><span class="comment">## FP-growth 原理</span></span><br><span class="line">基于数据构建FP树</span><br><span class="line"></span><br><span class="line">步骤<span class="number">1</span>:</span><br><span class="line">   <span class="number">1.</span> 遍历所有的数据集合，计算所有项的支持度。</span><br><span class="line">   <span class="number">2.</span> 丢弃非频繁的项。</span><br><span class="line">   <span class="number">3.</span> 基于 支持度 降序排序所有的项。</span><br><span class="line">   ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">1</span><span class="number">-3.</span>png)</span><br><span class="line">   <span class="number">4.</span> 所有数据集合按照得到的顺序重新整理。</span><br><span class="line">   <span class="number">5.</span> 重新整理完成后，丢弃每个集合末尾非频繁的项。</span><br><span class="line">   ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">4</span><span class="number">-5.</span>png)</span><br><span class="line"></span><br><span class="line">步骤<span class="number">2</span>:</span><br><span class="line">   <span class="number">6.</span> 读取每个集合插入FP树中，同时用一个头部链表数据结构维护不同集合的相同项。  </span><br><span class="line">   ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">6</span><span class="number">-1.</span>png)</span><br><span class="line">   最终得到下面这样一棵FP树</span><br><span class="line">   ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">6</span><span class="number">-2.</span>png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">从FP树中挖掘出频繁项集</span><br><span class="line"></span><br><span class="line">步骤<span class="number">3</span>:</span><br><span class="line">   <span class="number">1.</span> 对头部链表进行降序排序</span><br><span class="line">   <span class="number">2.</span> 对头部链表节点从小到大遍历，得到条件模式基，同时获得一个频繁项集。</span><br><span class="line">        ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">6</span><span class="number">-2.</span>png)</span><br><span class="line">        如上图，从头部链表 t 节点开始遍历，t 节点加入到频繁项集。找到以 t 节点为结尾的路径如下:</span><br><span class="line">        ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">7</span><span class="number">-1.</span>png)</span><br><span class="line">        去掉FP树中的t节点，得到条件模式基&lt;左边路径, 右边是值&gt;[z,x,y,s,t]:<span class="number">2</span>，[z,x,y,r,t]:<span class="number">1</span> 。条件模式基的值取决于末尾节点 t ，因为 t 的出现次数最小，一个频繁项集的支持度由支持度最小的项决定。所以 t 节点的条件模式基的值可以理解为对于以 t 节点为末尾的前缀路径出现次数。</span><br><span class="line">       </span><br><span class="line">   <span class="number">3.</span> 条件模式基继续构造条件 FP树， 得到频繁项集，和之前的频繁项组合起来，这是一个递归遍历头部链表生成FP树的过程，递归截止条件是生成的FP树的头部链表为空。</span><br><span class="line">        根据步骤 <span class="number">2</span> 得到的条件模式基 [z,x,y,s,t]:<span class="number">2</span>，[z,x,y,r,t]:<span class="number">1</span> 作为数据集继续构造出一棵FP树，计算支持度，去除非频繁项，集合按照支持度降序排序，重复上面构造FP树的步骤。最后得到下面 t-条件FP树 :</span><br><span class="line">        ![](http://data.apachecn.org/img/AiLearning/ml/<span class="number">12.</span>FP-growth/步骤<span class="number">7</span><span class="number">-2.</span>png)</span><br><span class="line">        然后根据 t-条件FP树 的头部链表进行遍历，从 y 开始。得到频繁项集 ty 。然后又得到 y 的条件模式基，构造出 ty的条件FP树，即 ty-条件FP树。继续遍历ty-条件FP树的头部链表，得到频繁项集 tyx，然后又得到频繁项集 tyxz. 然后得到构造tyxz-条件FP树的头部链表是空的，终止遍历。我们得到的频繁项集有 t-&gt;ty-&gt;tyz-&gt;tyzx，这只是一小部分。</span><br><span class="line">   * 条件模式基:头部链表中的某一点的前缀路径组合就是条件模式基，条件模式基的值取决于末尾节点的值。</span><br><span class="line">   * 条件FP树:以条件模式基为数据集构造的FP树叫做条件FP树。</span><br><span class="line"></span><br><span class="line">FP-growth 算法优缺点:</span><br></pre></td></tr></table></figure>
+
+<h2 id="Problem-Formulation"><a href="#Problem-Formulation" class="headerlink" title="Problem Formulation"></a>Problem Formulation</h2><p>&emsp;&emsp; $X$ 与 $Y$ 分别表示 $KG_1$ 和 $KG_2$ 的实体集合，实体对齐任务就是去寻找 $A = {(x,y) \in X\times Y|x \sim_R,y}$ 不同 $KG$ 中的等价的实体对。作者将其任务定义为一个<strong>分类任务</strong>，即用 $Y$ 中的实体去给 $X$ 中的实体进行贴标签。不过这里和一般的分类任务不一样，这里的<strong>实体标签只能一对一</strong>，即一个$Y$实体标签只能给一个实体$X$进行标注，或者不标签，这里作者使用 $\Theta$  表示不同的 $KG$ 的嵌入表示，其中 $y\in Y$ 作为标签，$x \in X$ 作为待标注的实体，其对于某个实体 $x$ 对应是标签 $y$ 的概率如下公式：<br>$$<br>\pi(y|x;\Theta) = \sigma(sim(\overset{\rightarrow}{v}(x),\overset{\rightarrow}{v}(y)))  \tag {1}<br>$$<br>&emsp;&emsp;其采用向量的第二范式距离，然后用激活函数转换表示标签的准确性概率的大小，然后作者采用选取全局整体的标签准确率之和最大的情况，其中的 $\mathbb{L}<em>x$ 表示实体 $x$ 正确的标签，而指示函数 $1</em>{[\cdot]}$的取值为$(0,or,1)$:<br>$$<br>\begin{equation}<br>\begin{aligned}<br>\hat\Theta  &amp;= \arg\max_{\Theta}\sum_{x\in X}\log \pi(\mathbb{L}<em>x |x;\Theta) \ &amp;=\arg\max</em>{\Theta}\sum_{x\in X}\sum_{y\in Y}1_{[y=\mathbb{L}_x]}\log \pi(y |x;\Theta)<br>\end{aligned}<br>\end{equation}<br>\tag {2}<br>$$<br>&emsp;&emsp;上式中考虑的重点在于对齐的实体对的相似概率，而对于其他没对齐的实体的信息没保留，所以这个方程式对于实体对齐不太好，后续的目标函数也是处于这样的考虑的。</p>
+<h2 id="Methodology"><a href="#Methodology" class="headerlink" title="Methodology"></a>Methodology</h2><h3 id="Alignment-Oriented-KG-Embedding"><a href="#Alignment-Oriented-KG-Embedding" class="headerlink" title="Alignment-Oriented KG Embedding"></a>Alignment-Oriented KG Embedding</h3><p>&emsp;&emsp;作者本文将两个 $KG$ 的实体编码在<strong>统一空间</strong>中，这样就可以直接计算实体之间的相似性。作者采用<strong>Translation-based Model</strong>去捕获<strong>语义信息</strong>，即评价函数为：$f(\tau) = ||\overset{\rightarrow}{v}(h)+\overset{\rightarrow}{v}(r)-\overset{\rightarrow}{v}(t)||^{2}<em>{2}$ ，用来表示三元组$\tau = (h,r,t)$ 的可能性，采用<strong>Margin-based Ranking Loss</strong>的损失函数虽然是<strong>保证正实例之间的距离能够小与负样本之间的距离</strong>，但是<strong>[Zhou etal., 2017]</strong>文中研究发现，这个函数不能保证正样例的距离足够小，即表示的之间的可能性不准确，所以作者提出了一种新的损失函数：<br>$$<br>O</em>{e}=\sum_{\tau\in\mathbb{T}^{+}}[f(\tau)-\gamma_{1}]<em>{+}+\mu</em>{1}\sum_{\tau^{\prime}\in\mathbb{T}^{-}}[\gamma_{2}- f(\tau^{\prime})]<em>{+}  \tag {3}<br>$$<br>&emsp;&emsp;其中$[\cdot]</em>{+}=\max(\cdot,0),\gamma_{1},and,\gamma_{2} &gt; 0,\mu_{1}&gt;0$，而对应的 $\mathbb{T}^{+}和 ,\mathbb{T}^{-}$  分别表示正负样本集合。该方程式有两个特性：1-该方程可以保证正确的实体对能维持更小的距离值，同时保证负样本能后具有更大的距离值，这里设定 $\gamma_{2}&gt;\gamma_{1}$；同时能够保证$f(\tau^{\prime})-f(\tau)\ge\gamma_{2} -\gamma_{1}$，这个也保留了原先的<strong>Margin-based Ranking Loss</strong>的特性。</p>
+<h3 id="epsilon-Truncated-Uniform-Negative-Sampling"><a href="#epsilon-Truncated-Uniform-Negative-Sampling" class="headerlink" title="$\epsilon$-Truncated Uniform Negative Sampling"></a>$\epsilon$-Truncated Uniform Negative Sampling</h3><p>&emsp;&emsp;一般生成负样例的方法就是随机的替换关系中的头结点或者尾结点，但是这样的替换可能与原先的关系组很容易区分，即差别太大了，对于嵌入式的学习来说可能影响不大，作者本文中希望能<strong>识别出很近关系组之间的区别</strong>，作者对实体 $x$ 的替换选择如下：选择离其最近的 $s$ 个实体，其中$s= \left\lceil (1-\epsilon)N\right\rceil,\epsilon\in[0,1)$ ，$N$ 是 $KG$ 中的实体的数目，$\left\lceil \cdot\right\rceil$是向上取值函数，取代的实体将和原先的实体非常相似，这样对训练更有帮助。</p>
+<p><strong>Parameter Swapping</strong></p>
+<p>&emsp;&emsp;作者通过扩增三元组的同时将两个图谱在同一空间进行嵌入学习，对于对齐的实体对$(x,y)\in A^{\prime}$ ，通过替换对应的实体来增加对齐的三元组：<br>$$<br>\mathbb{T}^{s}<em>{(x,y)} = {(y,r,t)|(x,r,t)\in\mathbb{T}^{+}</em>{1}}\cup{ (h,r,y)|(h,r,x)\in\mathbb{T}^{+}<em>{1}}\cup {(x,r,t)|(y,r,t)\in\mathbb{T}^{+}</em>{2}} \cup{(h,r,x)|(h,r,y)\in\mathbb{T}^{+}_{2}} \tag {4}<br>$$<br>&emsp;&emsp;然后作者根据产生的正样例再分别按照上诉方法取负样例。注意是这种替换可能增加了某个图中没有的关系三元组，丰富了关系组合。</p>
+<h3 id="Bootstrapping-Alignment"><a href="#Bootstrapping-Alignment" class="headerlink" title="Bootstrapping Alignment"></a>Bootstrapping Alignment</h3><p>&emsp;&emsp;嵌入表达学习由于缺少对齐的实体对，作者通过迭代不断的增加对齐的实体对，从而提升对齐的性能。作者将具有较高可信度的实体对加入到已知对齐的实体对中间去，作为训练数据。</p>
+<p><strong>Likely Alignment Labeling and Editing</strong></p>
+<p>&emsp;&emsp;传统的<strong>Bootstrapping</strong>方法每次都是选取最可信的标签去标签数据，但是本研究中<strong>标签的数据</strong>是受限的，就是<strong>一对一的关系</strong>，就是一个标签使用以后就不能标签其他实体了，作者由此提出了其下面优化的目标函数：<br>$$<br>\max \sum_{x\in X^{\prime}}\sum_{y\in Y^{\prime}<em>{x}}\pi(y|x;\Theta^{(t)}\cdot\psi^{(t)}(x,y)) \<br>s.t.\sum</em>{x^{\prime}\in X^{\prime}}\psi^{(t)}(x^{\prime},y)\le1,\sum_{y^{\prime}\in Y^{\prime}<em>{x}}\psi^{(t)}(x,y^{\prime})\le1,\forall x,y   \tag {5}<br>$$<br> &emsp;&emsp;其中的 $\Theta^{(t)}$ 表示第 $t$ 次迭代时候的嵌入表达向量，$Y^{\prime}</em>{x} = {y|y\in Y^{\prime} and,\pi(y|x;\Theta^{(t)})\gt\gamma_{3}}$ 表示实体 $x$ 的候选实体集，$\psi^{(t)}{(\cdot)}$ 就是一个指示函数，如果实体 $x$ 被 $y$ 贴上标签，那么值就为1，否则就为0。上面两个不等式<strong>保证了一对一的关系</strong>，不会存在一个标签重复使用的情况。每次迭代后，作者将新加的实体对增加到训练数据中去，继续后续的训练。</p>
+<p> &emsp;&emsp;随着时间的递增，训练效果应该越来越好，但是任然会产生误差，为了去缓解这种误差的影响，在该训练中，<strong>对于一个已经被贴新标签的实体，在后续的训练中，可以被取消标签或者替换新的标签</strong>，这样的方法在本次研究中心，既简单有有效，在判断标签是否有效的时候，是通过比较其距离的大小，如下式：<br>$$<br>\triangle^{(t)}_{(x,y,y^{\prime})} = \pi(y|x;\Theta^{(t)})-\pi(y^{\prime}|x;\Theta^{(t)}) \tag {6}<br>$$</p>
+<p><strong>Learning from Holistic Perspective</strong></p>
+<p> &emsp;&emsp;为了获取一个全局的已标签或未标签的情况，对其定义了以下的分布（7），如果被标记了，那么其对应的概率为1（只有y等于真正标签的时候），没有被标记的话就是一个均匀分布（和总体的未标记的数目有关），然后给定该概率分布后，得到新的对齐目标函数（求其最小值）：<br>$$<br>\phi_{x}(y)=\left{<br>\begin{aligned}<br>1_{[y=\hat{y}]} &amp; = &amp;if,x, is , labeled,as,\hat{y} \<br>\frac{1}{|Y^{\prime}|} &amp; = &amp;if,x, is , unlabeled<br>\end{aligned}<br>\right.<br>\tag {7}<br>$$</p>
+<p>$$<br>O_{a}=-\sum_{x\in X}\sum_{y\in Y}\phi_{X}(y)\log\pi(y|x;\Theta) \tag {8}<br>$$</p>
+<p>&emsp;&emsp;最后作者整体考虑，其最终的目标函数如下：<br>$$<br>O=Q_{e}+\mu_{2}\cdot Q_{A} \tag {9}<br>$$</p>
+<h3 id="Implementation-Details"><a href="#Implementation-Details" class="headerlink" title="Implementation Details"></a>Implementation Details</h3><p>&emsp;&emsp;本部分主要是对参数的具体说明，详见论文。</p>
+<h2 id="实验分析"><a href="#实验分析" class="headerlink" title="实验分析"></a>实验分析</h2><p>&emsp;&emsp;本文作者采用了<strong>DBP15K</strong>和<strong>DWY100K</strong>两类数据集，其中后面一个数据集的详情如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-001.PNG" alt=""></p>
+<p>&emsp;&emsp;其中对照的模型以及对其的实验结果如下图：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-002.PNG" alt=""></p>
+<p>&emsp;&emsp;其结果可以看出其结果优于当其先提出的模型，而且在性能上面有较大的提升。</p>
+<p><strong>结果分析</strong></p>
+<p>&emsp;&emsp;作者为了说明其性能的优越性的原因，分别对以下4各方面进行对照实验：</p>
 <ul>
-<li>优点： 1. 因为 FP-growth 算法只需要对数据集遍历两次，所以速度更快。<pre><code>2. FP树将集合按照支持度降序排序，不同路径如果有相同前缀路径共用存储空间，使得数据得到了压缩。
-3. 不需要生成候选集。
-4. 比Apriori更快。</code></pre></li>
-<li>缺点： 1. FP-Tree第二次遍历会存储很多中间过程的值，会占用很多内存。<pre><code>2. 构建FP-Tree是比较昂贵的。</code></pre></li>
-<li>适用数据类型：标称型数据(离散型数据)。<pre><code>
-</code></pre></li>
+<li><strong>Effectiveness of $\epsilon$-Truncated Uniform Negative Sampling</strong></li>
+<li><strong>Accuracy of Likely Alignment</strong></li>
+<li><strong>Sensitivity to Proportion of Prior Alignment</strong></li>
+<li><strong>F1-score w.r.t. Distribution of Relation Triple Numbers</strong></li>
 </ul>
-<h2 id="FP-growth-代码讲解"><a href="#FP-growth-代码讲解" class="headerlink" title="FP-growth 代码讲解"></a>FP-growth 代码讲解</h2><p>完整代码地址: <a href="https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/12.FrequentPattemTree/fpGrowth.py" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning/blob/master/src/py2.x/ml/12.FrequentPattemTree/fpGrowth.py</a></p>
-<p>main 方法大致步骤:</p>
-<pre><code class="python"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
-    simpDat = loadSimpDat()                       <span class="comment">#加载数据集。</span>
-    initSet = createInitSet(simpDat)              <span class="comment">#对数据集进行整理，相同集合进行合并。</span>
-    myFPtree, myHeaderTab = createTree(initSet, <span class="number">3</span>)<span class="comment">#创建FP树。</span>
-    freqItemList = []
-    mineTree(myFPtree, myHeaderTab, <span class="number">3</span>, set([]), freqItemList) <span class="comment">#递归的从FP树中挖掘出频繁项集。</span>
-    <span class="keyword">print</span> freqItemList</code></pre>
-<p>大家看懂原理，再仔细跟踪一下代码。基本就没有问题了。</p>
-<hr>
-<ul>
-<li><strong>本文转载于 <a href="http://www.apachecn.org/" target="_blank" rel="noopener">ApacheCN</a></strong></li>
-<li><a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">GitHub地址</a>: <a href="https://github.com/apachecn/AiLearning" target="_blank" rel="noopener">https://github.com/apachecn/AiLearning</a>      </li>
-</ul>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-003.PNG" alt=""></p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/006/KG-paper-006-004.PNG" alt=""></p>
+<p>&emsp;&emsp;作者通过其上面的实验，进一步说明其提出的相关策略的有效性，其具体的分析可以见原文，里面介绍很详细。</p>
 
     </div>
 
@@ -308,7 +322,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Python/" rel="tag"><i class="fa fa-tag"></i> Python</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" rel="tag"><i class="fa fa-tag"></i> 知识图谱</a>
+              <a href="/tags/NLP/" rel="tag"><i class="fa fa-tag"></i> NLP</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E8%9E%8D%E5%90%88/" rel="tag"><i class="fa fa-tag"></i> 知识融合</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" rel="tag"><i class="fa fa-tag"></i> 论文笔记</a>
           </div>
 
         
@@ -317,13 +334,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/03/11.%E4%BD%BF%E7%94%A8Apriori%E7%AE%97%E6%B3%95%E8%BF%9B%E8%A1%8C%E5%85%B3%E8%81%94%E5%88%86%E6%9E%90/" rel="prev" title="第11章 使用Apriori算法进行关联分析">
-      <i class="fa fa-chevron-left"></i> 第11章 使用Apriori算法进行关联分析
+    <a href="/2020/10/10/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0005-Multi-view%20Knowledge%20Graph%20Embedding%20for%20Entity%20Alignment/" rel="prev" title="论文笔记005-Multi-view Knowledge Graph Embedding for Entity Alignment">
+      <i class="fa fa-chevron-left"></i> 论文笔记005-Multi-view Knowledge Graph Embedding for Entity Alignment
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/03/13.%E5%88%A9%E7%94%A8PCA%E6%9D%A5%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE/" rel="next" title="第13章 利用PCA来简化数据">
-      第13章 利用PCA来简化数据 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -383,7 +397,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FP-growth-算法简介"><span class="nav-number">2.</span> <span class="nav-text">FP-growth 算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FP-growth-算法步骤"><span class="nav-number">3.</span> <span class="nav-text">FP-growth 算法步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FP树-介绍"><span class="nav-number">4.</span> <span class="nav-text">FP树 介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FP-growth-代码讲解"><span class="nav-number">5.</span> <span class="nav-text">FP-growth 代码讲解</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#研究背景"><span class="nav-number">2.</span> <span class="nav-text">研究背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Problem-Formulation"><span class="nav-number">3.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Methodology"><span class="nav-number">4.</span> <span class="nav-text">Methodology</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Alignment-Oriented-KG-Embedding"><span class="nav-number">4.1.</span> <span class="nav-text">Alignment-Oriented KG Embedding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#epsilon-Truncated-Uniform-Negative-Sampling"><span class="nav-number">4.2.</span> <span class="nav-text">$\epsilon$-Truncated Uniform Negative Sampling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bootstrapping-Alignment"><span class="nav-number">4.3.</span> <span class="nav-text">Bootstrapping Alignment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Implementation-Details"><span class="nav-number">4.4.</span> <span class="nav-text">Implementation Details</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验分析"><span class="nav-number">5.</span> <span class="nav-text">实验分析</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -609,7 +623,7 @@ NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
       repo        : 'gitalk-commnet',
       owner       : 'Slashyouth',
       admin       : ['Slashyouth'],
-      id          : 'a8002683f4a8678295a492e454ee5dc0',
+      id          : '9ccdbe9d82a60fca2702938c0d4a47b8',
         language: 'zh-CN',
       distractionFreeMode: true
     });
