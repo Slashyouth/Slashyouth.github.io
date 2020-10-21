@@ -3290,4 +3290,62 @@
         <tag>论文笔记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>论文笔记007-Neighborhood Matching Network for Entity Alignment</title>
+    <url>/2020/10/21/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0007-Neighborhood%20Matching%20Network%20for%20Entity%20Alignment/</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>题目：《<em>Neighborhood Matching Network for Entity Alignment</em>》</p>
+<p>来源：ACL-2020</p>
+<p>链接：<a href="https://www.aclweb.org/anthology/2020.acl-main.578/" target="_blank" rel="noopener">论文链接</a></p>
+<p>代码：<a href="https://github.com/StephanieWyt/NMN" target="_blank" rel="noopener">Code和Dataset</a></p>
+<p>关键字：Entity AlignmentS</p>
+</blockquote>
+<h2 id="研究背景"><a href="#研究背景" class="headerlink" title="研究背景"></a>研究背景</h2><p>&emsp;&emsp;从原先的大量依赖人工的参与实体对齐任务，到<strong>Embedding-Based</strong>的实体对齐方法的出现，大大缩减了人为的参与度，但是依旧需要一定量的<strong>训练种子对</strong>，然后提出了基于<strong>GCN</strong>的相关方法，这些方法有一个假设前提-<strong>相似实体对的周围邻近结构也会很相似</strong>。但是实际情况不是这样的。如下图：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-001.PNG" alt=""></p>
+<p>&emsp;&emsp;从上图中可以看到，对于有些对齐的实体，其周围的邻接点数目相差是很大的，而且就算不考虑数量的差别（图中第二组），其邻接点中相似的数量也很少，很多节点都是不相似，同时作者通过实验发现，随着邻接点的数目增加，其<strong>Embedding-Based</strong>方法的准确率会大大下降，同时邻接点的数目增多，同时其评价邻接点的相似度的难度也很大，其<strong>GCN</strong>方法的计算量的代价也会大大增加。作者由此分析提出了相应的改进的<strong>NMN</strong>模型。</p>
+<a id="more"></a>
+
+<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h2><p>&emsp;&emsp;作者在本段落介绍了其模型四个组成部分的相关研究状况。</p>
+<h3 id="Embedding-based-entity-alignment"><a href="#Embedding-based-entity-alignment" class="headerlink" title="Embedding-based entity alignment"></a>Embedding-based entity alignment</h3><p>&emsp;&emsp;早期的<strong>Embedding-Based</strong>方法<strong>TransE-2013</strong>，通过对KG的结构进行编码来实现对齐，其变形有<strong>MTransE-2017、JAPE-2017、IPTransE-2017、BootEA-2018、NAEA-2019、OTEA-2019</strong>。最近提出的模型用<strong>GCN</strong>去对KG建模，如<strong>GCN-Align-2018、GMNN-2019、RDGCN-2019、AVR-GCN-2019、HGCN-JE-2019</strong>。除了使用结构信息，还有使用其他信息的方法，如<strong>KDCoE-2018、AttrE-2019、MultiKE-2019、HMAN-2019</strong>这些方法使用其他的信息去改善实体的表示学习。</p>
+<p>&emsp;&emsp;然而上面的方法都忽视了其邻接点的异构性。<strong>MuGNN-2019</strong>和<strong>AliNet-2020</strong>最新的两个去解决这个问题的模型。但是其两个模型依旧有些缺点，前者需要大量预先训练的<strong>实体和关系</strong>数据，这个很代价很高。后者模型只考虑的一阶邻接点同等的重要性，然后并非所有的一阶邻接点都重要，作者考虑到上述的缺点，自己的模型<strong>NMN</strong>只会提取<strong>一些有用的邻接点</strong>，同时只需要一些预先训练的数据。</p>
+<h3 id="Graph-neural-networks"><a href="#Graph-neural-networks" class="headerlink" title="Graph neural networks"></a>Graph neural networks</h3><p>&emsp;&emsp;<strong>GNNs</strong>模型最近被很多<strong>NLP</strong>的研究使用，如语义标签和机器翻译等。<strong>GNNs</strong>的结点表达通过<strong>不断的迭代聚集周围邻接点的表达</strong>，目前有很多其变种模型，如<strong>Graph Convolutional Network (GCN)-2017、Relational Graph Convolutional Network-2018、Graph Attention Network-2018</strong>等，考虑到其模型对图结构的优越性，作者也是使用图模型去建模结构信息。</p>
+<h3 id="Graph-matching"><a href="#Graph-matching" class="headerlink" title="Graph matching"></a>Graph matching</h3><p>&emsp;&emsp;图之间的匹配测量一般通过精准的匹配或者通过结构信息计算编辑距离， 近年来一个模型<strong>Graph MatchingNetwork (GMN) (Li et al., 2019b)</strong>，其是通过基于注意力机在<strong>图对</strong>上进行推理匹配的方法，作者采纳其类似的方法去捕获邻接点的差异点。</p>
+<h3 id="Graph-sampling"><a href="#Graph-sampling" class="headerlink" title="Graph sampling"></a>Graph sampling</h3><p>&emsp;&emsp;这个图取样一般会选取原图中一部分结点或者边，一些流行的方法有<strong>vertex-</strong>、 <strong>edge-</strong>和<strong>raversal-based sampling</strong>这三类，作者采用的是选取结点的方法，去选取一些有用的邻接点。</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p>&emsp;&emsp;作者将知识图谱表示为$G=(E,R,T)$，分别表示实体、关系、三元组。</p>
+<h3 id="Overview-of-NMN"><a href="#Overview-of-NMN" class="headerlink" title="Overview of NMN"></a>Overview of NMN</h3><p>&emsp;&emsp;作者的模型分为4部分：1）Structure Embedding， 2）Neighborhood Sampling，3）Neighborhood Matching，4）Neighborhood Aggregation for Generating Embeddings，其将两个图一起输入模型，同时进行嵌入学习，最后通过学习到的表示计算实体之间距离判断相似性，如下图：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-002.PNG" alt=""></p>
+<h3 id="KG-Structure-Embedding"><a href="#KG-Structure-Embedding" class="headerlink" title="KG Structure Embedding"></a>KG Structure Embedding</h3><p>&emsp;&emsp;为了学习实体的表示，作者这里使用多层<strong>GCN</strong>去聚集高纬的邻接点结构信息，<strong>NMN</strong>使用了预先已经训练好的<strong>词向量</strong>初始化图，这个策略在（Xu et al., 2019； Wu et al., 2019a）研究中被证实了是很有效去学习实体名的编码方式。作者将两个图一起作为<strong>GCN</strong>的输入，每层更新结点表示的方法如下：<br>$$<br>\boldsymbol{h}<em>{i}^{(l)}=\operatorname{ReLU}\left(\sum</em>{j \in N_{i} \cup{i}} \frac{1}{\epsilon_{i}} \mathbf{W}^{(l)} \boldsymbol{h}<em>{j}^{(l-1)}\right)  \tag  {1}<br>$$<br>&emsp;&emsp;其中$\left{\boldsymbol{h}</em>{1}^{(l)}, \boldsymbol{h}<em>{2}^{(l)}, \ldots, \boldsymbol{h}</em>{n}^{(l)} \mid \boldsymbol{h}<em>{i}^{(l)} \in \mathbb{R}^{d^{(l)}}\right}$是第$l$层<strong>GCN</strong>的输出结点特征，而其中的$\epsilon</em>{i}$是归一化常数，$N_{i}$是结点$i$的邻接点集合，而$\mathbf{W}^{(l)}\in \mathbb{R}^{d^{(l)\times (l-1)} }$是第$i$层的参数。为了控制累积误差的影响，作者这里引入了门控网络。</p>
+<h3 id="Neighborhood-Sampling"><a href="#Neighborhood-Sampling" class="headerlink" title="Neighborhood Sampling"></a>Neighborhood Sampling</h3><p>&emsp;&emsp;实体的一阶邻接点对于其对齐的判断非常重要，但是不是所有的邻接点都有用，作者模型中采用了一种<strong>降采样</strong>的方式，只选取最有用的邻接点。作者这里认为：<strong>一个邻接点越出现在实体的面前频率越高，其对中心实体的重要性就越高</strong>。显示中联系越紧密的经常一起出现在上下文中。</p>
+<p>&emsp;&emsp;对于给定实体$i$，其邻接结点$e_{i_j}$的取样概率如下：<br>$$<br>\begin{aligned}<br>p\left(\boldsymbol{h}<em>{i</em>{-} j} \mid \boldsymbol{h}<em>{i}\right) &amp;=\operatorname{softmax}\left(\boldsymbol{h}</em>{i} \mathbf{W}<em>{s} \boldsymbol{h}</em>{i_{-} j}^{T}\right) \<br>&amp;=\frac{\exp \left(\boldsymbol{h}<em>{i} \mathbf{W}</em>{s} \boldsymbol{h}<em>{i</em>{-} j}^{T}\right)}{\sum_{k \in N_{i}} \exp \left(\boldsymbol{h}<em>{i} \mathbf{W}</em>{s} \boldsymbol{h}<em>{i</em>{-} k}^{T}\right)}<br>\end{aligned}   \tag {2}<br>$$<br>&emsp;&emsp;其中$N_{i}$是一阶邻结点的指示集合，$h_{i}$和$h_{i_j}$是学习到的实体表达，而$\mathbf{W}_{s}$是共享的参数矩阵。</p>
+<h3 id="Neighborhood-Matching"><a href="#Neighborhood-Matching" class="headerlink" title="Neighborhood Matching"></a>Neighborhood Matching</h3><p>&emsp;&emsp;作者通过上面的取样以后，后续的操作只会在<strong>对应的子图</strong>上面进行。作者认为相似实体的邻接点也会尽可能相似，作者通过这个思路来判断邻接点的相似性。</p>
+<p><strong>Candidate selection</strong></p>
+<p>&emsp;&emsp;作者考虑到，要是针对实体$i$的子图和另一个KG中的所有实体子图进行比较，然后再去选择最相似的子图，这样会非常耗费时间，所以作者先选择一些可能相似的实体候选集合出来，然后就只和这些集合里面的元素进行比较，这样会大大降低计算量。而对于被选择的后续实体选取规格如下：<br>$$<br>p\left(\boldsymbol{h}<em>{j} \mid \boldsymbol{h}</em>{i}\right)=\frac{\exp \left(\left|\boldsymbol{h}<em>{i}-\boldsymbol{h}</em>{j}\right|<em>{L</em>{1}}\right)}{\sum_{k \in E_{2}} \exp \left(\left|\boldsymbol{h}<em>{i}-\boldsymbol{h}</em>{k}\right|<em>{L</em>{1}}\right)}   \tag {3}<br>$$<br><strong>Cross-graph neighborhood matching</strong></p>
+<p>&emsp;&emsp;作者收到图匹配研究的启发，其将所有的子图作为输入，为每一个邻接点计算其对应的匹配向量，$(e_i,c_{ik})$是要评价的实体对，其分别属于$E_{1}$和$E_{2}$，而且$c_{ik}$是实体$e_{i}$的候选集中的，$p$和$q$分别是实体$e_{i}$和$e_{ik}$的邻接点，那么对于实体$q$的跨图的匹配向量是：<br>$$<br>a_{p q}= \frac{\exp \left(\boldsymbol{h}<em>{p} \cdot \boldsymbol{h}</em>{q}\right)}{\sum_{q^{\prime} \in N_{i_{k}}^{s}} \exp \left(\boldsymbol{h}<em>{p} \cdot \boldsymbol{h}</em>{q^{\prime}}\right)} \tag {4}<br>$$</p>
+<p>$$<br>\boldsymbol{m}<em>{p} =\sum</em>{q \in N_{i_{k}}^{s}} a_{p q}\left(\boldsymbol{h}<em>{p}-\boldsymbol{h}</em>{q}\right) \tag {5}<br>$$</p>
+<p>&emsp;&emsp;其中$q_{pq}$是一个注意力权重，$m_{p}$是一个匹配向量，其描绘了其他对应子图中最近邻接点和$h_{p}$之间差别。然后作者将其输出和原先的结点表达联合：<br>$$<br>\hat{h}<em>{p}=\left[h</em>{p} | \beta * m_{p}\right] \tag {6}<br>$$<br>&emsp;&emsp;匹配向量对于相似的两个邻接点，其值接近于$0$向量，其表达就非常而接近，而对于不相似的结点，其不对称会在传播过程中不断增大，最后结果证明该匹配机制很有效。</p>
+<h3 id="Neighborhood-Aggregation"><a href="#Neighborhood-Aggregation" class="headerlink" title="Neighborhood Aggregation"></a>Neighborhood Aggregation</h3><p>&emsp;&emsp;这个模块就是整合其邻接点的连接信息，即结构嵌入表示，同时将上一步匹配网络学习到的匹配信息结合在一起，对于其取样的的邻接点${\hat{h}<em>{p}}$，对于实体$i$来说其匹配网络学习到的邻接点表示为$g</em>{i}$，然后将其和结构嵌入表示联结起来：<br>$$<br>\boldsymbol{g}<em>{i}=\left(\sum</em>{p \in N_{i}^{s}} \sigma\left(\hat{\boldsymbol{h}}<em>{p} \mathbf{W}</em>{g a t e}\right) \cdot \hat{\boldsymbol{h}}<em>{p}\right) \mathbf{W}</em>{N} \tag {7}<br>$$<br>$$<br>\boldsymbol{h}<em>{i}^{\text {match}}=\left[\boldsymbol{g}</em>{i} | \boldsymbol{h}_{i}\right] \tag {8}<br>$$</p>
+<h2 id="Entity-Alignment-and-Training"><a href="#Entity-Alignment-and-Training" class="headerlink" title="Entity Alignment and Training"></a>Entity Alignment and Training</h2><p><strong>Pre-training</strong></p>
+<p>&emsp;&emsp;作者首先预先训练基于GCN的嵌入模型去提供可信的实体表达，里面通过测量两个实体的距离来判断是否应该对齐：<br>$$<br>\tilde{d}\left(e_{1}, e_{2}\right)=\left|\boldsymbol{h}<em>{e</em>{1}}-\boldsymbol{h}<em>{e</em>{2}}\right|<em>{L</em>{1}} \tag {9}<br>$$<br>&emsp;&emsp;其训练的目标函数为，其中$\gamma$ &gt; 0，而$\mathbb{L}$和$\mathbb{L}^{\prime}$分别代表种子实体对和负样本（在最近的结点中替换）：<br>$$<br>\tilde{L}=\sum_{(i, j) \in \mathbb{L}\left(i^{\prime}, j^{\prime}\right) \in \mathbb{L}^{\prime}} \max \left{0, \tilde{d}(i, j)-\tilde{d}\left(i^{\prime}, j^{\prime}\right)+\gamma\right} \tag {10}<br>$$<br><strong>Overall training objective</strong></p>
+<p>&emsp;&emsp;如果实体对齐预训练完成，预训练阶段已经收敛到稳定状态，其会给后续的部分提供充足的信息。因此后续的损失函数会修改为如下：<br>$$<br>L=\sum_{(r, t) \in \mathbb{L}} \sum_{\left(r^{\prime}, t^{\prime}\right) \in \mathbb{C}}\max \left{0, d(r, t)-d\left(r^{\prime}, t^{\prime}\right)+\gamma\right}  \tag {11}<br>$$</p>
+<p>$$<br>d(r, t)=\left|\boldsymbol{h}<em>{r}^{\text {match}}-\boldsymbol{h}</em>{t}^{\text {match}}\right|<em>{L</em>{1}} \tag {12}<br>$$</p>
+<p>&emsp;&emsp;其中负样例集合 $\mathbb{C}=$ $\left{\left(r^{\prime}, t^{\prime}\right) \mid\left(r^{\prime}=r \wedge t^{\prime} \in \mathcal{C}<em>{r}\right) \vee\left(t^{\prime}=t \wedge r^{\prime} \in \mathcal{C}</em>{t}\right)\right}$ 是由候选集合$\mathcal{C}<em>{r}$ 和$\mathcal{C}</em>{t}$组成（4.4中选择的）。注意到，我们的取样过程是不可微分的，所以其阻断了参数矩阵$\mathbf{W}<em>{s}$（公式2）的训练，为了训练其值，我们不直接取样，我们整合所有的邻接点的信息如下：<br>$$<br>\boldsymbol{g}</em>{i}^{w}=\left(\sum_{p \in N_{i}} \alpha_{i p} \cdot \sigma\left(\hat{\boldsymbol{h}}<em>{p} \mathbf{W}</em>{g a t e}\right) \cdot \hat{\boldsymbol{h}}<em>{p}\right) \mathbf{W}</em>{N} \tag {13}<br>$$<br>&emsp;&emsp;其中 $\alpha_{i p}$是一个聚合的权重，即式子2中的$p\left(\boldsymbol{h}<em>{j} \mid \boldsymbol{h}</em>{i}\right)$，既然训练参数矩阵$\mathbf{W}<em>{s}$的目的是让对齐的邻接点的表示尽可能相似，那么目标函数可以用下面的：<br>$$<br>L</em>{w}=\sum_{(r, t) \in \mathbb{L}}\left|\boldsymbol{g}<em>{r}^{w}-\boldsymbol{g}</em>{t}^{w}\right|<em>{L</em>{1}} \tag {14}<br>$$<br>&emsp;&emsp;作者的模型在预训练以后就是端到端的训练，期间使用式子11作为目标函数，每50个周期就使用式子14调整参数$\mathbf{W}_{s}$。</p>
+<h2 id="实验分析"><a href="#实验分析" class="headerlink" title="实验分析"></a>实验分析</h2><p><strong>数据集</strong>：DBP15K和DWY100K</p>
+<p>&emsp;&emsp;其数据大致情况如下，同时作者为了验证其模型的性能，构造了一个稀疏的数据集S-DBP15K：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-004.PNG" alt=""></p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-003.PNG" alt=""></p>
+<p>&emsp;&emsp;作者将其他语言的文本通过谷歌翻译成英文，相当于在同一空间进行实体的表示学习。同时为了验证其提出模块重要性，作者对齐模型进行部分的删减，形成变形对照实验，具体的详细参数设置可以阅读论文。其实验结果如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-005.PNG" alt=""></p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/007/KG-paper-007-006.PNG" alt=""></p>
+<p>&emsp;&emsp;通过上述的实验，可以看到实验结果有很大的提升，而且在作者自己构造的稀疏数据集上面还依旧表现非常的好。同时作者论文后续的分析部分其实很不错，对于不同的部分选取的原因加以了非常清晰的解释，后续的<strong>Impact of neighborhood sampling strategies</strong>、<strong>Impact of neighborhood sampling size</strong>、<strong>How does the neighborhood matching module work?</strong>这三个部分对其模型很具有解释性，同时其丰富的实验验证了其理论，推荐大家详细阅读，在此就不具体介绍了。</p>
+]]></content>
+      <categories>
+        <category>知识图谱</category>
+      </categories>
+      <tags>
+        <tag>知识图谱</tag>
+        <tag>NLP</tag>
+        <tag>知识融合</tag>
+        <tag>论文笔记</tag>
+      </tags>
+  </entry>
 </search>
