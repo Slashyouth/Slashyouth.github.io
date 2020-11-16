@@ -50,7 +50,7 @@
 <meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-020.PNG">
 <meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-021.PNG">
 <meta property="article:published_time" content="2020-11-16T14:55:57.286Z">
-<meta property="article:modified_time" content="2020-11-16T14:58:45.713Z">
+<meta property="article:modified_time" content="2020-11-16T15:57:20.084Z">
 <meta property="article:author" content="Jack Can">
 <meta property="article:tag" content="知识图谱">
 <meta property="article:tag" content="NLP">
@@ -246,7 +246,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-11-16 22:55:57 / 修改时间：22:58:45" itemprop="dateCreated datePublished" datetime="2020-11-16T22:55:57+08:00">2020-11-16</time>
+              <time title="创建时间：2020-11-16 22:55:57 / 修改时间：23:57:20" itemprop="dateCreated datePublished" datetime="2020-11-16T22:55:57+08:00">2020-11-16</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -342,7 +342,7 @@
 </ul>
 <p>1）Triple-based Embedding</p>
 <p>&emsp;&emsp;这个通过一个<strong>能量函数</strong>来判断其三元组的可信度，对于关系三元组$(e_1,r_1,e_2)$来说如下面的公式（1），其中<strong>TransE</strong>使用<strong>marginal ranking loss</strong>函数去分离正负样例，其他也有选择<strong>logistic loss</strong>和<strong>limit-based loss</strong>，而对于负样例一般采取通常的<strong>均匀采样</strong>和<strong>截断采样</strong>的方法。<br>$$<br>\phi(e_1,r_1,e_2)=||\mathbf{e_1}+\mathbf{r_1}-\mathbf{e_2}0|| \tag {1}<br>$$<br>2) Path-based Embedding</p>
-<p>&emsp;&emsp;基于路径嵌入方法考虑了关系路径之间的相互影响，关系路径就是<strong>首尾相连</strong>的三元组集合，如样例$(e_1,r_1,e_2),(e_2,r_2,e_3)$这种集合，<strong>IPTransE</strong>通过推断直连和多跳路径之间有等价性质进行路径建模的。其假设前面实体$e_1$和$e_3$之间有个关系$r_3$，那么其应该和对应的关系路径嵌入表达应该很接近，公式如下：<br>$$<br>\mathbf{r}^{<em>} = comb(\mathbf{r}_1,\mathbf{r}_2)  \tag {2}<br>$$<br>&emsp;&emsp;这个方法最后同过最小化$||\mathbf{r}^{</em>}-\mathbf{r}_3||$作为损失函数，但是其忽略考虑了实体。其他方法有<strong>RSN4EA</strong>同过调整<strong>Recurrent Neural Networks (RNNs)</strong>来对实体和关系序列进行建模。</p>
+<p>&emsp;&emsp;基于路径嵌入方法考虑了关系路径之间的相互影响，关系路径就是<strong>首尾相连</strong>的三元组集合，如样例$(e_1,r_1,e_2),(e_2,r_2,e_3)$这种集合，<strong>IPTransE</strong>通过推断直连和多跳路径之间有等价性质进行路径建模的。其假设前面实体$e_1$和$e_3$之间有个关系$r_3$，那么其应该和对应的关系路径嵌入表达应该很接近，公式如下：<br>$$<br>\mathbf{r}^* = comb(\mathbf{r}_1,\mathbf{r}_2)  \tag {2}<br>$$<br>&emsp;&emsp;这个方法最后同过最小化$||\mathbf{r}^<em>-\mathbf{r}_3||$作为损失函数，但是其忽略考虑了实体。其他方法有*</em>RSN4EA<strong>同过调整</strong>Recurrent Neural Networks (RNNs)**来对实体和关系序列进行建模。</p>
 <p>3）Neighborhood-based Embedding</p>
 <p>&emsp;&emsp;其通过实体和其邻接点之间以及之间的关系组成的子图进行嵌入学习，<strong>GCNs</strong>模型非常适合这种结构，而且有研究使用该模型，其模型包含多个图卷层，$\mathbf{A}$表示KG的邻接矩阵，而$\mathbf{H}^{(0)}$表示特征矩阵，每一个对应一个实体，其典型的传播从第i层到（i+1）层的规则如公式（3），其中$\hat{\mathbf{A}} = \mathbf{A} + \mathbf{I}$，其中$\hat{I}$是单位矩阵，$\hat{\mathbf{D}}$是矩阵$\hat{\mathbf{A}}$的<strong>对角度矩阵</strong>，而矩阵$\mathbf{W}$是学习的权重矩阵（不太理解原理的可以看看<a href="https://www.zhihu.com/question/54504471" target="_blank" rel="noopener">如何理解 Graph Convolutional Network（GCN）</a>。<br>$$<br>\mathbf{H}^{(i+1)}=\sigma\left(\hat{\mathbf{D}}^{-\frac{1}{2}} \hat{\mathbf{A}} \hat{\mathbf{D}}^{-\frac{1}{2}} \mathbf{H}^{(i)} \mathbf{W}\right)  \tag{3}<br>$$</p>
 <ul>
