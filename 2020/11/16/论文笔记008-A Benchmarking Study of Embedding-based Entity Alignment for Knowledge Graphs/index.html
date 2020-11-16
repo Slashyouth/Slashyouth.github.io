@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"slashyouth.github.io","root":"/","scheme":"Gemini","version":"8.0.0-rc.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简介 题目：《A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs》 来源：VLDB-2020 链接：论文链接 代码：Code和Dataset 关键字：Benchmarking Study、Embedding-based、Entity Alignment  Abstract&amp;emsp;&amp;emsp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记008-A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs">
+<meta property="og:url" content="https://slashyouth.github.io/2020/11/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0008-A%20Benchmarking%20Study%20of%20Embedding-based%20Entity%20Alignment%20for%20Knowledge%20Graphs/index.html">
+<meta property="og:site_name" content="Slash Youth">
+<meta property="og:description" content="简介 题目：《A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs》 来源：VLDB-2020 链接：论文链接 代码：Code和Dataset 关键字：Benchmarking Study、Embedding-based、Entity Alignment  Abstract&amp;emsp;&amp;emsp">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-000.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-001.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-002.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-003.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-004.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-005.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-006.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-008.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-007.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-009.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-010.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-011.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-012.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-013.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-014.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-015.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-016.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-017.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-018.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-019.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-020.PNG">
+<meta property="og:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-021.PNG">
+<meta property="article:published_time" content="2020-11-16T14:55:57.286Z">
+<meta property="article:modified_time" content="2020-11-16T14:58:45.713Z">
+<meta property="article:author" content="Jack Can">
+<meta property="article:tag" content="知识图谱">
+<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="知识融合">
+<meta property="article:tag" content="论文笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-000.PNG">
+
+<link rel="canonical" href="https://slashyouth.github.io/2020/11/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0008-A%20Benchmarking%20Study%20of%20Embedding-based%20Entity%20Alignment%20for%20Knowledge%20Graphs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>论文笔记008-A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs | Slash Youth</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line toggle-line-first"></span>
+        <span class="toggle-line toggle-line-middle"></span>
+        <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Slash Youth</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Keep Moving...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Slashyouth" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://slashyouth.github.io/2020/11/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0008-A%20Benchmarking%20Study%20of%20Embedding-based%20Entity%20Alignment%20for%20Knowledge%20Graphs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="Jack Can">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Slash Youth">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          论文笔记008-A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-16 22:55:57 / 修改时间：22:58:45" itemprop="dateCreated datePublished" datetime="2020-11-16T22:55:57+08:00">2020-11-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" itemprop="url" rel="index"><span itemprop="name">知识图谱</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+              <span>9.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-000.PNG" alt=""></p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>题目：《<em>A Benchmarking Study of Embedding-based Entity Alignment for Knowledge Graphs</em>》</p>
+<p>来源：VLDB-2020</p>
+<p>链接：<a href="http://www.vldb.org/pvldb/vol13/p2326-sun.pdf" target="_blank" rel="noopener">论文链接</a></p>
+<p>代码：<a href="https://github.com/nju-websoft/OpenEA" target="_blank" rel="noopener">Code和Dataset</a></p>
+<p>关键字：<em>Benchmarking Study<em>、</em>Embedding-based<em>、</em>Entity Alignment</em></p>
+</blockquote>
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>&emsp;&emsp;这篇文章主要对<strong>实体对齐</strong>该领域进行了一次综合性的分析研究，调研了<strong>23</strong>种<strong>Embedding-based</strong>的实体对齐方法，并根据其使用的技术和特性进行分类；作者提出了一种新的<strong>取样</strong>的方法，其可以保证其取样和现实数据集分布一致；同时构建了一个<strong>开源库-OpenEA</strong>，其包含了<strong>12</strong>种具有代表性的基于嵌入学习的实体对齐方法，以及对这些技术的评估方法；最后作者在一些还没被探索的方向进行了一些探索实验的分析研究。整体来说，本文章对基于嵌入学习的实体对齐的方法技术进行了一次综述分析。</p>
+<a id="more"></a>
+
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>&emsp;&emsp;知识图谱（KG）一般以三元组形式存储事实，一般分为两类：<strong><em>(subject entity, relation, object entity)</em></strong> 和<strong><em>(subject entity,attribute, literal value)</em></strong>。传统的方法一般会利用很多实体的特征，如名称、描述性注释、关系结构等，而对齐的难点一般在于相互独立创建的KGs之间<strong>符号、语言和结构异构性</strong>。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-001.PNG" alt=""></p>
+<p>&emsp;&emsp;<strong>Embedding-based</strong>的实体对齐的方法最近几年快速发展，这个方法是基于KG嵌入技术的，其将”符号“（即实体或者关系等）表示成向量空间的<strong>低纬向量</strong>，其蕴含的<strong>语义信息</strong>则通过其在空间中的<strong>几何特性</strong>（如空间距离）来表示。如上图所示的基于嵌入式的实体对齐模型结构。通过对种子实体对和KGs进行训练，学习其KGs之间的联系。而对于嵌入模型与对齐模型之间的交互通常有两种方式：一种是通过种子对进行学习一个KG到另一个KG的<strong>映射矩阵</strong>，第二种是将KGs嵌入学习到<strong>同一空间</strong>中，这个通过保证种子对实体尽可能有相似的嵌入表示来实现的。然后通过判断实体的嵌入式表达来判断相似度，进而实现实体对齐。但处于研究热点的该方向，依然有很多问题：</p>
+<ul>
+<li>缺少相关的现状总结分析</li>
+<li>缺少相关公认的用来评价实体对齐的基准数据集</li>
+<li>相应的研究方法代码开源较少</li>
+</ul>
+<p>&emsp;&emsp;本文就针对相关的问题，作者进行相关研究分析，其主要类容如下：<strong>1）一个广泛综合的调研；2）基准的数据集；3）相关开源库；4）综合的比较分析；5）探索性实验；6）未来展望</strong>。</p>
+<h2 id="Preliminaries"><a href="#Preliminaries" class="headerlink" title="Preliminaries"></a>Preliminaries</h2><p>&emsp;&emsp;实体对齐任务就是在两个KGs之间寻找一对一的实体对，一般情况下会有一些预先知道的实体对作为训练数据进行训练模型。</p>
+<h3 id="Literature-Review"><a href="#Literature-Review" class="headerlink" title="Literature Review"></a>Literature Review</h3><h4 id="Knowledge-Graph-Embedding"><a href="#Knowledge-Graph-Embedding" class="headerlink" title="Knowledge Graph Embedding"></a>Knowledge Graph Embedding</h4><ul>
+<li><p>Approaches</p>
+<p>&emsp;&emsp;目前存在的<strong>嵌入学习模型</strong>大致可以分成三大类：1）$translational,,models$ ；2）$semantic,,matching,,models$；3）$deep,,models$ 。这些模型大多都用于<strong>实体链接</strong>。</p>
+</li>
+<li><p>Datasets &amp; Evaluation Metrics</p>
+<p>&emsp;&emsp;<strong>FB15K</strong>和<strong>WN18</strong>都是两个用于实体链接的基准数据集，由于测试集的泄露问题分别新建了两个对应的数据集<strong>FB15K-237</strong>和<strong>WN18RR</strong>。三个评价标准如下：1）top-m ranked（Hits@m，就是在排名前m名之内所占的比例）；2）mean rank (MR) of correct links；3）mean reciprocal rank (MRR)</p>
+</li>
+</ul>
+<h4 id="Conventional-Entity-Alignment"><a href="#Conventional-Entity-Alignment" class="headerlink" title="Conventional Entity Alignment"></a>Conventional Entity Alignment</h4><ul>
+<li><p>Approaches</p>
+<p>&emsp;&emsp;一种是基于OWL语义的等价性推理方法，另一种是基于相似计算的方法，近几年还有用统计机器学习和众包来提升准确性。其实体对齐的相关研究主要依赖于实体的<strong>文本信息</strong>。</p>
+</li>
+<li><p>Datasets &amp; Evaluation Metrics</p>
+<p>&emsp;&emsp;自从2004年起，<strong>OAEI(Ontology Alignment Evaluation Initiatives)</strong>成为<strong>本体对齐（Ontology Alignment）</strong>的主要标准，对实体对齐这方向也有设计了的评价标准，但是基于嵌入式实体对齐方法好像都没使用该评价标准，其标准主要是<strong>准确率，召回率和F1值</strong>。</p>
+</li>
+</ul>
+<h4 id="Embedding-based-Entity-Alignment"><a href="#Embedding-based-Entity-Alignment" class="headerlink" title="Embedding-based Entity Alignment"></a>Embedding-based Entity Alignment</h4><ul>
+<li><p>Approaches</p>
+<p>&emsp;&emsp;大多存在方法都是使用基于<strong>关系三元组</strong>的<strong><em>Translational Models</em></strong>，近年来发展了<strong><em>Graph Convolutional Networks (GCNs)</em></strong>的模型，除此之外，还有一些方法尝试整合属性以及值的嵌入表达，一些网络对齐或跨语言的知识的引入方法也有人在实体对齐方法尝试。</p>
+</li>
+<li><p>Datasets &amp; Evaluation Metrics</p>
+<p>&emsp;&emsp;其没有公认的数据集进行评价，一般有<strong>DBP15K</strong>和<strong>WK3L</strong>。如下图展示了其度的分布情况以及和真实KGs之间的差异。而评价标准和实体链接类似，Hits@m，MR，MRR。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-002.PNG" alt=""></p>
+</li>
+</ul>
+<h3 id="Categorization-of-Techniques"><a href="#Categorization-of-Techniques" class="headerlink" title="Categorization of Techniques"></a>Categorization of Techniques</h3><p>&emsp;&emsp;表一展示23类近年来基于嵌入学习的实体对齐方法，通过其嵌入模块和对齐模块以及其交互的模块进行分类。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-003.PNG" alt=""></p>
+<h4 id="Embedding-Module"><a href="#Embedding-Module" class="headerlink" title="Embedding Module"></a>Embedding Module</h4><p>&emsp;&emsp;嵌入模型将知识图谱的实体用低纬的向量来表示，根据三元组的类型进行分类，分为<strong>Relation Embedding</strong>和<strong>Attribute Embedding</strong>。</p>
+<ul>
+<li><strong>Relation Embedding</strong></li>
+</ul>
+<p>1）Triple-based Embedding</p>
+<p>&emsp;&emsp;这个通过一个<strong>能量函数</strong>来判断其三元组的可信度，对于关系三元组$(e_1,r_1,e_2)$来说如下面的公式（1），其中<strong>TransE</strong>使用<strong>marginal ranking loss</strong>函数去分离正负样例，其他也有选择<strong>logistic loss</strong>和<strong>limit-based loss</strong>，而对于负样例一般采取通常的<strong>均匀采样</strong>和<strong>截断采样</strong>的方法。<br>$$<br>\phi(e_1,r_1,e_2)=||\mathbf{e_1}+\mathbf{r_1}-\mathbf{e_2}0|| \tag {1}<br>$$<br>2) Path-based Embedding</p>
+<p>&emsp;&emsp;基于路径嵌入方法考虑了关系路径之间的相互影响，关系路径就是<strong>首尾相连</strong>的三元组集合，如样例$(e_1,r_1,e_2),(e_2,r_2,e_3)$这种集合，<strong>IPTransE</strong>通过推断直连和多跳路径之间有等价性质进行路径建模的。其假设前面实体$e_1$和$e_3$之间有个关系$r_3$，那么其应该和对应的关系路径嵌入表达应该很接近，公式如下：<br>$$<br>\mathbf{r}^{<em>} = comb(\mathbf{r}_1,\mathbf{r}_2)  \tag {2}<br>$$<br>&emsp;&emsp;这个方法最后同过最小化$||\mathbf{r}^{</em>}-\mathbf{r}_3||$作为损失函数，但是其忽略考虑了实体。其他方法有<strong>RSN4EA</strong>同过调整<strong>Recurrent Neural Networks (RNNs)</strong>来对实体和关系序列进行建模。</p>
+<p>3）Neighborhood-based Embedding</p>
+<p>&emsp;&emsp;其通过实体和其邻接点之间以及之间的关系组成的子图进行嵌入学习，<strong>GCNs</strong>模型非常适合这种结构，而且有研究使用该模型，其模型包含多个图卷层，$\mathbf{A}$表示KG的邻接矩阵，而$\mathbf{H}^{(0)}$表示特征矩阵，每一个对应一个实体，其典型的传播从第i层到（i+1）层的规则如公式（3），其中$\hat{\mathbf{A}} = \mathbf{A} + \mathbf{I}$，其中$\hat{I}$是单位矩阵，$\hat{\mathbf{D}}$是矩阵$\hat{\mathbf{A}}$的<strong>对角度矩阵</strong>，而矩阵$\mathbf{W}$是学习的权重矩阵（不太理解原理的可以看看<a href="https://www.zhihu.com/question/54504471" target="_blank" rel="noopener">如何理解 Graph Convolutional Network（GCN）</a>。<br>$$<br>\mathbf{H}^{(i+1)}=\sigma\left(\hat{\mathbf{D}}^{-\frac{1}{2}} \hat{\mathbf{A}} \hat{\mathbf{D}}^{-\frac{1}{2}} \mathbf{H}^{(i)} \mathbf{W}\right)  \tag{3}<br>$$</p>
+<ul>
+<li><strong>Attribute Embedding</strong></li>
+</ul>
+<p>&emsp;&emsp;属性嵌入学习主要是为了提升实体相似性的评价。</p>
+<p>1）Attribute Correlation Embedding</p>
+<p>&emsp;&emsp;其主要考虑属性之间的相关性，高频率出现在一起对实体进行描述的属性被认为是相关的，例如经度和纬度被认为是相关的，因为其经常一起组合成坐标。<strong>JAPE</strong>研究了其相关性，<strong>基于相似的实体之间应该有相似的相关联的属性</strong>，对于属性$a_1,a_2$，其相关的可能性如下式表示，其中属性的嵌入表达可以通过最大化所有的属性对，但是该嵌入方法没有考虑其<strong>属性值</strong>的影响。<br>$$<br>Pr(a_1,a_2)=\operatorname{sigmoid}(\mathbf{a}_1\cdot\mathbf{a}_2)  \tag {4}<br>$$<br>2）Literal Embedding</p>
+<p>&emsp;&emsp;<strong>AttrE</strong>将属性值引入属性嵌入，其使用字符级别的编码，这可以处理没出现在训练集中的值的情况，其$v=(c_1,c_2,\cdots,c_n)$表示n字符，而<strong>AttrE</strong>使用下面的表达式进行编码，通过对属性值进行嵌入学习，可以将其当做实体和关系元组一样，但是该方法可能在跨语言之间失效。<br>$$<br>\mathbf{v} = comb(\mathbf{c}_1,\mathbf{c}_2,\cdots,\mathbf{c}_n)  \tag {5}<br>$$</p>
+<h4 id="Alignment-Module"><a href="#Alignment-Module" class="headerlink" title="Alignment Module"></a>Alignment Module</h4><p>&emsp;&emsp;对齐模块使用种子实体对作为标签数据进行训练模型，其中两个关键点是距离评估和设计一个对齐推理策略。</p>
+<ul>
+<li><strong>Distance Metrics</strong></li>
+</ul>
+<p>&emsp;&emsp;<strong>Cosine，Euclidean，Manhattan distances</strong>是三种常用的测量距离的方法，其中在高纬度的向量空间中有一些向量经常出现在k近邻的邻接点中，这种现象称为<strong>hubness</strong>现象，后面会详细讨论。</p>
+<ul>
+<li><strong>Alignment Inference Strategies</strong></li>
+</ul>
+<p>&emsp;&emsp;一种是贪婪搜索，对于一个KG中实体$e_1$，计算其和另一个KG中所有实体之间的相似度，然后去最接近的实体；还有一种有选择的算法就是全局一起计算，然后计算总体的相似度总和，再求整体最小化。</p>
+<h4 id="Interaction-Mode"><a href="#Interaction-Mode" class="headerlink" title="Interaction Mode"></a>Interaction Mode</h4><ul>
+<li><strong>Combination Modes</strong></li>
+</ul>
+<p>&emsp;&emsp;一共分为四种情况：1）Embedding Space Transformation：其将两个KG嵌入到不同的空间之中，然后通过种子实体对学习一个映射矩阵$M$，使其能够满足$\mathbf{Me}_2 \approx \mathbf{e}_2$。2）Embedding Space Calibration：其将KGs嵌入到统一的空间之中，然后使种子实体对之间的距离$||\mathbf{e}_1-\mathbf{e}_2||$尽可能小。3）Parameter Sharing：直接将对齐的实体对的表示用同一向量表示，相当于将两个知识图谱嵌入到同一空间中了。4）Parameter Swapping：则将对应的三元组中实体替换成其对应的实体，从而构造出一些新的三元组加入训练集。</p>
+<ul>
+<li><strong>Learning Strategies</strong></li>
+</ul>
+<p>1）Supervised learning</p>
+<p>&emsp;&emsp;其使用种子实体对作为便签数据集，对于映射模型则训练映射矩阵，而对于空间校准的则去保证对齐实体有相似的嵌入表达，但是该方法的种子实体对的获取的代价比较高，同时容易出错，特别是对于跨语言的知识图谱。</p>
+<p>2）Semi-supervised learning</p>
+<p>&emsp;&emsp;使用未标签的数据进行训练，一般自我的迭代或者联合训练（实际方法用的也少）。</p>
+<p>3）Unsupervised learning</p>
+<p>&emsp;&emsp;目前好像还没有纯粹使用基于嵌入学习的方法进行无监督的训练方法。</p>
+<h2 id="Dataset-Generation"><a href="#Dataset-Generation" class="headerlink" title="Dataset Generation"></a>Dataset Generation</h2><p>&emsp;&emsp;如前面所说的，现在的数据集和现实的情况有一定的差距，同时基于嵌入的方法很难在完整的KGs上运行，因为候选空间很大而且没有分区，因此我们对真实的数据集进行了取样，范围为15K和100K。</p>
+<h3 id="Iterative-Degree-based-Sampling"><a href="#Iterative-Degree-based-Sampling" class="headerlink" title="Iterative Degree-based Sampling"></a>Iterative Degree-based Sampling</h3><p>&emsp;&emsp;作者通过五个方向来进行分析数据集取样：<strong>Source KGs、 Reference Alignment、Dataset Sizes、Languages和Density</strong>这五个方面。作者想产生一个和现实数据集大致一致的不同规模的数据集，但是难点<strong>在于移除一些实体会改变其相关的邻接点实体的连接性</strong>。</p>
+<p>&emsp;&emsp;本文提出一个<strong>基于度</strong>的迭代取样算法-Iterative Degree-based Sampling (IDS)，其同时删除在不同KG中的对照实体对，一直到符合要求的规模要求，期间还要保证其度的分布大致相似。下图中的流程介绍了大致的取样过程：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-004.PNG" alt=""></p>
+<p>&emsp;&emsp;上面的$P(x)$表示目前数据集度为x所占的比例，而$Q(x)$则代表原始数据集中度为x所占的比例，然后每次删除不同度的实体数目通过方程$dsize(x,\mu)=\mu(1+P(x)-Q(x))$来确定，其中$\mu$是一个基本的数目量，其方程就保证比例大了就多删点，小了就少删点。然后作者希望不要删除那些在KG中影响力蛮大的一些实体，就是那些度非常大的实体，为了实现这个作者使用一个方程计算一个实体被删除的可能性，然后进行排序。而其方程$JS$如下面所示，用来评价不同度分布之间的区别：<br>$$<br>J S(Q, P)=\frac{1}{2} \sum_{x=1}^{n}\left(Q(x) \log \frac{Q(x)}{M(x)}+P(x) \log \frac{P(x)}{M(x)}\right) \tag {6}<br>$$<br>&emsp;&emsp;其中$M=\frac{Q+P}{2}$，一个小的$JS$值表示其他们有相似的度分布。而整个流程中最耗时的部分是排序部分的计算，这个部分可以通过使用相似算法推广到大范围的知识图谱。</p>
+<h3 id="Dataset-Overview"><a href="#Dataset-Overview" class="headerlink" title="Dataset Overview"></a>Dataset Overview</h3><p>&emsp;&emsp;我们选择三个数据集<strong>DBpedia、Wikidata、YAGO</strong>来产生取样数据集，同时我们考虑跨语言的<strong>DBpedia</strong>的<strong>English-French和English-German</strong>。我们使用上面的<strong>IDS</strong>的算法来取样。</p>
+<p>&emsp;&emsp;数据集的信息详情如表2，我们产生了两个版本的数据集，$V_1$直接使用<strong>IDS</strong>算法进行取样，对于$V_2$我们首先<strong>随机删除度小于5的实体，使删除后度的平均值变为原先的两倍</strong>，然后再用<strong>IDS</strong>进行取样，后面的数据集密度是前面的两倍，同时其更接近真实的数据集。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-005.PNG" alt=""></p>
+<p>&emsp;&emsp;通过比较发现，文中产生的数据集更符合实际情况，具体如下图：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-006.PNG" alt=""></p>
+<h3 id="Dataset-Evaluation"><a href="#Dataset-Evaluation" class="headerlink" title="Dataset Evaluation"></a>Dataset Evaluation</h3><p>&emsp;&emsp;至于算法<strong>IDS</strong>和数据集的质量的评估，一个好的数据集应该具有良好的连通性、和原数据集有相似的度分布、有足够对齐的实体对。作者采用两个通用的取样算法进行对比评估，下图是三种方法取样后的数据详细情况，还加了一个孤立比例和聚集层度参数两个评价量：</p>
+<p>1）<strong>Random Alignment Sampling (RAS)</strong></p>
+<p>&emsp;&emsp;随机取样就是随机去源数据集中取样，然后取出头尾实体都在取样数据集中的关系元组。</p>
+<p>2）<strong>PageRank-based Sampling (PRS)</strong></p>
+<p>&emsp;&emsp;基于<strong>PageRank</strong>算法对一个KG中的实体进行排序，然后在另一个KG中找到对应实体加入数据集中。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-008.PNG" alt=""></p>
+<h2 id="Open-source-Library"><a href="#Open-source-Library" class="headerlink" title="Open-source Library"></a>Open-source Library</h2><p>&emsp;&emsp;作者使用<strong>Python</strong>和<strong>TensorFlow</strong>搭建了一个针对<strong>基于嵌入学习的实体对齐</strong>的开源库<strong>OpenEA</strong>。其具体机构和包含模块如下图所示：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-007.PNG" alt=""></p>
+<p>1）Loose Coupling</p>
+<p>&emsp;&emsp;嵌入模块与对齐模块在实施阶段是独立的，其<strong>OpenEA</strong>提供了预先定义的输入和输出数据结构，这样可以让上图中模块形成一个<strong>Pipeline</strong>，用户可以自由地组合使用不同的技术去探索新的方法。</p>
+<p>2）Functionality and Extensibility</p>
+<p>&emsp;&emsp;<strong>OpenEA</strong>工具提供了一些基础的功能作为其组件，包括初始化函数、损失函数和嵌入模块中的负采样方法；交互模块中的整合和学习策略；以及对齐模块中距离评估和对齐推理策略。除此之外，OpenEA还提供一套具有配置功能并调用这些组件的高级选项。这样，使用者可以自由添加新的功能。</p>
+<p>3）Off-the-shelf Approaches</p>
+<p>&emsp;&emsp;为了利用现成的方法，作者将一些列的方法实施在这个开源库上面，具体详见文中介绍。</p>
+<h2 id="Experiments-and-Results"><a href="#Experiments-and-Results" class="headerlink" title="Experiments and Results"></a>Experiments and Results</h2><p>&emsp;&emsp;本部分介绍具体的实验类容以及结果之间的对比分析，下面就只展现一些图表分析，每张图标的标题基本解释了其内容。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-009.PNG" alt=""></p>
+<hr>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-010.PNG" alt=""></p>
+<hr>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-011.PNG" alt=""></p>
+<p>&emsp;&emsp;上图展现了其方法在同一数据集下的表现情况，在密数据集上表现比稀数据集要好一些，一些方法通过上面数据可以显示出一只都表现比较不错。同时作者认为在基于关系的实体对齐方法上看不出来关系嵌入的明显优点，而且使用属性嵌入的方法也对于不方法不明显，但是对于文本的嵌入表示反而对对齐结果影响非常明显。总的来说，<strong>属性异构性对捕获属性相关性有很大的影响，而文本嵌入有助于实体对齐</strong>。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-012.PNG" alt=""></p>
+<hr>
+<p>&emsp;&emsp;作者好考虑了半监督训练方法策略的特点，其累计的对齐实体的数量和质量对半监督方法影响很大，如图7。而最后一张图则表明了其不同方法运行时间的大致对比情况。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-013.PNG" alt=""></p>
+<hr>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-014.PNG" alt=""></p>
+<h2 id="Exploratory-Experiments"><a href="#Exploratory-Experiments" class="headerlink" title="Exploratory Experiments"></a>Exploratory Experiments</h2><h3 id="Geometric-Analysis"><a href="#Geometric-Analysis" class="headerlink" title="Geometric Analysis"></a>Geometric Analysis</h3><p>&emsp;&emsp;除了性能比较，作者想探索一下嵌入空间的几何特性对实体对齐的影响，进而理解方法的局限性。</p>
+<h4 id="Similarity-Distribution"><a href="#Similarity-Distribution" class="headerlink" title="Similarity Distribution"></a>Similarity Distribution</h4><p>&emsp;&emsp;本文对实体以及其跨图中最近邻接点的相似性分布进行了分析，下面的图9就是展示了各种模型的分布情况，其使用<strong>cos</strong>来计算其相似度。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-015.PNG" alt=""></p>
+<hr>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-016.PNG" alt=""></p>
+<p>&emsp;&emsp;那些源实体和其top-1的最近邻接点相似分布越接近的其对齐的效果也好，同时那些相似性在top-5以内的差异越大，其对齐的效果也好，也就是说，如果相似性分布在top-1之内相近，而在之外相似度差异变大更利于实体对齐任务。即<strong>对于实体对齐而言，理想的相似度分布是保持较高的top-1相似度，和较大的相似度方差</strong>。</p>
+<h4 id="Hubness-and-Isolation"><a href="#Hubness-and-Isolation" class="headerlink" title="Hubness and Isolation"></a>Hubness and Isolation</h4><p>&emsp;&emsp;<strong>Hubness</strong>是在高纬度向量空间中经常出现的现象，一些结点经常出现在top-1的位置上，再就是有一些节点不会出现在任何的集合中，即一些孤立的点。上图10中就表现了一些结点出现次数为0，其所占的比例还不小，这些节点对于实体对齐来说是非常大干扰，同时结合试验结果来看，其这两个部分所占的比例越小，其实体对齐的准确性越高，所以这两个比例成分可以用来预测数据集的最终的实体对齐的效果。</p>
+<p>&emsp;&emsp;为了解决这个问题，作者想出了<strong>Cross-domain Similarity local Scaling (CSLS)</strong>，它根据源和目标嵌入实体的相邻嵌入密度，对嵌入实体的相似性进行规格化，公式如下：</p>
+<p>$$<br>CSLS(\mathbf{x}<em>s,\mathbf{x}_t)=2cos(\mathbf{x}_s,\mathbf{x}_t)-\psi</em>{t}(\mathbf{x}<em>s)-\psi</em>{s}(\mathbf{x}_t)  \tag {7}<br>$$<br><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-017.PNG" alt=""></p>
+<p>&emsp;&emsp;其中$\psi_{t}(\mathbf{x}<em>s)$表示源实体$\mathbf{x}_s$和其目标KG中top-k近邻的平均相似度，对于$\psi</em>{x}(\mathbf{x}_t)$含义相反，上述公式减少了<strong>Hub</strong>实体与其他实体的相似度，就是降低其被选择的概率，同时这个也可以提升孤立节点被选择到可能性，从而缓解上述的两种现象。上面的图显示了其使用该方法后效果提升情况。作者经过分析，存在的方法一般关注于设计更有效的嵌入和交互模块，但是一些对齐模块的方法也可以提升其实体对齐的结果。</p>
+<h3 id="Unexplored-KG-Embedding-Models"><a href="#Unexplored-KG-Embedding-Models" class="headerlink" title="Unexplored KG Embedding Models"></a>Unexplored KG Embedding Models</h3><p>&emsp;&emsp;如上面展示的方法，许多存在的方法使用TransE或者GCNs来进行KG嵌入学习，因为其方法具有鲁棒性和普遍性。但是还有很多方法没被探索应用到实体对齐。作者评估了三种平移模型，两中深度模型，和三种语义模型进行试验，结果如下：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-018.PNG" alt=""></p>
+<p>&emsp;&emsp;经过分析作者认为并非所有的KG嵌入模型都适合实体对齐任务，而且非欧几里得嵌入模型值得进一步研究探索。</p>
+<h3 id="Comparison-to-Conventional-Approaches"><a href="#Comparison-to-Conventional-Approaches" class="headerlink" title="Comparison to Conventional Approaches"></a>Comparison to Conventional Approaches</h3><p>&emsp;&emsp;作者进一步和传统的LogMap（Semantic Web community）和PARIS（Database community）方法进行了对比实验：</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-019.PNG" alt=""></p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-020.PNG" alt=""></p>
+<p>&emsp;&emsp;经过分析，传统的方法对含有属性的情况表现比较好，而基于嵌入学习模型能够适应大多数包含关系信息或者属性信息的情况（具体分析可以见原文）。</p>
+<h2 id="Summary-and-Future-Directions"><a href="#Summary-and-Future-Directions" class="headerlink" title="Summary and Future Directions"></a>Summary and Future Directions</h2><p>&emsp;&emsp;<strong>Summary</strong>：经过上述的实验，其中<strong>RDGCN</strong>、<strong>BootEA **和</strong>MultiKE**三种模型表现一直很不错，这个表明联合文本信息和精心设计的迭代过程有助于提升对齐的性能；嵌入模型用来进行实体链接并非所有的模型都合适；同时对于实体对齐的推理策略目前研究还不多，值得后续进一步研究；同时作者发现基于嵌入模型和传统的模型之间是相互互补的；下图整理一些模型需要的必要信息。</p>
+<p><img src="https://gitee.com/jack_can/Pictrues/raw/master/KG-Papers/008/KG-paper-008-021.PNG" alt=""></p>
+<p>&emsp;&emsp;<strong>Future Directions</strong>：作者基于上述的研究，提出了一些后续值得研究的方向：1）无监督的实体对齐；2）长尾类型的实体对齐；3）大规模的实体对齐；4）非欧几里德空间的实体对齐</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/" rel="tag"><i class="fa fa-tag"></i> 知识图谱</a>
+              <a href="/tags/NLP/" rel="tag"><i class="fa fa-tag"></i> NLP</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86%E8%9E%8D%E5%90%88/" rel="tag"><i class="fa fa-tag"></i> 知识融合</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" rel="tag"><i class="fa fa-tag"></i> 论文笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/21/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0007-Neighborhood%20Matching%20Network%20for%20Entity%20Alignment/" rel="prev" title="论文笔记007-Neighborhood Matching Network for Entity Alignment">
+      <i class="fa fa-chevron-left"></i> 论文笔记007-Neighborhood Matching Network for Entity Alignment
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Abstract"><span class="nav-number">2.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">3.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Preliminaries"><span class="nav-number">4.</span> <span class="nav-text">Preliminaries</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Literature-Review"><span class="nav-number">4.1.</span> <span class="nav-text">Literature Review</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Knowledge-Graph-Embedding"><span class="nav-number">4.1.1.</span> <span class="nav-text">Knowledge Graph Embedding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Conventional-Entity-Alignment"><span class="nav-number">4.1.2.</span> <span class="nav-text">Conventional Entity Alignment</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Embedding-based-Entity-Alignment"><span class="nav-number">4.1.3.</span> <span class="nav-text">Embedding-based Entity Alignment</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Categorization-of-Techniques"><span class="nav-number">4.2.</span> <span class="nav-text">Categorization of Techniques</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Embedding-Module"><span class="nav-number">4.2.1.</span> <span class="nav-text">Embedding Module</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Alignment-Module"><span class="nav-number">4.2.2.</span> <span class="nav-text">Alignment Module</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Interaction-Mode"><span class="nav-number">4.2.3.</span> <span class="nav-text">Interaction Mode</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dataset-Generation"><span class="nav-number">5.</span> <span class="nav-text">Dataset Generation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Iterative-Degree-based-Sampling"><span class="nav-number">5.1.</span> <span class="nav-text">Iterative Degree-based Sampling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dataset-Overview"><span class="nav-number">5.2.</span> <span class="nav-text">Dataset Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dataset-Evaluation"><span class="nav-number">5.3.</span> <span class="nav-text">Dataset Evaluation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Open-source-Library"><span class="nav-number">6.</span> <span class="nav-text">Open-source Library</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Experiments-and-Results"><span class="nav-number">7.</span> <span class="nav-text">Experiments and Results</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exploratory-Experiments"><span class="nav-number">8.</span> <span class="nav-text">Exploratory Experiments</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Geometric-Analysis"><span class="nav-number">8.1.</span> <span class="nav-text">Geometric Analysis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Similarity-Distribution"><span class="nav-number">8.1.1.</span> <span class="nav-text">Similarity Distribution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hubness-and-Isolation"><span class="nav-number">8.1.2.</span> <span class="nav-text">Hubness and Isolation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Unexplored-KG-Embedding-Models"><span class="nav-number">8.2.</span> <span class="nav-text">Unexplored KG Embedding Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Comparison-to-Conventional-Approaches"><span class="nav-number">8.3.</span> <span class="nav-text">Comparison to Conventional Approaches</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Summary-and-Future-Directions"><span class="nav-number">9.</span> <span class="nav-text">Summary and Future Directions</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jack Can"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">Jack Can</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Slashyouth" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Slashyouth" rel="noopener" target="_blank"><i class="fab fa-github-alt fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/slashyouth" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;slashyouth" rel="noopener" target="_blank"><i class="fab fa-connectdevelop fa-fw"></i>CSDN</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jack Can</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">211k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:12</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '9afe362730e6bf584da8',
+      clientSecret: '705d6e86013d354478bc715c5a85d8bad93499a7',
+      repo        : 'gitalk-commnet',
+      owner       : 'Slashyouth',
+      admin       : ['Slashyouth'],
+      id          : '56f1ab074ff6cc6854283651d04048bf',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
+</html>
+
